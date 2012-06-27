@@ -1,0 +1,13 @@
+{
+  "name": "SongBuzz",
+  "version": "0.6",
+  "description": "Converts YouTube into an MP3 player for your browser.",
+  "update_url": "http://www.meomixes.com/updates/updates.xml",
+  "background_page": "background.htm",
+  "browser_action": {
+    "default_icon": "icon.png",
+	"popup": "foreground.htm"
+  },
+  "permissions": [
+	]
+}
