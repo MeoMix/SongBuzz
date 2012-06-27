@@ -3,6 +3,11 @@ SongBuzz
 
 A Google Chrome extension which allows users to create, maintain, and interact with playlists streamed from YouTube.
 
+Requirements
+========
+1. The latest version of Google Chrome.
+2. A stable Internet connection.
+
 Installation
 ========
 
@@ -14,7 +19,7 @@ Installation
 Overview
 ========
 
-I initially began writing this Google Chrome extension with the purpose of solving a simple goal. I had become accustom to bookmarking YouTube songs while leveraging the bookmarks as a pseudo-playlist. I grew tired of this solution, though, and decided to take things into my own hands. As such, SongBuzz was born.
+I initially began writing this Google Chrome extension with the purpose of solving a simple goal. I had become accustom to bookmarking YouTube songs while leveraging the bookmarks as a pseudo-playlist. I grew tired of this solution and decided to take things into my own hands. As such, SongBuzz was born.
 
 An initial load of SongBuzz will present the user with a handful of songs already loaded into the library. These are just whatever songs I am listening to at the time and will most likely be omitted for a production release.
 
@@ -49,3 +54,14 @@ Future Development (The great, big to-do list...)
 * Support SoundCloud et. al.
 * Improve GUI.
 
+Screenshots & Usage Demo
+========
+
+* Screenshot: http://i.imgur.com/A9UCh.png
+* Video: http://screencast.com/t/3GEuJS71ZoF
+
+Licenscing
+========
+
+Licensed under The MIT License (MIT). http://www.opensource.org/licenses/mit-license.php
+Just acknowledge when credit is due - live and let live. :)
