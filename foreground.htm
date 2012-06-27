@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+	    <title></title>
+		<link href="css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
+		<link href="css/foreground.css" rel="stylesheet" type="text/css" />
+		<link href="css/dot-luv/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
+        <script src="http://www.geoplugin.net/javascript.gp"></script>
+
+		<script src="js/third_party/jquery-1.7.2.min.js"></script>
+		<script src="js/third_party/jquery-ui-1.8.21.custom.min.js"></script>
+        <script src="js/third_party/jquery.jqGrid.src.js"></script>
+        <script src="js/third_party/date.js"></script>
+        <script src="js/third_party/jquery.url.js"></script>
+		<script src="js/foreground/foreground.js"></script>
+        <script src="js/foreground/header.js"></script>
+        <script src="js/foreground/urlinput.js"></script>
+        <script src="js/foreground/uielements.js"></script>
+        <script src="js/foreground/songgrid.js"></script>
+        <script src="js/third_party/youtube-player-api-helper.js"></script>
+        <script src="js/foreground/settings.js"></script>
+        <script src="js/playerstates.js"></script>
+        <script src="js/foreground/slider.js"></script>
+        <script src="js/foreground/player_controls.js"></script>
+        <script src="js/yt_helper.js"></script>
+	</head>
+	<body class="ui-widget-content">
+        <div id="Header" class="idleBackground">
+            <span id="HeaderTitle">
+                Welcome to SongBuzz
+            </span>
+        </div>
+
+        <div id="tabs">
+            <ul>
+                <li><a href="#HomeTab">Home</a></li>
+                <li><a href="#PlaylistsTab">Playlists</a></li>
+                <li><a href="#SettingsTab">Settings</a></li>
+            </ul>
+            <div id="HomeTab">
+                <input id="songUrlInput" type="text" />
+                <table id="SongGrid">   
+		        </table>
+            </div>   
+        
+            <div id="PlaylistsTab">
+                <p>World</p>
+            </div>
+
+            <div id="SettingsTab">
+                <img id="Settings" alt="" src="images/gear--pencil.png" title="Settings" />
+                <div id="SettingsDialog" title="Settings">
+                    <label for="checkbox">Explore: </label>
+                    <input type="checkbox" id="ExploreCheckBox" name="ExploreCheckBox" value="ExploreEnabled" />
+                </div>
+            </div>
+        </div>
+
+        <div id="Controls">
+			<img id="ToggleMusicButton" alt="" src="images/play-disabled.png" class="disabled" title="Play" />
+			<div class="seperator"> | </div>
+			<img id="ShuffleButton" alt="" src="images/shuffle-disabled.png" class="disabled" title="Shuffle" />
+			<div class="seperator"> | </div>
+			<img id="SkipButton" alt="" src="images/skip-disabled.png" class="disabled" title="Skip" />
+			<div class="seperator"> | </div>
+			<img id="ToggleMuteButton" alt="" src="images/speaker-volume.png" title="Mute" />
+			<div class="seperator"> | </div>
+			<div id="VolumeSlider"></div>
+			<label class="TimeDisplay" id="CurrentTime">00:00</label><div class="seperator"> / </div>
+			<label class="TimeDisplay" id="TotalTime">00:00</label>
+		</div>
+
+        <div id="ConfirmSearchDialog" title="Confirm Search?">
+            <p>The song you provided was not playable due to content restrictions imposed by YouTube. OK to search for replacement?</p>
+        </div>
+
+	</body>
+</html>
+
