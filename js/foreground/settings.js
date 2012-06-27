@@ -1,4 +1,5 @@
-﻿function settings() {
+﻿//TODO: This isn't really implemented yet. Don't worry about it.
+function settings() {
     var _exploreCheckBox = $('#ExploreCheckBox');
     var _settingsDialogSelector = $('#SettingsDialog');
 
@@ -32,6 +33,4 @@
     var settingsDialog = _buildDialog(_settingsDialogSelector);
 
     $('#Settings').on('click', function () { settingsDialog.dialog('open'); });
-
-
 }

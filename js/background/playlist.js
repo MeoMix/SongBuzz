@@ -1,6 +1,8 @@
-﻿function playlist() {
+﻿//Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
+function playlist() {
     var _songs = null;
 
+    //Get songs from localstorage.
     try {
         var item = localStorage.getItem('playlist');
         if (item && item != 'undefined')
@@ -101,6 +103,7 @@
         },
 
         //Naieve implementation
+        //Sync is used to ensure proper song order after the user drag-and-drops a song on the playlist. 
         sync: function (songIds) {
             var syncedSongs = new Array();
 
@@ -111,6 +114,7 @@
             _save();
         },
 
+        //Randomizes the playlist and then saves it.
         shuffle: function () {
             var i, j, t;
             for (i = 1; i < _songs.length; i++) {

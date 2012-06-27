@@ -6,6 +6,7 @@ var _ready = false;
 var _exploreEnabled = false;
 var _playlist = null;
 
+//Handles communications between the GUI and the YT Player API.
 function player() {
     //errorMessage is optional, used to display errors to GUI.
     var _sendUpdate = function (errorMessage) {
@@ -13,12 +14,14 @@ function player() {
         _port.postMessage({playerState: playerState, songs: _playlist.getSongs(), currentSong: _currentSong, errorMessage: errorMessage });
     };
 
+    //Open a port between background and foreground. Connection closes every time foreground closes.
     if (!_port) {
         _port = chrome.extension.connect({ name: "statusPoller" });
         _port.onDisconnect.addListener(function () { _port = null; });
     }
 
     if (_player) {
+        //GUI has been re-opened and player is already initialized -- send an update to the GUI.
         _sendUpdate();
     }
     else {
@@ -109,7 +112,7 @@ function player() {
         sync: function (songIds) {
             _playlist.sync(songIds);
         },
-
+        //TODO: Simplify
         removeSongById: function (id) {
             var song = _playlist.getSongById(id);
             var nextSong = this.getNextSong();
@@ -136,7 +139,7 @@ function player() {
                 _sendUpdate();
             }
         },
-
+        //Adds a song to the playlist. If it is the first song in the playlist, that song is loaded as the current song.
         addSongById: function (id) {
             var self = this;
             _playlist.addSongById(id, function (song) {
@@ -147,7 +150,8 @@ function player() {
                 _sendUpdate();
             });
         },
-
+        //Returns the elapsed time of the currently loaded song. Returns 0 if no song is playing.
+        //Returns the total time of the song if the song has ended to prevent having the GUI be 1 second off sometimes after the song ends.
         getCurrentTime: function () {
             var currentTime = null;
             var timeInSeconds = 0;
@@ -162,7 +166,7 @@ function player() {
             }
             return currentTime;
         },
-
+        //Gets the total time of the currently loaded song. Returns 0 if there is no song loaded.
         getTotalTime: function () {
             var totalTime = 0;
             if (_currentSong) {
@@ -190,12 +194,12 @@ function player() {
             _currentSong = _playlist.getSongById(id);
             _player.cueVideoById(_currentSong.songId);
         },
-
+        //Shuffles the playlist but doesn't affect current state.
         shuffle: function () {
             _playlist.shuffle();
             _sendUpdate();
         },
-
+        //Skips to the next song. Will start playing the song if the player was already playing.
         skipSong: function () {
             var nextSong = this.getNextSong();
             if (_player.getPlayerState() == PlayerStates.PLAYING)

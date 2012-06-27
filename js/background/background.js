@@ -1,4 +1,5 @@
 ﻿//http://stackoverflow.com/questions/5235719/how-to-copy-text-to-clipboard-from-a-google-chrome-extension
+//Copies text to the clipboard. Has to happen on background page due to elevated privs.
 chrome.extension.onRequest.addListener(function (msg, sender, sendResponse) {
     var textarea = document.getElementById("HiddenClipboard");
 

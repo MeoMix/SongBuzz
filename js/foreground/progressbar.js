@@ -1,4 +1,6 @@
-﻿function progressbar(currentTime, totalTime) {
+﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
+//Changes colors based on player state -- yellow when paused, green when playing.
+function progressbar(currentTime, totalTime) {
     var _selector = $('#ProgressBar');
     _selector.progressbar({ value: currentTime, max: totalTime });
 

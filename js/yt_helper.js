@@ -1,4 +1,6 @@
-﻿YTHelper = {
+﻿//A global object which abstracts more difficult implementations of retrieving data from YouTube.
+YTHelper = {
+    //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
     _searchUrl: "http://gdata.youtube.com/feeds/api/videos?orderBy=relevance&time=all_time&max-results=30&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=",
     _suggestUrl: "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=",
     //TODO: Allow users to submit songs which do not play.
@@ -8,15 +10,14 @@
 
     //Convert JSON response into object.
     _buildYouTubeVideo: function (entry) {
-        var unavail = [];
+        //The id entry has tag information stored in it, strip off this information.
         var id = entry.id.$t;
         var start = id.lastIndexOf(':') + 1;
         var end = id.length;
 
         var youtubeVideo = {
-            // set values
             videoId: id.substring(start, end),
-            entry: entry, // give access to the entry itself
+            entry: entry, //Provide access to the entry itself so that its clear we have more information if needed.
             title: entry.title.$t,
             duration: entry.media$group.yt$duration.seconds,
             category: entry.media$group.media$category[0].$t,
@@ -26,7 +27,9 @@
 
         return youtubeVideo;
     },
-
+    //Determine whether a given youtube video will play properly inside of the Google Chrome Extension.
+    //NOTE: YouTube has explicitly stated that the only way to know 'for sure' that a video will play is to click 'Play.'
+    //This statement has been proven quite true. As such, this method will only state whether a video is playable based on information exposed via the YouTube API.
     isPlayable: function (youtubeVideo) {
         //Support isPlayable for raw YouTube data.
         if (!youtubeVideo.videoId)
@@ -42,6 +45,7 @@
         if ($.inArray(youtubeVideo.videoId, this._blacklist) == 0)
             isPlayable = false;
 
+        //A video may have access controls which limit its playability. IE: embedding disabled, syndication disabled.
         var accessControls = youtubeVideo.entry.yt$accessControl;
         if (accessControls) {
             for (var accessControlIndex = 0; accessControlIndex < accessControls.length; accessControlIndex++) {
@@ -52,6 +56,7 @@
             }
         }
 
+        //Restrictions may be implemented at a parent level, though, too.
         var appControl = youtubeVideo.entry.app$control;
         if (appControl) {
             var state = appControl.yt$state;
@@ -62,6 +67,8 @@
         return isPlayable;
     },
 
+    //Performs a search of YouTube with the provided text and returns a list of playable videos (<= max-results)
+    //TODO: There is some code-repetition going on inside here. DRY!
     search: function (text, callback) {
         var self = this;
         $.getJSON(this._searchUrl + text, function (response) {
@@ -87,7 +94,8 @@
             callback(videos);
         });
     },
-
+    
+    //Returns a list of suggested search-queries for YouTube searches based on the given text.
     suggest: function (text, callback) {
         $.getJSON(this._suggestUrl + text, function (response) {
             var suggestions = [];

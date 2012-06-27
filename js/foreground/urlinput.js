@@ -1,4 +1,7 @@
-﻿function urlInput() {
+﻿//The input control where users may add songs via URL or search with queries.
+//TODO: This has gotten a bit bulky. I suspect it will be OK again once I transition song suggestions into a dialog, though.
+function urlInput() {
+    //TODO: This is a hackjob. I am going to have the 'Song Suggest' become a pop-up window instead of an auto-complete suggestion in the future.
     var Source = Object.freeze({
         NONE : 0,
         TYPING_SUGGEST : 1,
@@ -10,26 +13,21 @@
     var _source = Source.NONE;
     _input.attr('placeholder', _placeholder);
 
-    var urlInput = {
-        initialize: function () {
-            $('#songUrlInput').autocomplete({
-                source: [],
-                minLength: 0,
-                select: function (event, ui) {
-                    event.preventDefault();
+    $('#songUrlInput').autocomplete({
+        source: [],
+        minLength: 0, //Necessary for hackjob -- minLength: 0 allows empty search triggers for changing between 
+        select: function (event, ui) {
+            //When the user selects a song suggestion the auto-complete source will change from suggestions to playable songs.
+            event.preventDefault();
 
-                    if (_source == Source.TYPING_SUGGEST)
-                        _analyzeForSong(ui.item.value);
-                    else if (_source == Source.SONG_SUGGEST) {
-                        Player.addSongById(ui.item.value.videoId);
-                        _flashMessage('Thanks!', 2000);
-                    }
-                }
-            });
+            if (_source == Source.TYPING_SUGGEST)
+                _analyzeForSong(ui.item.value);
+            else if (_source == Source.SONG_SUGGEST) {
+                Player.addSongById(ui.item.value.videoId);
+                _flashMessage('Thanks!', 2000);
+            }
         }
-    }
-
-    urlInput.initialize();
+    });
 
     var _analyzeForSuggestion = function () {
         YTHelper.suggest(_input.val(), function (suggestions) {
@@ -50,6 +48,7 @@
             }
 
             _source = Source.SONG_SUGGEST;
+            //Show songs found instead of suggestions.
             _input.autocomplete("option", "source", songTitles);
             _input.autocomplete("search", '');
         });
@@ -96,6 +95,7 @@
         }
     }).bind('paste drop', function () { return _validateInput(); });
 
+    //Display a message for X milliseconds inside of the input. 
     var _flashMessage = function (message, durationInMilliseconds) {
         _input.val('').blur().attr('placeholder', message);
         window.setTimeout(function () {
@@ -111,6 +111,8 @@
         });
     }
 
+    //Searches for a (hopefully) similiar song to play when the current song has content restrictions.
+    //TODO: I need an algorithm to determine if a song is mostly the same. Consider: title, song length, keywords.
     var _findPlayable = function (songId, callback) {
         $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + songId + '?v=2&alt=json-in-script&callback=?', function (data) {
             var songName = data.entry.title.$t;
@@ -137,16 +139,15 @@
             //If found a valid YouTube link then just add the video.
             if (songId) {
                 var playable = _ensurePlayable(songId, function (isPlayable) {
-
-                    //Search
                     if (!isPlayable) {
-
+                        //Notify the user that the song they attempted to add had content restrictions, ask if it is OK to find a replacement.
                         $('#ConfirmSearchDialog').dialog({
                             autoOpen: true,
                             modal: true,
                             buttons: {
                                 "Confirm": function () {
                                     $(this).dialog("close");
+                                    //Find a replacement.
                                     _findPlayable(songId, function (playableSong) {
                                         Player.addSongById(playableSong.videoId);
                                         _flashMessage('Thanks!', 2000);
@@ -175,13 +176,14 @@
         });
     };
 
+    //Looks for a YouTube song ID inside of the input's value and returns the ID if found.
     var _getSongIdFromInput = function () {
         var userInput = _input.val();
 
         var songId = $.url(userInput).param('v');
 
         if (!songId) {
-            //TODO: match better
+            //TODO: match better / more maintainably.
             var match = _input.val().match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/);
             if (match && match[7].length == 11)
                 songId = match[7];

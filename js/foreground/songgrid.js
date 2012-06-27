@@ -1,4 +1,6 @@
-﻿function songGrid() {
+﻿//The jQGrid object holding a list of songs.
+//TODO: Abstract this out a bit so that it calls a generic grid builder.
+function songGrid() {
     var _grid = $('#SongGrid');
     _grid.jqGrid({
         align: 'center',
@@ -15,6 +17,7 @@
         height: 260,
         width: 317,
         loadComplete: function (data) {
+            //If the Player already exists (not first load) go get data instead of waiting for a broadcast.
             if (Player)
                 songGrid.reload(Player.getSongs(), Player.getCurrentSong());
         },
@@ -44,13 +47,13 @@
         }
     });
 
+    //Don't care to show the sortable column headers currently.
     $('.ui-jqgrid-hdiv').hide();
-    //Set title after grid has been loaded.
-    var _title = $('.ui-jqgrid-titlebar'); ;
     var _clipboardCopyIconPath = 'images/clipboardCopy.png';
     var _removeIconPath = 'images/remove.png';
 
     //TODO: Write these better.
+    //The clipboard copy image, when clicked, copies the song row's URL to the users clipboard.
     var _buildClipboardCopyLink = function (songId, songUrl) {
         var element = '<a href="#" id="' + songId + '_clipboardCopy" title="Copy: ' + songUrl + '" url="' + songUrl + '">';
         element += '<img src="' + _clipboardCopyIconPath + '" class="songIcon" />';
@@ -58,6 +61,7 @@
         return element;
     };
 
+    //The delete image, when clicked, deletes the song at the clicked row.
     var _buildDeleteLink = function (songId, songName) {
         var element = '<a href="#" id="' + songId + '_remove" title="Remove: ' + songName + '" songId="' + songId + '" >';
         element += '<img src="' + _removeIconPath + '" class="songIcon" />';
@@ -66,6 +70,7 @@
     };
 
     var songGrid = {
+        //Refresh all the songs displayed to ensure they GUI matches background's data.
         reload: function (songs, currentSong) {
             _grid.clearGridData();
             for (var i = 0; i < songs.length; i++) {

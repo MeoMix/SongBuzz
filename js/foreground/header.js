@@ -1,11 +1,8 @@
-﻿function header() {
+﻿//Displays the currently playing song or a default welcome message.
+function header() {
     var _header = $('#Header');
     var _title = $('#HeaderTitle');
     var _defaultCaption = 'Welcome to SongBuzz!';
-
-    //TODO: Implement;
-    //            $('.ui-jqgrid-title').wrap('<div id="ProgressHeader" />');
-    //            $('#ProgressHeader').height($('.ui-jqgrid-title').height()).width(0).addClass('idleBackground');
 
     //Scroll the song in the title if its too long to read.
     _title.mouseover(function (e) {
@@ -15,7 +12,6 @@
     }).mouseout(function (e) {
         $(this).stop(true).animate({ marginLeft: "0px" });
     });
-
 
     var header = {
         updateTitle: function (currentSong) {
