@@ -19,6 +19,5 @@ function header() {
             _title.text(text);
         }
     }
-
     return header;
 }

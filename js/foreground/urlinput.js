@@ -15,6 +15,10 @@ function urlInput() {
 
     $('#songUrlInput').autocomplete({
         source: [],
+        position: {
+            my: "left bottom",
+            at: "left top"
+        } ,
         minLength: 0, //Necessary for hackjob -- minLength: 0 allows empty search triggers for changing between 
         select: function (event, ui) {
             //When the user selects a song suggestion the auto-complete source will change from suggestions to playable songs.
@@ -28,7 +32,6 @@ function urlInput() {
             }
         }
     });
-
     var _analyzeForSuggestion = function () {
         YTHelper.suggest(_input.val(), function (suggestions) {
             _source = Source.TYPING_SUGGEST;

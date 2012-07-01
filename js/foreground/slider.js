@@ -8,13 +8,13 @@
         }
 
         element.slider({
-            orientation: 'horizontal',
+            orientation: 'vertical',
             max: 100,
             min: 0,
             slide: onChange,
             change: onChange
         });
-
+   
         return element;
     }
 }

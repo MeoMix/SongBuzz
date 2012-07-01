@@ -6,8 +6,9 @@
   "background_page": "background.htm",
   "browser_action": {
     "default_icon": "icon.png",
-	"popup": "foreground.htm"
+	"popup": "newforeground.htm"
   },
   "permissions": [
+    "contextMenus"
 	]
 }

@@ -1,0 +1,400 @@
+﻿  body {
+    min-width:420px;
+    min-height:300px;
+    background:#fff;
+    -webkit-user-select: none;
+  }
+
+  body div, body svg {position:absolute;}
+
+  #controls {
+    top:0;
+    left:0;
+    width:100%;
+    height:70px;
+    background-color:#efefef;
+    background-image:-webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(255,255,255,0.1)),
+      color-stop(1,rgba(0,0,0,0.1))) ;
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.7);
+
+    z-index:5;
+  }
+
+  #menu {
+    top:71px;
+    bottom:0;
+    left:0;
+    width:71px;
+    padding-top: 5px;
+    background:#efefef;
+    border-right:1px solid #ccc;
+    z-index:3;
+    -webkit-box-sizing:border-box;
+    -webkit-box-shadow: inset -1px 0 0 #fff;
+  }
+
+  .content{
+    top:72px;
+    left:71px;
+    bottom:0;
+    right:0;
+    overflow-y:scroll;
+    z-index:1;
+  }
+
+  #PlaylistsContent{
+    display: none;
+  }
+
+  #SettingsContent{
+    display: none;
+  }
+
+  #ToggleMusicButton {
+    width:70px;
+    height:70px;
+    border-right:1px solid #fff;
+    -webkit-box-sizing:border-box;
+    cursor: pointer;
+  }
+
+  #ToggleMusicButton:active {
+    background-image: -webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(0,0,0,0.3)),
+      color-stop(0.5,rgba(0,0,0,0)))
+  }
+
+  #ToggleMusicButton svg {
+    top:25px;left:28px;
+  }
+
+  #Header {
+    top:0;
+    left:70px;
+    right:40px;
+    border-left: 1px solid #ccc;
+    height: 40px;
+    font: bold 16px/43px sans-serif;
+    text-shadow: 0 1px 0 #fff;
+    padding: 0 20px;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+    -webkit-box-sizing:border-box;
+    overflow: hidden;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    cursor: default;
+  }
+#pauseIcon
+{
+  display: none;
+}
+
+  #ProgressBar
+  {    
+    overflow: inherit !important;
+    left:20px;
+    top:12px;
+    height:6px;
+    border-radius:3px;
+    right:170px;
+    border-top: 1px solid #000;
+    box-shadow: 0 1px 0 #888;
+    -webkit-box-sizing:border-box;
+    background-color: #333;
+    background-image:-webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(0,0,0,0.1)),
+      color-stop(1,rgba(255,255,255,0.1)));
+  }
+
+  #ProgressBarHandle {
+    width:14px;
+    height:14px;
+    top:-5px;
+    margin-left:-6px;
+    background: #eaeaea;
+    background-image:-webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(0,0,0,0)),
+      color-stop(1,rgba(0,0,0,0.1)));
+    border-radius:6px;
+    -webkit-box-sizing:border-box;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.7);
+    cursor: pointer;
+    border: 1px solid #fff;
+    z-index: 1;
+  }
+
+  #ProgressBarHandle:active {
+    background-color: #fff;
+  }
+
+  #SkipButton {
+    right:0;
+    width:40px;
+    height: 40px;
+    -webkit-box-sizing:border-box;
+    border-left: 1px solid #ccc;
+    cursor: pointer;
+    border-bottom: 1px solid #fff;
+  }
+
+  #SkipButton svg {
+    top:14px;
+    left:14px;
+  }
+
+  #SkipButton:active {
+    background-image: -webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(0,0,0,0.3)),
+      color-stop(0.5,rgba(0,0,0,0)))
+  }
+
+  #rowBottom {
+    top:40px;
+    left:70px;
+    right:0;
+    height:30px;
+    background-color: #555;
+    background-image:-webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(0,0,0,0.1)),
+      color-stop(1,rgba(255,255,255,0.1)));
+    -webkit-box-shadow: inset 0 1px 0 #333;
+  }
+
+  #time {
+    right:80px;
+    width:90px;
+    height: 30px;
+    font: bold 10px/31px sans-serif;
+    text-shadow: 0 1px 0 #000;
+    color: #fff;
+    -webkit-box-sizing:border-box;
+    text-align: center;
+    border-right: 1px solid #666;
+  }
+
+  #ShuffleButton {
+    width: 40px;
+    height: 30px;
+    cursor: pointer;
+    right: 40px;
+    background: rgba(0,0,0,.5);
+    -webkit-box-sizing:border-box;
+    border-left: 1px solid #000;
+    border-right: 1px solid #444;
+  }
+
+  #ShuffleButton:active {
+    background-image: -webkit-gradient(linear, left top, left bottom,
+      color-stop(0.5,rgba(255,255,255,0)),
+      color-stop(1,rgba(255,255,255,.2)))
+  }
+
+  #ShuffleButton svg {
+    top: 9px;
+    left: 14px;
+    opacity: .5;
+  }
+
+  #MuteButton {
+    width: 40px;
+    height: 30px;
+    cursor: pointer;
+    right: 0;
+    background: rgba(0,0,0,.5);
+    -webkit-box-sizing:border-box;
+    border-left: 1px solid #000;
+  }
+
+  #MuteButton:active {
+    background-image: -webkit-gradient(linear, left top, left bottom,
+      color-stop(0.5,rgba(255,255,255,0)),
+      color-stop(1,rgba(255,255,255,.2)))
+  }
+
+  #MuteButton svg {
+    top: 9px;
+    left: 14px;
+  }
+
+  #VolumeSliderWrapper{
+    position: relative !important;
+    background-color: #555;
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+      color-stop(0, rgba(0, 0, 0, 0.1)),
+      color-stop(1, rgba(255, 255, 255, 0.1)));
+    -webkit-box-shadow: inset 0 1px 0 #333;
+    margin-top: 30px;
+    padding-bottom: 15px;
+    display: none;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  #VolumeSlider {
+    margin-left: auto;
+    margin-right: auto;
+    height: 60px;
+    width: 6px;
+    border-top: 1px solid black;
+    box-shadow: 0 1px 0 #888;
+    -webkit-box-sizing: border-box;
+    background-color: #333;
+    background-image: -webkit-gradient(linear, left);
+  }
+
+  .ui-slider-handle {
+    width:14px !important;
+    height:14px !important;
+    background: #eaeaea;
+    background-image:-webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(0,0,0,0)),
+      color-stop(1,rgba(0,0,0,0.1)));
+    border-radius:6px !important;
+    -webkit-box-sizing:border-box;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.7);
+    cursor: pointer;
+    border: 1px solid #fff;
+    z-index: 1;
+  }
+
+  .ui-menu .ui-menu-item a
+  {
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+
+  #listwrapper{
+    overflow:hidden;
+    position:relative;
+    height: 100%;
+  }
+
+  #songUrlInput{
+    text-align: center;
+    border-top-width: 1px;
+    position: absolute;
+    border-left: 0px;
+    border-right: 0px;
+    bottom: 0px;
+    width: 100%;
+    padding: 0px;
+    margin-top: 0;
+    margin-bottom:0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #songUrlInput::-webkit-input-placeholder{
+    color: Gray;
+    font-weight: bold;
+  }
+
+  #list ul {
+    padding:0;
+    margin:5px 0;
+    width: 100%;
+    -webkit-box-sizing:border-box;
+  }
+
+  #list li {
+    display: block;
+  }
+  
+  #list li a {
+    display: block;
+    background: #eaeaea;
+    height: 22px;
+    font: 12px/23px sans-serif;
+    -webkit-box-sizing:border-box;
+    padding: 0 20px;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 0 #fff;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+  }
+
+  #list li a:nth-child(odd) {
+    background: #fff
+  }
+
+  #list li a:active {
+    background: #09F;
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+    border-top: 1px solid #09f;
+    border-bottom: 1px solif #09f;
+    background-image: -webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(77,184,255,0.5)),
+      color-stop(1,rgba(0,0,0,0.1)));
+    line-height:21px;
+  }
+
+  #list li a.active  {
+    font-weight: bold;
+    text-indent: -15px;
+  }
+
+  #list li a.active:before {
+    content: '► ';
+  }
+
+  a.menubutton {
+    display: block;
+    position: relative;
+    width: 56px;
+    height: 60px;
+    margin: 5px 7px;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-box-sizing:border-box;
+    border-radius: 5px;
+  }
+
+  a.menubutton svg{
+    top:10px;
+    left: 13px;
+  }
+
+  a.menubutton span {
+    position: absolute;
+    bottom:5px;
+    left: 0;
+    width: 100%;
+    display: block;
+    font: bold 10px/12px sans-serif;
+    text-align: center;
+  }
+
+  a.menubutton:active {
+    background-image: -webkit-gradient(linear, left top, left bottom,
+      color-stop(0,rgba(0,0,0,0.2)),
+      color-stop(0.5,rgba(0,0,0,0.05)));
+    -webkit-box-shadow: 0 1px #fff;
+    border-top: 1px solid #aaa;
+  }
+
+  a.menubutton.active {
+    background: #fff;
+    -webkit-box-shadow: 0 1px #ccc;
+    border-bottom: 1px solid #ccc;
+  }
+
+  span.credit {
+    position: absolute;
+    bottom: 5px;
+    left:0;
+    width:100%;
+    display: block;
+    color: #aaa;
+    text-shadow: 0 1px 0 #fff;
+    text-align: center;
+    font: 14px/18px "Impact",sans-serif;
+    cursor: default;
+  }
+​

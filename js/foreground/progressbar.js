@@ -2,11 +2,17 @@
 //Changes colors based on player state -- yellow when paused, green when playing.
 function progressbar(currentTime, totalTime) {
     var _selector = $('#ProgressBar');
+    var _handle = $('#ProgressBarHandle');
+
     _selector.progressbar({ value: currentTime, max: totalTime });
 
     var progressbar = {
         setValue: function (value) {
             _selector.progressbar('option', 'value', value);
+
+            var max = _selector.progressbar('option', 'max');
+            var percentProgress = (value * 100 / max);
+            _handle.css('left', percentProgress + "%");
         },
 
         setMaxValue: function (maxValue) {

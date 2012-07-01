@@ -84,6 +84,10 @@ function player() {
             return _currentSong;
         },
 
+        getSongById: function(id){
+            return _playlist.getSongById(id);
+        },
+
         setCurrentSongById: function (id) {
             _currentSong = _playlist.getSongById(id);
         },

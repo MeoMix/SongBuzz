@@ -1,9 +1,26 @@
 ﻿//The GUI.
 function uiElements() {
-    //Vertical tabs
-    $("#tabs").tabs().addClass('ui-tabs-vertical ui-helper-clearfix').removeClass('ui-widget-content');
-    $("#tabs li").removeClass('ui-corner-top').addClass('ui-corner-left');
-    $('#tabs').show();
+    $('.menubutton').click(function(){
+        if(!$(this).hasClass('active')){
+            $('.menubutton').removeClass('active');
+            $(this).addClass('active');
+            $('.content').hide();
+
+            switch(this.id){
+                case 'HomeMenuButton':
+                    $('#HomeContent').show();
+                break;
+                case 'PlaylistsMenuButton':
+                    $('#PlaylistsContent').show();
+                break;
+                case 'SettingsMenuButton':
+                    $('#SettingsContent').show();
+                break;
+            }
+
+        }
+    })
+
     //Private Fields
     var currentTime = 0;
     var totalTime = 0;

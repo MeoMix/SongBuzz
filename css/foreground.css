@@ -187,6 +187,11 @@
     height: 23px;
 }
 
+#pauseIcon
+{
+	display: none;
+}
+
 #HeaderTitle
 {    
     white-space: nowrap; 

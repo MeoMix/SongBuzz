@@ -7,20 +7,26 @@ function playerControls() {
 
         //Change the music button to the 'Play' image and cause a song to play upon click.
         element.setToPlay = function () {
-            this.attr('src', 'images/play.png').attr('title', 'Play').off('click').on('click', function () { return Player.play(); });
+            this.attr('title', 'Play').off('click').on('click', function () { return Player.play(); });
+            $('#pauseIcon').hide();
+            $('#playIcon').show();
         }
 
         //Change the music button to the 'Pause' image and cause a song to pause upon click.
         element.setToPause = function () {
-            this.attr('src', 'images/pause.png').attr('title', 'Pause').off('click').on('click', function () { return Player.pause(); });
+            this.attr('title', 'Pause').off('click').on('click', function () { return Player.pause(); });
+            $('#pauseIcon').show();
+            $('#playIcon').hide();
         }
 
         //Enable the button such that it can be clicked.
         //TODO: Remove dependency on checking for class.
         element.enable = function () {
             if (this.hasClass('disabled')) {
-                var enabledSrcImage = this.attr('src').replace('-disabled', '');
-                this.attr('src', enabledSrcImage).removeClass('disabled');
+                this.removeClass('disabled');
+                $('#playPath').css('fill', 'black');
+                $('#pauseBarPath1').css('fill', 'black');
+                $('#pauseBarPath2').css('fill', 'black');
             }
         }
 
@@ -30,8 +36,10 @@ function playerControls() {
         element.disable = function () {
             if (!this.hasClass('disabled')) {
                 this.setToPlay();
-                var disabledSrcImage = this.attr('src').replace('.png', '-disabled.png');
-                this.attr('src', disabledSrcImage).addClass('disabled').off('click');
+                this.addClass('disabled').off('click');
+                $('#playPath').css('fill', 'gray');
+                $('#pauseBarPath1').css('fill', 'gray');
+                $('#pauseBarPath2').css('fill', 'gray');
             }
         }
 
@@ -44,6 +52,7 @@ function playerControls() {
         //TODO: Remove dependency on checking for class.
         element.enable = function () {
             if (this.hasClass('disabled')) {
+               $('#skipPath').css('fill', 'black');
                 this.attr('src', "images/skip.png").removeClass('disabled').off('click').one('click', SkipSong);
                 var self = this;
                 function SkipSong() {
@@ -59,6 +68,7 @@ function playerControls() {
         element.disable = function () {
             if (!this.hasClass('disabled')) {
                 this.attr('src', "images/skip-disabled.png").addClass('disabled').off('click');
+                $('#skipPath').css('fill', 'gray');
             }
         };
 
@@ -70,13 +80,14 @@ function playerControls() {
 
         //TODO: Remove dependency on checking for class.
         element.disable = function () {
+            $('#shufflePath').css('fill', 'gray');
             this.attr('src', "images/shuffle-disabled.png").addClass('disabled').off('click');
         };
 
         //TODO: Remove dependency on checking for class.
         element.enable = function () {
             this.attr('src', "images/shuffle.png").removeClass('disabled').off('click').one('click', ShuffleSong);
-
+            $('#shufflePath').css('fill', 'white');
             var self = this;
             function ShuffleSong() {
                 //This will trigger an update. Necessary since no state change.
@@ -97,11 +108,12 @@ function playerControls() {
             var isMuted = _volumeSlider.toggleMute();
             var title = isMuted ? 'Unmute' : 'Mute';
             $(this).attr('title', title);
-        }).on('mouseenter', function () {
-            _volumeSlider.fadeIn('fast'); //Fade the slider in and out similiar to YouTube's implementation.
-        }).on('mouseout', function(){
-            _volumeSlider.fadeOut('fast');
-        });
+        }).hover( function(){
+            //Fade the slider in and out similiar to YouTube's implementation.
+            $('#VolumeSliderWrapper').fadeIn('fast');
+        }, function(){
+            $('#VolumeSliderWrapper').fadeOut('fast');
+        })
 
         //Change the volume icon to reflect a changing volume.
         element.updateWithVolume = function (volume) {
@@ -161,7 +173,7 @@ function playerControls() {
 
     //Private Fields
     var _volumeSlider = _buildVolumeSlider('#VolumeSlider');
-    var _muteButton = _buildMuteButton('#ToggleMuteButton');
+    var _muteButton = _buildMuteButton('#MuteButton');
     var _toggleMusicButton = _buildToggleMusicButton('#ToggleMusicButton');
     var _skipButton = _buildSkipButton('#SkipButton');
     var _shuffleButton = _buildShuffleButton('#ShuffleButton');
