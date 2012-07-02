@@ -52,7 +52,6 @@ Future Development (The great, big to-do list...)
 * Internationalization
 * Themeing
 * Support SoundCloud et. al.
-* Improve GUI.
 
 Screenshots & Usage Demo
 ========
@@ -65,3 +64,8 @@ Licenscing
 
 Licensed under The MIT License (MIT). http://www.opensource.org/licenses/mit-license.php
 Just acknowledge when credit is due - live and let live. :)
+
+THANKS
+========
+
+Misostc - Responsible for the entirety of the UI theme.
