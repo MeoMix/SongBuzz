@@ -11,6 +11,7 @@
             orientation: 'vertical',
             max: 100,
             min: 0,
+            range: "min",
             slide: onChange,
             change: onChange
         });

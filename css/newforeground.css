@@ -1,46 +1,37 @@
 ﻿  body {
     min-width:420px;
-    min-height:300px;
+    min-height:340px;
     background:#fff;
     -webkit-user-select: none;
+
+
+    font:12px/1.3 sans-serif;
+    margin:0;
+    padding:0;
   }
 
-  body div, body svg {position:absolute;}
+  div {position: absolute;-webkit-box-sizing:border-box; text-shadow: 0 1px 0 #fff; cursor:default}
+  .gradient {background-image:-webkit-gradient(linear,left top, left bottom, from(rgba(255,255,255,.1)), to(rgba(0,0,0,.1)));}
+  #controls {top:0;left:0;width:100%;padding:10px;height:70px;background-color:#efefef;z-index:3; -webkit-box-shadow: 0 5px 5px rgba(0,0,0,.15);}
 
-  #controls {
-    top:0;
-    left:0;
-    width:100%;
-    height:70px;
-    background-color:#efefef;
-    background-image:-webkit-gradient(linear, left top, left bottom,
-      color-stop(0,rgba(255,255,255,0.1)),
-      color-stop(1,rgba(0,0,0,0.1))) ;
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.7);
-
-    z-index:5;
-  }
-
-  #menu {
-    top:71px;
-    bottom:0;
-    left:0;
-    width:71px;
-    padding-top: 5px;
-    background:#efefef;
-    border-right:1px solid #ccc;
-    z-index:3;
-    -webkit-box-sizing:border-box;
-    -webkit-box-shadow: inset -1px 0 0 #fff;
-  }
+    #menu {top:70px;left:0;bottom:0;background: #eaeaea; width:70px;border-right:1px solid #fff;z-index:2; padding-top:5px;}
+    #menu a {border-bottom: 1px solid rgba(0,0,0,0);display:block; position:relative; -webkit-box-sizing:border-box; height:60px; margin:5px;border-radius:5px; color:#000; text-decoration: none}
+    #menu a span {position:absolute;left:0; bottom:3px; width:100%; text-align: center; font: bold 11px/16px sans-serif;} 
+    #menu a svg {position: absolute; top:50%; left:50%; margin: -15px 0 0 -11px;}
+    #menu a.active {background: #fff; border-bottom:1px solid #ccc;}
+    #menu a:active {background-image: -webkit-gradient(linear,left top, left bottom, from(rgba(0,0,0,.2)), to(rgba(0,0,0,.05))); border-bottom:1px solid #fff;}
+    #logo {bottom:10px; left:0; right:0; text-align: center; font:14px/1 "Impact",sans-serif; color:#aaa;}
 
   .content{
     top:72px;
     left:71px;
     bottom:0;
     right:0;
-    overflow-y:scroll;
     z-index:1;
+  }
+
+  #playIcon{
+    left: 54% !important;
   }
 
   #PlaylistsContent{
@@ -51,209 +42,82 @@
     display: none;
   }
 
-  #ToggleMusicButton {
-    width:70px;
-    height:70px;
-    border-right:1px solid #fff;
-    -webkit-box-sizing:border-box;
-    cursor: pointer;
-  }
+  #ToggleMusicButton {top:0;left:0;width:70px;height:70px;border-right:1px solid #fff;cursor:pointer;}
+  #SkipButton {top:0;right:0;width:40px;height:40px;border-left:1px solid #ccc; border-bottom: 1px solid #fff;cursor:pointer;}
+  #ToggleMusicButton:hover, #SkipButton:hover {background-color:rgba(255,255,255,0.3);}
+  #ToggleMusicButton:active, #SkipButton:active {background-image: -webkit-gradient(linear,left top, left bottom, from(rgba(0,0,0,.1)), color-stop(0.5,rgba(0,0,0,0)))}
+  #ToggleMusicButton svg {position:absolute; top:50%;left:50%;margin:-11px 0 0 -11px;}
+  #SkipButton svg {position:absolute; top:50%;left:50%;margin:-8px 0 0 -8px;}
 
-  #ToggleMusicButton:active {
-    background-image: -webkit-gradient(linear, left top, left bottom,
-      color-stop(0,rgba(0,0,0,0.3)),
-      color-stop(0.5,rgba(0,0,0,0)))
-  }
+ #Header {
+  top:0;
+  left:70px;
+  right:40px; 
+  padding:0 20px; 
+  height:40px; 
+  border-left: 1px solid #ccc; 
+  border-right:1px solid  #fff; 
+  border-bottom:1px solid #fff; 
+  font:bold 16px/42px sans-serif; 
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+  overflow: hidden;
+ }
 
-  #ToggleMusicButton svg {
-    top:25px;left:28px;
-  }
 
-  #Header {
-    top:0;
-    left:70px;
-    right:40px;
-    border-left: 1px solid #ccc;
-    height: 40px;
-    font: bold 16px/43px sans-serif;
-    text-shadow: 0 1px 0 #fff;
-    padding: 0 20px;
-    white-space:nowrap;
-    text-overflow: ellipsis;
-    -webkit-box-sizing:border-box;
-    overflow: hidden;
-    border-right: 1px solid #fff;
-    border-bottom: 1px solid #fff;
-    cursor: default;
-  }
 #pauseIcon
 {
   display: none;
 }
 
-  #ProgressBar
-  {    
-    overflow: inherit !important;
-    left:20px;
-    top:12px;
-    height:6px;
-    border-radius:3px;
-    right:170px;
-    border-top: 1px solid #000;
-    box-shadow: 0 1px 0 #888;
-    -webkit-box-sizing:border-box;
-    background-color: #333;
-    background-image:-webkit-gradient(linear, left top, left bottom,
-      color-stop(0,rgba(0,0,0,0.1)),
-      color-stop(1,rgba(255,255,255,0.1)));
-  }
+  #ProgressBar {border-right-width: 0px; overflow:visible !important;top:12px;left:20px;right:180px;height:6px; background:#222;border-top:1px solid #000; border-bottom: 1px solid #666; border-radius:3px}
 
-  #ProgressBarHandle {
-    width:14px;
-    height:14px;
-    top:-5px;
-    margin-left:-6px;
-    background: #eaeaea;
-    background-image:-webkit-gradient(linear, left top, left bottom,
-      color-stop(0,rgba(0,0,0,0)),
-      color-stop(1,rgba(0,0,0,0.1)));
-    border-radius:6px;
-    -webkit-box-sizing:border-box;
-    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.7);
-    cursor: pointer;
-    border: 1px solid #fff;
-    z-index: 1;
-  }
 
-  #ProgressBarHandle:active {
-    background-color: #fff;
-  }
+  #ProgressBarHandle { z-index: 2; width:12px; height:12px; border-radius:6px; background: #eaeaea; -webkit-box-shadow: 0 0 5px #000; top:-4px;margin-left:-6px; cursor: pointer;}
+  #ProgressBarHandle:active {background: #fff;}
+  #rowBottom {overflow: hidden;top:40px;left:70px;right:0; height:30px; border-left: 1px solid #000; border-top:1px solid #000; background-color: #555; background-image: -webkit-gradient(linear,left top, left bottom, from(rgba(0,0,0,.5)), to(rgba(0,0,0,0)));}
+  #time {right:80px;width:100px;font: bold 11px/30px sans-serif; color: #fff; text-shadow: 0 1px 0 #000; text-align:center;border-right:1px solid #666;}
 
-  #SkipButton {
-    right:0;
-    width:40px;
-    height: 40px;
-    -webkit-box-sizing:border-box;
-    border-left: 1px solid #ccc;
-    cursor: pointer;
-    border-bottom: 1px solid #fff;
-  }
+    #ShuffleButton, #MuteButton {-webkit-box-shadow:inset 0 3px 5px #000;right:40px;top:0;width:40px;height:30px;border-left: 1px solid #000; cursor: pointer; border-right:1px solid #444; background: rgba(0,0,0,.5)}
+    #ShuffleButton svg, #MuteButton svg {position:absolute;top:50%;left:50%;margin: -8px 0 0 -8px;}
+    #ShuffleButton:active, #MuteButton:active {background-image: -webkit-gradient(linear,left top, left bottom,color-stop(0.5,rgba(255,255,255,0)), to(rgba(255,255,255,0.25)));}
 
-  #SkipButton svg {
-    top:14px;
-    left:14px;
-  }
+    #MuteButton {right:0;border-right:none}
+    #VolumeSliderWrapper {
+      -webkit-transition: top 0.5s;
+      width:40px; 
+      height:100px; 
+      background: #333;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius:5px;top:-35px; right:0; z-index:2;-webkit-box-shadow: 0 3px 5px rgba(0,0,0,0.3)}
+    #VolumeSlider {
+      border-width: 0px;
+      overflow:visible;
+      top:10px;
+      bottom:10px;
+      left:18px;
+      right:18px;
+      background:#111;
+      border-radius:2px;
+      height: 60px;
+      width: 6px;
+    }    
 
-  #SkipButton:active {
-    background-image: -webkit-gradient(linear, left top, left bottom,
-      color-stop(0,rgba(0,0,0,0.3)),
-      color-stop(0.5,rgba(0,0,0,0)))
-  }
-
-  #rowBottom {
-    top:40px;
-    left:70px;
-    right:0;
-    height:30px;
-    background-color: #555;
-    background-image:-webkit-gradient(linear, left top, left bottom,
-      color-stop(0,rgba(0,0,0,0.1)),
-      color-stop(1,rgba(255,255,255,0.1)));
-    -webkit-box-shadow: inset 0 1px 0 #333;
-  }
-
-  #time {
-    right:80px;
-    width:90px;
-    height: 30px;
-    font: bold 10px/31px sans-serif;
-    text-shadow: 0 1px 0 #000;
-    color: #fff;
-    -webkit-box-sizing:border-box;
-    text-align: center;
-    border-right: 1px solid #666;
-  }
-
-  #ShuffleButton {
-    width: 40px;
-    height: 30px;
-    cursor: pointer;
-    right: 40px;
-    background: rgba(0,0,0,.5);
-    -webkit-box-sizing:border-box;
-    border-left: 1px solid #000;
-    border-right: 1px solid #444;
-  }
-
-  #ShuffleButton:active {
-    background-image: -webkit-gradient(linear, left top, left bottom,
-      color-stop(0.5,rgba(255,255,255,0)),
-      color-stop(1,rgba(255,255,255,.2)))
-  }
-
-  #ShuffleButton svg {
-    top: 9px;
-    left: 14px;
-    opacity: .5;
-  }
-
-  #MuteButton {
-    width: 40px;
-    height: 30px;
-    cursor: pointer;
-    right: 0;
-    background: rgba(0,0,0,.5);
-    -webkit-box-sizing:border-box;
-    border-left: 1px solid #000;
-  }
-
-  #MuteButton:active {
-    background-image: -webkit-gradient(linear, left top, left bottom,
-      color-stop(0.5,rgba(255,255,255,0)),
-      color-stop(1,rgba(255,255,255,.2)))
-  }
-
-  #MuteButton svg {
-    top: 9px;
-    left: 14px;
-  }
-
-  #VolumeSliderWrapper{
-    position: relative !important;
-    background-color: #555;
-    background-image: -webkit-gradient(linear, left top, left bottom, 
-      color-stop(0, rgba(0, 0, 0, 0.1)),
-      color-stop(1, rgba(255, 255, 255, 0.1)));
-    -webkit-box-shadow: inset 0 1px 0 #333;
-    margin-top: 30px;
-    padding-bottom: 15px;
-    display: none;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-  }
-
-  #VolumeSlider {
-    margin-left: auto;
-    margin-right: auto;
-    height: 60px;
-    width: 6px;
-    border-top: 1px solid black;
-    box-shadow: 0 1px 0 #888;
-    -webkit-box-sizing: border-box;
-    background-color: #333;
-    background-image: -webkit-gradient(linear, left);
-  }
+    .ui-slider-range {
+      border-radius: 2px;
+    }
 
   .ui-slider-handle {
-    width:14px !important;
-    height:14px !important;
-    background: #eaeaea;
+    width:12px !important;
+    height:12px !important;
+    background: #eaeaea !important;
     background-image:-webkit-gradient(linear, left top, left bottom,
       color-stop(0,rgba(0,0,0,0)),
       color-stop(1,rgba(0,0,0,0.1)));
     border-radius:6px !important;
     -webkit-box-sizing:border-box;
-    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.7);
+    -webkit-box-shadow: 0 0 5px #000;
+    margin:-6px 0 0 -4px;
     cursor: pointer;
     border: 1px solid #fff;
     z-index: 1;
@@ -272,23 +136,29 @@
   }
 
   #songUrlInput{
+    height: 30px;
     text-align: center;
-    border-top-width: 1px;
     position: absolute;
-    border-left: 0px;
-    border-right: 0px;
     bottom: 0px;
-    width: 100%;
+    width: 99%;
     padding: 0px;
     margin-top: 0;
     margin-bottom:0;
     margin-left: auto;
     margin-right: auto;
-  }
+    -webkit-border-image: -webkit-linear-gradient(top, rgba(179,190,173,1) 0%,rgba(223,229,215,1) 60%,rgba(252,255,244,1) 100% 21 30 30 21 repeat repeat );
+ }
 
   #songUrlInput::-webkit-input-placeholder{
     color: Gray;
     font-weight: bold;
+  }
+
+  #list{
+    max-height: 235px; /*TODO: This is a hack;*/
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   #list ul {
@@ -301,12 +171,12 @@
   #list li {
     display: block;
   }
-  
+
   #list li a {
     display: block;
     background: #eaeaea;
     height: 22px;
-    font: 12px/23px sans-serif;
+    font: 12px/24px sans-serif;
     -webkit-box-sizing:border-box;
     padding: 0 20px;
     white-space:nowrap;
@@ -342,59 +212,3 @@
   #list li a.active:before {
     content: '► ';
   }
-
-  a.menubutton {
-    display: block;
-    position: relative;
-    width: 56px;
-    height: 60px;
-    margin: 5px 7px;
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-    -webkit-box-sizing:border-box;
-    border-radius: 5px;
-  }
-
-  a.menubutton svg{
-    top:10px;
-    left: 13px;
-  }
-
-  a.menubutton span {
-    position: absolute;
-    bottom:5px;
-    left: 0;
-    width: 100%;
-    display: block;
-    font: bold 10px/12px sans-serif;
-    text-align: center;
-  }
-
-  a.menubutton:active {
-    background-image: -webkit-gradient(linear, left top, left bottom,
-      color-stop(0,rgba(0,0,0,0.2)),
-      color-stop(0.5,rgba(0,0,0,0.05)));
-    -webkit-box-shadow: 0 1px #fff;
-    border-top: 1px solid #aaa;
-  }
-
-  a.menubutton.active {
-    background: #fff;
-    -webkit-box-shadow: 0 1px #ccc;
-    border-bottom: 1px solid #ccc;
-  }
-
-  span.credit {
-    position: absolute;
-    bottom: 5px;
-    left:0;
-    width:100%;
-    display: block;
-    color: #aaa;
-    text-shadow: 0 1px 0 #fff;
-    text-align: center;
-    font: 14px/18px "Impact",sans-serif;
-    cursor: default;
-  }
-​

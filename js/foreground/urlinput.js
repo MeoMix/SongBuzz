@@ -8,7 +8,7 @@ function urlInput() {
         SONG_SUGGEST : 2
     });
 
-    var _placeholder = 'Enter a YouTube song name or URL here!';
+    var _placeholder = 'Search or Enter YouTube URL';
     var _input = $('#songUrlInput');
     var _source = Source.NONE;
     _input.attr('placeholder', _placeholder);

@@ -108,12 +108,14 @@ function playerControls() {
             var isMuted = _volumeSlider.toggleMute();
             var title = isMuted ? 'Unmute' : 'Mute';
             $(this).attr('title', title);
-        }).hover( function(){
-            //Fade the slider in and out similiar to YouTube's implementation.
-            $('#VolumeSliderWrapper').fadeIn('fast');
-        }, function(){
-            $('#VolumeSliderWrapper').fadeOut('fast');
-        })
+        });
+
+        $("#MuteButton, #VolumeSliderWrapper").hover(function(){
+
+          $("#VolumeSliderWrapper").css("top","70px");
+        },function(){
+          $("#VolumeSliderWrapper").css("top","-35px");
+        });
 
         //Change the volume icon to reflect a changing volume.
         element.updateWithVolume = function (volume) {
