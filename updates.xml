@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
   <app appid='ldhgghofjpkjkidmlghkjniigkjbodag'>
-    <updatecheck codebase='http://www.meomixes.com/SongBuzz.crx' version='0.8' />
+    <updatecheck codebase='http://www.meomixes.com/SongBuzz1.crx' version='0.8' />
   </app>
 </gupdate>
