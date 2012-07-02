@@ -65,7 +65,7 @@ Licenscing
 Licensed under The MIT License (MIT). http://www.opensource.org/licenses/mit-license.php
 Just acknowledge when credit is due - live and let live. :)
 
-THANKS
+Thank You's
 ========
 
 Misostc - Responsible for the entirety of the UI theme.
