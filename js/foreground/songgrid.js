@@ -1,43 +1,7 @@
 ﻿//The jQGrid object holding a list of songs.
 //TODO: Abstract this out a bit so that it calls a generic grid builder.
 function songGrid() {
-    var _grid = $('#list');
-    // _grid.jqGrid({
-    //     align: 'center',
-    //     cellEdit: false,
-    //     colNames: ['Title'],
-    //     colModel: [{ name: 'title', index: 'title', sortable: false, width: $('body').width()}],
-    //     resizable: false,
-    //     rowNum: 10,
-    //     rowList: [10, 20, 30],
-    //     sortname: 'title',
-    //     scrollOffset: 0,
-    //     sortorder: 'desc',
-    //     hidegrid: false,
-    //     height: 260,
-    //     width: 317,
-    //     loadComplete: function (data) {
-    //         //If the Player already exists (not first load) go get data instead of waiting for a broadcast.
-    //         if (Player)
-    //             songGrid.reload(Player.getSongs(), Player.getCurrentSong());
-    //     },
-    //     beforeSelectRow: function (rowId, e) {
-    //         //Don't fire select when user interact with icons on row.
-    //         var allow = !(e.target instanceof HTMLImageElement);
-    //         return allow;
-    //     },
-    //     onSelectRow: function (rowId, status) {
-    //         Player.setCurrentSongById(rowId);
-    //     },
-    //     ondblClickRow: function (rowId, iRow, iCol, e) {
-    //         //Don't fire a double click when user interact with icons on row.
-    //         if (e.target instanceof HTMLImageElement)
-    //             return false;
-
-    //         //Double-Clicking a song should always stop the song currently playing even if it is the same song.
-    //         Player.loadSongById(rowId);
-    //     }
-    // });
+    var _grid = $('#list ul');
 
     //If moved to front spot then I need to stop the current song.
     //I need to re-sync my playlist.
@@ -56,8 +20,8 @@ function songGrid() {
     }
 
    var _selectRow = function(id){
-        $('#list li a').removeClass('active');
-       $('#' + id).addClass('active');
+        $('#list li').removeClass('current');
+        $('#' + id).parent().parent().addClass('current');
    }
 
     function deleteSong(info) {
@@ -86,25 +50,32 @@ function songGrid() {
             _grid.empty();
 
             var items = [];
-            for (var i = 0; i < songs.length; i++)
-                items.push('<li> <a href="#' + songs[i].id + '" id="'+ songs[i].id + '">' + songs[i].name +'</a></li>');
+            //I create the entries as <a> to leverage Google Chrome's context menus. One of the filter options is 'by link' which allows right click -> song options.
+            for (var i = 0; i < songs.length; i++){
+                var html = '<li><span> <a href="#' + songs[i].id + '" id="'+ songs[i].id + '">' + songs[i].name +'</a> </span>';
+                html += '<div class="remove"><svg width="12" height="12"><path d="M0,2 L2,0 L12,10 L10,12z" fill="#000" /> <path d="M12,2 L10,0 L0,10 L2,12z" fill="#000" /> </svg> </div>';
+                html += '<div class="add"><svg width="12" height="12"><rect x="4.625" y="0" width="2.75" height="12" fill="#000" /><rect x="0" y="4.625" width="12" height="2.75" fill="#000" /></svg></div>';
+                html += '</li>';
+                items.push(html);
+            }
 
             _grid.append(items.join(''));
 
             _grid.children().click( function(){
-                var link = $(this).children()[0];
+                var span = $(this).children()[0];
+                var link = $(span).children()[0];
                 Player.setCurrentSongById(link.id);
                 _selectRow(link.id);
                 event.preventDefault();
             }).dblclick( function(){
-                var link = $(this).children()[0];
+                var span = $(this).children()[0];
+                var link = $(span).children()[0];
                 //Double-Clicking a song should always stop the song currently playing even if it is the same song.
                 Player.loadSongById(link.id);
             })
 
             if (currentSong)
                 _selectRow(currentSong.id)
-                //_grid.setSelection(currentSong.id, false);
         }
     }
 

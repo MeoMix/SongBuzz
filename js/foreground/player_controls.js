@@ -110,24 +110,11 @@ function playerControls() {
             $(this).attr('title', title);
         });
 
-        $("#MuteButton, #VolumeSliderWrapper").hover(function(){
-
-          $("#VolumeSliderWrapper").css("top","70px");
-        },function(){
-          $("#VolumeSliderWrapper").css("top","-35px");
+        $("#MuteButton, #soundSlider").hover(function(){
+            $("#soundSlider").css("top","70px");
+        }, function(){
+          $("#soundSlider").css("top","-35px");
         });
-
-        //Change the volume icon to reflect a changing volume.
-        element.updateWithVolume = function (volume) {
-            if (volume > 50)
-                this.prop('src', 'images/speaker-volume.png');
-            else if (volume > 25)
-                this.prop('src', 'images/speaker-volume-low.png');
-            else if (volume > 0)
-                this.prop('src', 'images/speaker-volume-none.png');
-            else
-                this.prop('src', 'images/speaker-volume-control-mute.png');
-        }
 
         return element;
     }
@@ -141,8 +128,19 @@ function playerControls() {
         //When foreground is closed the music's volume is forgotten, but the player may continue to play.
         //Upon re-opening we need the last known values.
         //TODO: An unhandled scenario is when a user interacts with the YouTube player outside of SongBuzz, toggles mute, and then reopens SongBuzz -- incorrect values will display.
-        var _musicVolume = JSON.parse(localStorage.getItem(MUSICVOLUME_LOCALSTORAGEKEY)) || 100;
-        var _isMuted = JSON.parse(localStorage.getItem(MUSICMUTED_LOCALSTORAGEKEY)) || false;
+        var _musicVolume = 100;
+        var _storedMusicVolume = localStorage.getItem(MUSICVOLUME_LOCALSTORAGEKEY);
+
+        //I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
+        if(_storedMusicVolume && _storedMusicVolume != 'undefined')
+            _musicVolume = JSON.parse(_storedMusicVolume);
+
+        var _isMuted = false;
+        var _storedIsMuted = localStorage.getItem(MUSICMUTED_LOCALSTORAGEKEY);
+
+        //I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
+        if(_storedIsMuted && _storedIsMuted != 'undefined')
+            _isMuted = JSON.parse(_storedIsMuted);
 
         var _onVolumeChanged = function (event, volume) {
             _isMuted = volume == 0;
@@ -158,16 +156,68 @@ function playerControls() {
             _muteButton.updateWithVolume(volume || 'Muted');
         }
 
-        var volumeSlider = Slider.buildSlider(selector, _onVolumeChanged);
-        //Changes the muted state of the player and returns the state after toggling.
-        volumeSlider.toggleMute = function () {
-            if (_isMuted)
-                this.slider('value', _musicVolume);
-            else
-                this.slider('value', 0);
+        var _updateSoundIcon = function(volume){
+            $(selector).css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
 
-            //This value is the opposite of above because setting slider volume has side-effects.
-            return _isMuted;
+            if(volume >= 25){
+                $('#volume1').css('fill', '#fff');
+            }
+            else{
+                $('#volume1').css('fill', '#555');
+            }
+
+            if(volume >= 50){
+                $('#volume2').css('fill', '#fff');
+            }
+            else{
+                $('#volume2').css('fill', '#555');
+            }
+
+            if(volume >= 75){
+                $('#volume3').css('fill', '#fff');
+            }
+            else{
+                $('#volume3').css('fill', '#555');
+            }
+
+            if(volume == 100){
+                $('#volume4').css('fill', '#fff');
+            }
+            else{
+                $('#volume4').css('fill', '#555');
+            }
+        }
+
+        $(selector).change(function(event, ui){
+            _onVolumeChanged(event, this.value);
+            _updateSoundIcon(this.value);
+        });
+
+        $(selector).val(_musicVolume);
+        _updateSoundIcon(_musicVolume);
+
+        var volumeSlider = {
+            //Changes the muted state of the player and returns the state after toggling.
+            toggleMute: function(){
+                if (_isMuted)
+                    this.setVolume(_musicVolume);
+                else
+                    this.setVolume(0);
+
+                //This value is the opposite of above because setting slider volume has side-effects.
+                return _isMuted;
+            },
+
+            setVolume: function(volume){
+                $(selector).val(volume);
+                _updateSoundIcon(volume);
+                _isMuted = volume == 0;
+
+                //Don't record value if muting so value can be set back when unmuting.
+                if(volume)
+                    _musicVolume = volume;
+
+            }
         }
 
         return volumeSlider;
@@ -183,7 +233,7 @@ function playerControls() {
     //Object exposes public methods.
     var playerControls = {
         setVolume: function (volume) {
-            _volumeSlider.slider('value', volume);
+            _volumeSlider.setVolume(volume);
         },
 
         setEnableShuffleButton: function (enable) {

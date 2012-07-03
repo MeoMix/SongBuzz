@@ -1,30 +1,29 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
 function progressbar(currentTime, totalTime) {
-    var _selector = $('#ProgressBar');
-    var _handle = $('#ProgressBarHandle');
+    var _selector = $('#progress');
 
-    _selector.progressbar({ value: currentTime, max: totalTime });
+    if(currentTime && totalTime){
+        _selector.prop('max', totalTime);
+        _selector.val(currentTime);
+    }
+
+    var _updateProgressBarFill = function(){
+        var elapsedTime = _selector.val();
+        var totalTime = _selector.prop('max');
+
+        _selector.css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ elapsedTime/totalTime +',#ccc), color-stop('+ elapsedTime/totalTime+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
+    }
 
     var progressbar = {
-        setValue: function (value) {
-            _selector.progressbar('option', 'value', value);
-
-            var max = _selector.progressbar('option', 'max');
-            var percentProgress = (value * 100 / max);
-            _handle.css('left', percentProgress + "%");
+        setElapsedTime: function (value) {
+            _selector.val(value);
+            _updateProgressBarFill();
         },
 
-        setMaxValue: function (maxValue) {
-            _selector.progressbar('option', 'max', maxValue);
-        },
-
-        setToGreen: function () {
-            $('.ui-progressbar-value').removeClass('pausedBackground').addClass('playingBackground');
-        },
-
-        setToYellow: function () {
-            $('.ui-progressbar-value').removeClass('playingBackground').addClass('pausedBackground');
+        setTotalTime: function (maxValue) {
+            _selector.prop('max', maxValue);
+            _updateProgressBarFill();
         }
     };
 

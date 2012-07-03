@@ -48,11 +48,11 @@ function uiElements() {
     var _updateTime = function () {
         var currentTime = Player.getCurrentTime();
         _currentTimeLabel.text(GetTimeFromSeconds(currentTime));
-        _progressbar.setValue(currentTime);
+        _progressbar.setElapsedTime(currentTime);
 
         var totalTime = Player.getTotalTime();
         _totalTimeLabel.text(GetTimeFromSeconds(totalTime));
-        _progressbar.setMaxValue(totalTime);
+        _progressbar.setTotalTime(totalTime);
     };
 
     var uiElements = {
@@ -66,14 +66,12 @@ function uiElements() {
                 case PlayerStates.VIDCUED:
                 case PlayerStates.PAUSED:
                     _playerControls.setToggleMusicToPlay();
-                    _progressbar.setToYellow();
                     break;
                 case PlayerStates.PLAYING:
                     //Volume only becomes available once a video has become cued or when popup reopens.
                     var volume = Player.getVolume();
                     _playerControls.setVolume(volume);
                     _playerControls.setToggleMusicToPause();
-                    _progressbar.setToGreen();
                     break;
             }
 

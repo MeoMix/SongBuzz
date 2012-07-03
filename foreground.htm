@@ -3,13 +3,10 @@
 <html>
   <head>
       <title></title>
-    <link href="css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
     <link href="css/foreground.css" rel="stylesheet" type="text/css" />
-    <link href="css/smoothness/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
     <script src="http://www.geoplugin.net/javascript.gp"></script>
     <script src="js/third_party/jquery-1.7.2.min.js"></script>
     <script src="js/third_party/jquery-ui-1.8.21.custom.min.js"></script>
-    <script src="js/third_party/jquery.jqGrid.src.js"></script>
     <script src="js/third_party/date.js"></script>
     <script src="js/third_party/jquery.url.js"></script>
     <script src="js/foreground/foreground.js"></script>
@@ -20,13 +17,12 @@
     <script src="js/third_party/youtube-player-api-helper.js"></script>
     <script src="js/foreground/settings.js"></script>
     <script src="js/playerstates.js"></script>
-    <script src="js/foreground/slider.js"></script>
     <script src="js/foreground/player_controls.js"></script>
     <script src="js/yt_helper.js"></script>
     <script src="js/foreground/progressbar.js"></script>
   </head>
   <body>
-      <div id="controls" class="gradient">
+      <div id="head" class="gradient">
         <div id="ToggleMusicButton" class="disabled">
            <svg id="playIcon" width="22" height="22">
              <polygon id="playPath" fill="gray" points="0,0 16.5,11 0,22 "/>
@@ -49,9 +45,8 @@
           </svg>  
         </div>
         <div id="rowBottom">
-          <div id="ProgressBar">
-            <div id="ProgressBarHandle"></div>
-          </div>
+          <input type="range" id="progress" min="0" step="1" max="100" value="0" />
+
           <div id="time">
             <label class="TimeDisplay" id="CurrentTimeLabel">00:00</label>
               / 
@@ -75,11 +70,9 @@
         </div>
       </div>
 
-      <div id="VolumeSliderWrapper">
-        <div id="VolumeSlider">
-        </div>
+      <div id="soundSlider">
+        <input type="range" id="VolumeSlider" min="0" max="100" step="1" value="0" />
       </div>
-
 
       <div id="menu">
         <a id="HomeMenuButton" href="#" class="active">
@@ -123,12 +116,10 @@
           </div>
         </div>
 
-
         <div id="list">
           <ul>
           </ul>
         </div>
-      
       </div>
 
       <div id="PlaylistsContent" class="content">
@@ -138,7 +129,5 @@
       <div id="SettingsContent" class="content">
         Settings coming soon!
       </div>
-
-
   </body>
 </html>

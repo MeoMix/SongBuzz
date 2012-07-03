@@ -9,15 +9,35 @@ function urlInput() {
     });
 
     var _placeholder = 'Search or Enter YouTube URL';
-    var _input = $('#songUrlInput');
+    var _input = $('#addInput');
     var _source = Source.NONE;
     _input.attr('placeholder', _placeholder);
 
-    $('#songUrlInput').autocomplete({
+    var addopened = false;
+    $('#addButton').click( function(){
+        if(addopened == false){
+            $('#addInput').css('opacity', 1).css('cursor', "auto");
+            $('#addCancelIcon').css('right', '0px');
+            $('#addButton').width('230px');
+            $('#addInput').focus();
+            addopened = true; 
+        }
+    })
+
+    $('#addCancelIcon').click(function(){
+        if(addopened == true){
+            $('#addInput').css('opacity', 0).css('cursor', "pointer").blur();
+            $('#addCancelIcon').css('right', '-30px');
+            $('#addButton').width('120px');
+            setTimeout(function(){addopened=false;},500);
+        }
+    })
+
+    $('#addInput').autocomplete({
         source: [],
         position: {
-            my: "left bottom",
-            at: "left top"
+            my: "left top",
+            at: "left bottom"
         } ,
         minLength: 0, //Necessary for hackjob -- minLength: 0 allows empty search triggers for changing between 
         select: function (event, ui) {
@@ -35,6 +55,8 @@ function urlInput() {
     var _analyzeForSuggestion = function () {
         YTHelper.suggest(_input.val(), function (suggestions) {
             _source = Source.TYPING_SUGGEST;
+            console.log("setting suggestions");
+            console.log(suggestions);
             _input.autocomplete("option", "source", suggestions);
         });
     }
