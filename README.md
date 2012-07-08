@@ -56,8 +56,8 @@ Future Development (The great, big to-do list...)
 Screenshots & Usage Demo
 ========
 
-* Screenshot: http://i.imgur.com/A9UCh.png
-* Video: http://screencast.com/t/3GEuJS71ZoF
+* Screenshot: http://i.imgur.com/sBGZ6.png
+* Video: http://screencast.com/t/JG03NwwaxVKs
 
 Licenscing
 ========
