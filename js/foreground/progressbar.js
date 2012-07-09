@@ -12,7 +12,9 @@ function progressbar(currentTime, totalTime) {
         var elapsedTime = _selector.val();
         var totalTime = _selector.prop('max');
 
-        _selector.css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ elapsedTime/totalTime +',#ccc), color-stop('+ elapsedTime/totalTime+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
+        var progressFillAmount = totalTime == 0 ? 0 : elapsedTime / totalTime;
+
+        _selector.css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ progressFillAmount +',#ccc), color-stop('+ progressFillAmount+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
     }
 
     var progressbar = {

@@ -34,6 +34,8 @@ function playlist() {
 
     //Takes a song's UID and returns the index of that song in the playlist if found.
     var _getSongIndexById = function (id) {
+        console.log("getSongIndexbyId: [" + id +"]");
+
         var songIndex = -1;
         for (var i = 0; i < _songs.length; i++) {
             if (_songs[i].id === id) {
@@ -68,6 +70,7 @@ function playlist() {
 
         //Takes a song and returns the next song object by index.
         getNextSong: function (currentSongId) {
+            console.log("getNextSong");
             var nextSongIndex = _getSongIndexById(currentSongId) + 1;
 
             //Loop back to the front if at end. Should make this togglable in the future.
@@ -94,6 +97,7 @@ function playlist() {
         },
 
         removeSongById: function (id) {
+            console.log("removeSongById");
             var index = _getSongIndexById(id);
 
             if (index != -1) {

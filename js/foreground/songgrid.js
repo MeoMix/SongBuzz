@@ -24,10 +24,13 @@ function songGrid() {
         $('#' + id).parent().parent().addClass('current');
    }
 
+
+   //These functions are for the right-click menu only.
     function deleteSong(info) {
         var link = info.linkUrl;
         var start = link.lastIndexOf("#") + 1;
         var id = link.substr(start);
+        console.log("id length: " + id.length);
         Player.removeSongById(id);
     }
 
@@ -53,13 +56,23 @@ function songGrid() {
             //I create the entries as <a> to leverage Google Chrome's context menus. One of the filter options is 'by link' which allows right click -> song options.
             for (var i = 0; i < songs.length; i++){
                 var html = '<li><span> <a href="#' + songs[i].id + '" id="'+ songs[i].id + '">' + songs[i].name +'</a> </span>';
-                html += '<div class="remove"><svg width="12" height="12"><path d="M0,2 L2,0 L12,10 L10,12z" fill="#000" /> <path d="M12,2 L10,0 L0,10 L2,12z" fill="#000" /> </svg> </div>';
-                html += '<div class="add"><svg width="12" height="12"><rect x="4.625" y="0" width="2.75" height="12" fill="#000" /><rect x="0" y="4.625" width="12" height="2.75" fill="#000" /></svg></div>';
+                html += '<div class="remove" songid=' + songs[i].id + '><svg width="12" height="12"><path d="M0,2 L2,0 L12,10 L10,12z" fill="#000" /> <path d="M12,2 L10,0 L0,10 L2,12z" fill="#000" /> </svg> </div>';
+                html += '<div class="copy" songurl=' + songs[i].url + '><svg width="12" height="12"><rect x="4.625" y="0" width="2.75" height="12" fill="#000" /><rect x="0" y="4.625" width="12" height="2.75" fill="#000" /></svg></div>';
                 html += '</li>';
                 items.push(html);
             }
 
             _grid.append(items.join(''));
+
+            _grid.children('li').children('.remove').click(function(){
+                Player.removeSongById($(this).attr('songid'));
+                return false;
+            })
+
+            _grid.children('li').children('.copy').click(function(){
+                chrome.extension.sendRequest({ text: $(this).attr('songurl') });
+                return false;
+            })
 
             _grid.children().click( function(){
                 var span = $(this).children()[0];

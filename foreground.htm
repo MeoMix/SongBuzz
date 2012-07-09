@@ -4,6 +4,7 @@
   <head>
       <title></title>
     <link href="css/foreground.css" rel="stylesheet" type="text/css" />
+    <link href="css/smoothness/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css" />
     <script src="http://www.geoplugin.net/javascript.gp"></script>
     <script src="js/third_party/jquery-1.7.2.min.js"></script>
     <script src="js/third_party/jquery-ui-1.8.21.custom.min.js"></script>
@@ -22,112 +23,119 @@
     <script src="js/foreground/progressbar.js"></script>
   </head>
   <body>
-      <div id="head" class="gradient">
-        <div id="ToggleMusicButton" class="disabled">
-           <svg id="playIcon" width="22" height="22">
-             <polygon id="playPath" fill="gray" points="0,0 16.5,11 0,22 "/>
-           </svg>
-           <svg id="pauseIcon" width="22" height="22">
-             <rect id="pauseBarPath1" x="3" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
-             <rect id="pauseBarPath2" x="13" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
-           </svg>
-        </div>
-        <div id="Header">
-            <span id="HeaderTitle">
-                Welcome to SongBuzz
-            </span>
-        </div>
-        <div id="SkipButton" class="disabled">
-          <svg width="16px" height="16px">
-            <rect x="14" y="3" width="2" height="10" fill="#000" />
-              <path d="M0,3 L7,8 L0,13z" fill="#000" />
-              <path d="M7,3 L14,8, L7,13z" fill="#000" />
-          </svg>  
-        </div>
-        <div id="rowBottom">
-          <input type="range" id="progress" min="0" step="1" max="100" value="0" />
+      <div id="content">
+        <div id="head" class="gradient">
+          <div id="ToggleMusicButton" class="disabled">
+             <svg id="playIcon" width="22" height="22">
+               <polygon id="playPath" fill="gray" points="0,0 16.5,11 0,22 "/>
+             </svg>
+             <svg id="pauseIcon" width="22" height="22">
+               <rect id="pauseBarPath1" x="3" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
+               <rect id="pauseBarPath2" x="13" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
+             </svg>
+          </div>
+          <div id="Header">
+              <span id="HeaderTitle">
+                  Welcome to SongBuzz
+              </span>
+          </div>
+          <div id="SkipButton" class="disabled">
+            <svg width="16px" height="16px">
+              <rect id="skipButtonPath1" x="14" y="3" width="2" height="10" fill="gray" />
+              <path id="skipButtonPath2" d="M0,3 L7,8 L0,13z" fill="gray" />
+              <path id="skipButtonPath3" d="M7,3 L14,8, L7,13z" fill="gray" />
+            </svg>  
+          </div>
+          <div id="rowBottom">
+            <input type="range" id="progress" min="0" step="1" max="0" value="0" />
 
-          <div id="time">
-            <label class="TimeDisplay" id="CurrentTimeLabel">00:00</label>
-              / 
-            <label class="TimeDisplay" id="TotalTimeLabel">00:00</label>
-          </div>
-          <div id="ShuffleButton" class="disabled">
-            <svg width="16" height="16">
-              <path d="m 0,4 0,2 2.5,0 7,6 1.5,0 0,2 5,-3 -5,-3 0,2 -1.5,0 -7,-6 z" fill="#fff" />
-              <path d="m 11,2 0,2 -1.5,0 -7,6 -2.5,0 0,2 2.5,0 7,-6 1.5,0 0,2 5,-3 z" fill="#fff" />
-            </svg>
-          </div>
-            <div id="MuteButton">
+            <div id="time">
+              <label class="TimeDisplay" id="CurrentTimeLabel">00:00</label>
+                / 
+              <label class="TimeDisplay" id="TotalTimeLabel">00:00</label>
+            </div>
+            <div id="ShuffleButton" class="disabled">
               <svg width="16" height="16">
-                <path d="M0,6 L3,6 L7,2 L7,14 L3,10 L0,10Z" fill="#fff" />
-                <rect id="volume1" x="9" y="6.5" width="1" height="3" fill="#555" />
-                <rect id="volume2" x="11" y="5" width="1" height="6" fill="#555" />
-                <rect id="volume3" x="13" y="3.5" width="1" height="9" fill="#555" />
-                <rect id="volume4" x="15" y="2" width="1" height="12" fill="#555" />
+                <path d="m 0,4 0,2 2.5,0 7,6 1.5,0 0,2 5,-3 -5,-3 0,2 -1.5,0 -7,-6 z" fill="#fff" />
+                <path d="m 11,2 0,2 -1.5,0 -7,6 -2.5,0 0,2 2.5,0 7,-6 1.5,0 0,2 5,-3 z" fill="#fff" />
               </svg>
             </div>
-        </div>
-      </div>
-
-      <div id="soundSlider">
-        <input type="range" id="VolumeSlider" min="0" max="100" step="1" value="0" />
-      </div>
-
-      <div id="menu">
-        <a id="HomeMenuButton" href="#" class="active">
-          <svg width="30" height="30">
-            <path d="M11.5,2 L22,12 L0,12 L18,12 L18,20 L13,20 L13,13 L9,13 L9,20 L4,20 L4,12 L0,12Z" fill="#000" />
-          </svg>
-          <span>Home</span>
-        </a>
-        <a id="PlaylistsMenuButton" href="#">
-          <svg width="22" height="22">
-            <rect x="0" y="0.5" width="22" height="3" fill="#000"/>
-            <rect x="0" y="6.5" width="22" height="3" fill="#000"/>
-            <rect x="0" y="12.5" width="22" height="3" fill="#000"/>
-            <rect x="0" y="18.5" width="22" height="3" fill="#000"/>
-          </svg>
-          <span>Playlists</span></a>
-        <a id="SettingsMenuButton" href="#">
-          <svg width="22" height="22">
-            <path d="M 18.6668,6.31016 16.3361,5.68686 15.7104,3.35456 18.2975,0.732562 C 16.681,0.202632 14.834,0.576752 13.5518,1.86138 12.1982,3.21496 11.8516,5.19756 12.5138,6.87006 L 9.69297,9.69256 6.87049,12.5151 C 5.19713,11.8529 3.2154,12.1978 1.86097,13.5514 0.576345,14.8344 0.203045,16.6806 0.732965,18.298 l 2.622015,-2.5872 2.33231,0.6249 0.62406,2.3307 -2.62851,2.5944 c 1.62141,0.5397 3.4798,0.168 4.76853,-1.1231 1.3617,-1.3618 1.70423,-3.354 1.0314,-5.0331 l 2.81033,-2.8111 2.8111,-2.81034 c 1.679,0.67204 3.6705,0.3295 5.0331,-1.0322 1.2919,-1.2895 1.6628,-3.1471 1.1231,-4.7685 l -2.5936,2.6277 z" fill="#000">
-          </svg>
-          <span>Settings</span>
-        </a>
-        <div id="logo">SongBuzz</div>  
-      </div>
-
-      <div id="HomeContent" class="content">
-        <div id="bar">
-          <h1>Playlist title</h1>
-          <div id="addButton">
-             <svg id="addIcon" width="12" height="12">
-               <rect x="4.625" y="0" width="2.75" height="12" fill="#555" />
-               <rect x="0" y="4.625" width="12" height="2.75" fill="#555" />
-             </svg> <span id="addText">Add Songs</span>
-             <input id="addInput" type="text" placeholder="Search for artists or songs">
-             <div id="addCancelIcon">
-               <svg width="12" height="12">
-                    <path d="M0,2 L2,0 L12,10 L10,12z" fill="#555" />
-                    <path d="M12,2 L10,0 L0,10 L2,12z" fill="#555" />
-               </svg>
-             </div>
+              <div id="MuteButton">
+                <svg width="16" height="16">
+                  <path d="M0,6 L3,6 L7,2 L7,14 L3,10 L0,10Z" fill="#fff" />
+                  <rect id="volume1" x="9" y="6.5" width="1" height="3" fill="#555" />
+                  <rect id="volume2" x="11" y="5" width="1" height="6" fill="#555" />
+                  <rect id="volume3" x="13" y="3.5" width="1" height="9" fill="#555" />
+                  <rect id="volume4" x="15" y="2" width="1" height="12" fill="#555" />
+                </svg>
+              </div>
           </div>
         </div>
 
-        <div id="list">
-          <ul>
-          </ul>
+        <div id="soundSlider">
+          <input type="range" id="VolumeSlider" min="0" max="100" step="1" value="0" />
+        </div>
+
+        <div id="menu">
+          <a id="HomeMenuButton" href="#" class="active">
+            <svg width="30" height="30">
+              <path d="M11.5,2 L22,12 L0,12 L18,12 L18,20 L13,20 L13,13 L9,13 L9,20 L4,20 L4,12 L0,12Z" fill="#000" />
+            </svg>
+            <span>Home</span>
+          </a>
+          <a id="PlaylistsMenuButton" href="#">
+            <svg width="22" height="22">
+              <rect x="0" y="0.5" width="22" height="3" fill="#000"/>
+              <rect x="0" y="6.5" width="22" height="3" fill="#000"/>
+              <rect x="0" y="12.5" width="22" height="3" fill="#000"/>
+              <rect x="0" y="18.5" width="22" height="3" fill="#000"/>
+            </svg>
+            <span>Playlists</span></a>
+          <a id="SettingsMenuButton" href="#">
+            <svg width="22" height="22">
+              <path d="M 18.6668,6.31016 16.3361,5.68686 15.7104,3.35456 18.2975,0.732562 C 16.681,0.202632 14.834,0.576752 13.5518,1.86138 12.1982,3.21496 11.8516,5.19756 12.5138,6.87006 L 9.69297,9.69256 6.87049,12.5151 C 5.19713,11.8529 3.2154,12.1978 1.86097,13.5514 0.576345,14.8344 0.203045,16.6806 0.732965,18.298 l 2.622015,-2.5872 2.33231,0.6249 0.62406,2.3307 -2.62851,2.5944 c 1.62141,0.5397 3.4798,0.168 4.76853,-1.1231 1.3617,-1.3618 1.70423,-3.354 1.0314,-5.0331 l 2.81033,-2.8111 2.8111,-2.81034 c 1.679,0.67204 3.6705,0.3295 5.0331,-1.0322 1.2919,-1.2895 1.6628,-3.1471 1.1231,-4.7685 l -2.5936,2.6277 z" fill="#000">
+            </svg>
+            <span>Settings</span>
+          </a>
+          <div id="logo">SongBuzz</div>  
+        </div>
+
+        <div id="HomeContent" class="content">
+          <div id="bar">
+            <h1>Playlist title</h1>
+            <div id="addButton">
+               <svg id="addIcon" width="12" height="12">
+                 <rect x="4.625" y="0" width="2.75" height="12" fill="#555" />
+                 <rect x="0" y="4.625" width="12" height="2.75" fill="#555" />
+               </svg> <span id="addText">Add Songs</span>
+               <input id="addInput" type="text" placeholder="Search for artists or songs">
+               <div id="addCancelIcon">
+                 <svg width="12" height="12">
+                      <path d="M0,2 L2,0 L12,10 L10,12z" fill="#555" />
+                      <path d="M12,2 L10,0 L0,10 L2,12z" fill="#555" />
+                 </svg>
+               </div>
+            </div>
+          </div>
+
+          <div id="list">
+            <ul>
+            </ul>
+          </div>
+        </div>
+
+        <div id="PlaylistsContent" class="content">
+          Playlists coming soon!
+        </div>
+
+        <div id="SettingsContent" class="content">
+          Settings coming soon!
         </div>
       </div>
 
-      <div id="PlaylistsContent" class="content">
-        Playlists coming soon!
-      </div>
 
-      <div id="SettingsContent" class="content">
-        Settings coming soon!
+      <div id="ConfirmSearchDialog" title="Confirm Search?">
+          <p>The song you provided was not playable due to content restrictions imposed by YouTube. OK to search for replacement?</p>
       </div>
   </body>
 </html>

@@ -52,7 +52,9 @@ function playerControls() {
         //TODO: Remove dependency on checking for class.
         element.enable = function () {
             if (this.hasClass('disabled')) {
-               $('#skipPath').css('fill', 'black');
+                $('#skipButtonPath1').css('fill', 'black');
+                $('#skipButtonPath2').css('fill', 'black');
+                $('#skipButtonPath3').css('fill', 'black');
                 this.attr('src', "images/skip.png").removeClass('disabled').off('click').one('click', SkipSong);
                 var self = this;
                 function SkipSong() {
@@ -68,7 +70,9 @@ function playerControls() {
         element.disable = function () {
             if (!this.hasClass('disabled')) {
                 this.attr('src', "images/skip-disabled.png").addClass('disabled').off('click');
-                $('#skipPath').css('fill', 'gray');
+                $('#skipButtonPath1').css('fill', 'gray');
+                $('#skipButtonPath2').css('fill', 'gray');
+                $('#skipButtonPath3').css('fill', 'gray');
             }
         };
 
@@ -153,7 +157,6 @@ function playerControls() {
 
             //TODO: Loosely couple Player with VolumeSlider.
             Player.setVolume(volume);
-            _muteButton.updateWithVolume(volume || 'Muted');
         }
 
         var _updateSoundIcon = function(volume){

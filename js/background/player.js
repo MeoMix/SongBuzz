@@ -120,6 +120,7 @@ function player() {
         removeSongById: function (id) {
             var song = _playlist.getSongById(id);
             var nextSong = this.getNextSong();
+
             _playlist.removeSongById(id);
 
             //Deleting the visually-selected song.

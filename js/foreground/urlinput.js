@@ -1,4 +1,4 @@
-﻿//The input control where users may add songs via URL or search with queries.
+//The input control where users may add songs via URL or search with queries.
 //TODO: This has gotten a bit bulky. I suspect it will be OK again once I transition song suggestions into a dialog, though.
 function urlInput() {
     //TODO: This is a hackjob. I am going to have the 'Song Suggest' become a pop-up window instead of an auto-complete suggestion in the future.
@@ -18,11 +18,11 @@ function urlInput() {
         if(addopened == false){
             $('#addInput').css('opacity', 1).css('cursor', "auto");
             $('#addCancelIcon').css('right', '0px');
-            $('#addButton').width('230px');
+            $('#addButton').width('350px');
             $('#addInput').focus();
             addopened = true; 
         }
-    })
+    });
 
     $('#addCancelIcon').click(function(){
         if(addopened == true){
@@ -31,7 +31,7 @@ function urlInput() {
             $('#addButton').width('120px');
             setTimeout(function(){addopened=false;},500);
         }
-    })
+    });
 
     $('#addInput').autocomplete({
         source: [],
@@ -52,11 +52,10 @@ function urlInput() {
             }
         }
     });
+
     var _analyzeForSuggestion = function () {
         YTHelper.suggest(_input.val(), function (suggestions) {
             _source = Source.TYPING_SUGGEST;
-            console.log("setting suggestions");
-            console.log(suggestions);
             _input.autocomplete("option", "source", suggestions);
         });
     }
@@ -65,7 +64,8 @@ function urlInput() {
         YTHelper.search(text, function (videos) {
             var songTitles = new Array();
 
-            for (var videoIndex = 0; videoIndex < videos.length; videoIndex++) {
+            //Only show up to 11 song suggestions as that is what fits on the display.
+            for (var videoIndex = 0; videoIndex < videos.length && videoIndex < 11; videoIndex++) {
                 var video = videos[videoIndex];
                 var label = GetTimeFromSeconds(video.duration) + " | " + video.title;
 
@@ -161,9 +161,12 @@ function urlInput() {
         setTimeout(function () {
             var songId = _getSongIdFromInput();
 
+            console.log("songID: " + songId);
+
             //If found a valid YouTube link then just add the video.
             if (songId) {
                 var playable = _ensurePlayable(songId, function (isPlayable) {
+                    console.log("isPlayable: " + isPlayable);
                     if (!isPlayable) {
                         //Notify the user that the song they attempted to add had content restrictions, ask if it is OK to find a replacement.
                         $('#ConfirmSearchDialog').dialog({
