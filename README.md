@@ -35,24 +35,6 @@ Supported Functionality
 * Reorganize the playlist via drag-and-drop.
 * Delete songs from playlist
 
-Future Development (The great, big to-do list...)
-========
-
-* Support multiple playlists.
-* Allow user to rewind.
-* Allow user to skip to various points in time in current song.
-* Allow user to 'crop' the start/end of songs by placing 'crop markers' on a song.
-* Detect buffering
-* Keyboard shortcuts.
-* Desktop notifications.
-* Pandora-esque 'suggested song' exploration.
-* Stronger error-handling against videos which have content restrictions.
-* Implement a testing framework (Jasmine)
-* Create a server which will allow users to share playlists.
-* Internationalization
-* Themeing
-* Support SoundCloud et. al.
-
 Screenshots & Usage Demo
 ========
 
