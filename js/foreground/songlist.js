@@ -1,5 +1,5 @@
 ﻿function songList() {
-    var _songList = $('#list ul');
+    var _songList = $('#SongList ul');
 
     //Currently taking the lazy way out by just syncing the entire playlist whenever a user drags a song instead
     //of figuring out how to move the element in the list.
@@ -74,7 +74,7 @@
             })
 
             var selectRow = function(id){
-                $('#list li').removeClass('current');
+                $('#SongList li').removeClass('current');
                 $('#' + id).parent().parent().addClass('current');
             }
 

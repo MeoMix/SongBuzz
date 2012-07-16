@@ -1,10 +1,13 @@
 ﻿//Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
-function playlist() {
+function Playlist(id, name) {
     var _songs = null;
+
+    if(!id)
+        id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); });
 
     //Get songs from localstorage.
     try {
-        var item = localStorage.getItem('playlist');
+        var item = localStorage.getItem(id);
         if (item && item != 'undefined')
             _songs = JSON.parse(item);
     }
@@ -29,13 +32,11 @@ function playlist() {
     _ensureValidState();
 
     var _save = function () {
-        localStorage.setItem('playlist', JSON.stringify(_songs));
+        localStorage.setItem(id, JSON.stringify(_songs));
     };
 
     //Takes a song's UID and returns the index of that song in the playlist if found.
     var _getSongIndexById = function (id) {
-        console.log("getSongIndexbyId: [" + id +"]");
-
         var songIndex = -1;
         for (var i = 0; i < _songs.length; i++) {
             if (_songs[i].id === id) {
@@ -50,7 +51,21 @@ function playlist() {
         return songIndex;
     };
 
+    console.log("hi");
+
+    var title = name ? name : "New Playlist";
+    console.log("title: " + title);
+
     var playlist = {
+        id: id,
+        title: title,
+        selected: false,
+
+        clear: function(){
+            _songs = [];
+            _save();
+        },
+
         //Takes a song's UID and returns the full song object if found.
         getSongById: function (id) {
             var song = null;

@@ -4,6 +4,7 @@ var _currentSong = null;
 var _port = null;
 var _ready = false;
 var _exploreEnabled = false;
+var _playlists = null;
 var _playlist = null;
 
 //Handles communications between the GUI and the YT Player API.
@@ -25,7 +26,9 @@ function player() {
         _sendUpdate();
     }
     else {
-        _playlist = playlist();
+        _playlists = playlists();
+        _playlist = _playlists.getCurrentPlaylist();
+        console.log(_playlist);
 
         //Create YT player iframe.
         YT_ready(function () {
@@ -84,6 +87,18 @@ function player() {
     }
 
     var player = {
+        getPlaylistTitle: function(){
+            return _playlist.title;
+        },
+
+        getPlaylists: function(){
+            return _playlists.getPlaylists();
+        },
+
+        addPlaylist: function(playlistName){
+            _playlists.addPlaylist(playlistName);
+        },
+
         getSongs: function () {
             return _playlist.getSongs();
         },

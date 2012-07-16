@@ -18,6 +18,10 @@ function uiElements() {
     urlInput(); 
     contentButtons();
 
+    //Set currently loaded playlist title.
+    var h1 = $('#CurrentSongDisplay').children()[0];
+    $(h1).text(Player.getPlaylistTitle());
+
     var uiElements = {
         //Refereshes the visual state of the UI after the Player broadcasts a message.
         //This keeps the UI synced with the background.

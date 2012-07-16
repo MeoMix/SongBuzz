@@ -1,11 +1,21 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
-function progressbar(currentTime, totalTime) {
+function progressbar(currentTime, totalTime, timeDisplay) {
     var _selector = $('#progress');
+
+    var _repaint = function(){
+        var elapsedTime = _selector.val();
+        var totalTime = _selector.prop('max');
+
+        var progressFillAmount = totalTime == 0 ? 0 : elapsedTime / totalTime;
+
+        _selector.css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ progressFillAmount +',#ccc), color-stop('+ progressFillAmount+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
+    }
 
     if(currentTime && totalTime){
         _selector.prop('max', totalTime);
         _selector.val(currentTime);
+        _repaint();
     }
 
     //Keep track of when the user is changing the value so that our update interval does not conflict.
@@ -28,16 +38,8 @@ function progressbar(currentTime, totalTime) {
 
     _selector.change(function(){
         _repaint();
+        timeDisplay.update(_selector.val());
     })
-
-    var _repaint = function(){
-        var elapsedTime = _selector.val();
-        var totalTime = _selector.prop('max');
-
-        var progressFillAmount = totalTime == 0 ? 0 : elapsedTime / totalTime;
-
-        _selector.css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ progressFillAmount +',#ccc), color-stop('+ progressFillAmount+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
-    }
 
     //A nieve way of keeping the progress bar up to date. 
     var _timeMonitorInterval = setInterval(function () { return _update(); }, 500);

@@ -10,31 +10,33 @@ function urlInput() {
     });
 
     var _placeholder = 'Search or Enter YouTube URL';
-    var _input = $('#addInput');
+    var _input = $('#addSongInput');
+    var _button = $('#addSongButton');
+    var _icon = $('#addSongCancelIcon');
     var _source = Source.NONE;
     _input.attr('placeholder', _placeholder);
 
     var addopened = false;
-    $('#addButton').click( function(){
+    $('#addSongButton').click( function(){
         if(addopened == false){
-            $('#addInput').css('opacity', 1).css('cursor', "auto");
-            $('#addCancelIcon').css('right', '0px');
-            $('#addButton').width('350px');
-            $('#addInput').focus();
+            _input.css('opacity', 1).css('cursor', "auto");
+            _icon.css('right', '0px');
+            _button.width('350px');
+            _input.focus();
             addopened = true; 
         }
     });
 
-    $('#addCancelIcon').click(function(){
+    $('#addSongCancelIcon').click(function(){
         if(addopened == true){
-            $('#addInput').css('opacity', 0).css('cursor', "pointer").blur();
-            $('#addCancelIcon').css('right', '-30px');
-            $('#addButton').width('120px');
+            _input.css('opacity', 0).css('cursor', "pointer").blur();
+            _icon.css('right', '-30px');
+            _button.width('120px');
             setTimeout(function(){addopened=false;},500);
         }
     });
 
-    $('#addInput').autocomplete({
+    _input.autocomplete({
         source: [],
         position: {
             my: "left top",

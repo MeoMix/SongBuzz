@@ -89,7 +89,7 @@
   color:#aaa;
 }
 
-#bar {
+.header {
   top: 0px; 
   left: 0px; 
   right: 0px; 
@@ -99,7 +99,7 @@
   z-index: 2;
 }
 
-#bar h1 {
+.header h1 {
   position: absolute; 
   top:0;
   left:20px;
@@ -108,7 +108,7 @@
   margin:0;
 }
 
-#addButton {
+.addButton {
   right: 6px; 
   top:6px; 
   bottom:6px; 
@@ -127,7 +127,7 @@
   margin: -6px 0 0 -6px
 }
 
-#addButton span {
+.addButton span {
   position: absolute; 
   top:0; 
   left: 40px; 
@@ -135,7 +135,7 @@
   color: #555;
 }
 
-#addButton input {
+.addButton input {
   cursor: pointer; 
   -webkit-transition: all 0.5s;
   opacity:0; 
@@ -151,11 +151,11 @@
   padding: 0 5px; 
 }
 
-#addButton input:focus {
+.addButton input:focus {
   outline: none
 }
 
-#addCancelIcon { 
+.addCancelIcon { 
   -webkit-transition: all 0.5s;
   position: absolute; 
   top:0; 
@@ -166,7 +166,7 @@
   cursor: pointer;
 }
 
-#addCancelIcon svg {
+.addCancelIcon svg {
   position: absolute; 
   top: 50%; 
   left:50%; 
@@ -221,7 +221,10 @@
 }
 
 #ToggleMusicButton:hover, 
-#SkipButton:hover {
+#SkipButton:hover,
+#HomeMenuButton:hover,
+#SettingsMenuButton:hover,
+#PlaylistsMenuButton:hover {
   background-color:rgba(255,255,255,0.3);
 }
 
@@ -415,7 +418,7 @@
   white-space: nowrap;
 }
 
-#list {
+.list {
   left: 0px;
   bottom:0px;
   right: 0px;
@@ -425,40 +428,40 @@
   z-index:1;
 }
 
-#list ul {
+.list ul {
   margin:5px 0;
   padding:0;
   list-style: none;
 }
 
-#list li {
+.list li {
   display:block; 
   position:relative; 
   width:100%; 
   height:22px;
 }
 
-#list li a {
+.list li a {
   text-decoration: none;
   color: black;
 }
 
-#list li:nth-child(even) {
+.list li:nth-child(even) {
   background-color: #eaeaea
 }
 
-#list li:active {
+.list li:active {
   background-color: #09f;
   color:#fff;
   text-shadow: 0 1px #06d;
   background-image:-webkit-gradient(linear,left top, left bottom, from(rgba(255,255,255,.1)), to(rgba(0,0,0,.1)));
 }
 
-#list li:active svg *{
+.list li:active svg *{
   fill:#fff
 }
 
-#list span {
+.list span {
   position:absolute; 
   top:0;
   left:20px;
