@@ -1,4 +1,5 @@
 function playlistList(){
+    var _placeholder = 'Enter a playlist name.';
     var _playlistList = $('#PlaylistList ul');
 
     var _input = $('#addPlaylistInput');
@@ -10,25 +11,41 @@ function playlistList(){
 	    $('#' + id).addClass('current');
 	}
 
-    var addopened = false;
-    $('#addPlaylistButton').click( function(){
-        if(addopened == false){
-            _input.css('opacity', 1).css('cursor', "auto");
-            _icon.css('right', '0px');
-            _button.width('350px');
-            _input.focus();
-            addopened = true; 
-        }
-    });
+    //TODO: Play with animate until it feels right.
+    //http://jqueryui.com/demos/effect/easing.html
+    var _expand = function(){
+        _input.css('opacity', 1).css('cursor', "auto");
+        _icon.css('right', '0px');
 
-    $('#addPlaylistCancelIcon').click(function(){
-        if(addopened == true){
-            _input.css('opacity', 0).css('cursor', "pointer").blur();
-            _icon.css('right', '-30px');
-            _button.width('120px');
-            setTimeout(function(){addopened=false;},500);
-        }
-    });
+        _button.animate({
+            width: '350px'
+        }, 250, 'easeInQuad')
+
+        _input.focus();
+        $('#addPlaylistCancelIcon').one('click', _contract);
+    }
+
+    //Display a message for X milliseconds inside of the input. 
+    var _flashMessage = function (message, durationInMilliseconds) {
+        _input.val('').blur().attr('placeholder', message);
+        window.setTimeout(function () {
+            _input.attr('placeholder', _placeholder);
+        }, durationInMilliseconds);
+    };
+
+    var _contract = function(){
+        _input.css('opacity', 0).css('cursor', "pointer").blur();
+        _icon.css('right', '-30px');
+
+        _button.animate({
+            width: '120px'
+        }, 150, 'linear')
+
+        $('#addPlaylistButton').one('click', _expand);
+        return false; //Clicking the 'X' icon bubbles the click event up to the parent button causing expand to call again.
+    }
+
+    $('#addPlaylistButton').one('click', _expand);
 
     _input.keyup(function (e) {
         var code = e.which;
@@ -39,12 +56,14 @@ function playlistList(){
 
     _addPlaylist = function(){
     	var playlistName = _input.val();
-    	Player.addPlaylist(playlistName);
+        if( playlistName.trim() != ''){
+            Player.addPlaylist(playlistName);
+            _flashMessage('Thanks!', 2000);
+        }
     }
 
 	var playlistList = {
-
-		load: function(){
+		reload: function(){
 		    //Set currently loaded playlist title.
 		    var h1 = $('#PlaylistDisplay').children()[0];
 		    $(h1).text(Player.getPlaylistTitle());
@@ -58,7 +77,9 @@ function playlistList(){
 
             //I create the entries as <a> to leverage Google Chrome's context menus. One of the filter options is 'by link' which allows right click -> song options.
             for (var i = 0; i < playlists.length; i++){
-                var html = '<li id = ' + playlists[i].id + '><span>' + playlists[i].title + '</span></li>';
+                var html = '<li id = ' + playlists[i].id + '><span>' + playlists[i].title + '</span>';
+                html += '<div class="remove" playlistid=' + playlists[i].id + '><svg width="12" height="12"><path d="M0,2 L2,0 L12,10 L10,12z" fill="#000" /> <path d="M12,2 L10,0 L0,10 L2,12z" fill="#000" /> </svg> </div>';
+                html += '</li>';
                 items.push(html);
 
                 if( playlists[i].selected )
@@ -66,7 +87,14 @@ function playlistList(){
             }
 
             _playlistList.append(items.join(''));
-            _selectRow(selectedPlaylistId)
+
+            //Add 'delete' to the 'X'
+            _playlistList.children('li').children('.remove').click(function(){
+                Player.removePlaylistById($(this).attr('playlistid'));
+                return false;
+            })
+
+            _selectRow(selectedPlaylistId);
 		}
 
 	}

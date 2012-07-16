@@ -473,14 +473,14 @@
 } 
 
 .remove {
-  right:30px; 
+  right:10px;
   width:20px; 
   height:22px; 
   cursor:pointer
 }
 
 .copy {
-  right:10px; 
+  right:30px; 
   width:20px; 
   height:22px; 
   cursor:pointer

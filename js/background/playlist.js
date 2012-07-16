@@ -51,14 +51,9 @@ function Playlist(id, name) {
         return songIndex;
     };
 
-    console.log("hi");
-
-    var title = name ? name : "New Playlist";
-    console.log("title: " + title);
-
     var playlist = {
         id: id,
-        title: title,
+        title: name ? name : "New Playlist",
         selected: false,
 
         clear: function(){
@@ -112,7 +107,6 @@ function Playlist(id, name) {
         },
 
         removeSongById: function (id) {
-            console.log("removeSongById");
             var index = _getSongIndexById(id);
 
             if (index != -1) {

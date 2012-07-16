@@ -38,6 +38,22 @@ function playlists(){
 		_save()
 	};
 
+    //Takes a playlist's UID and returns the index of that playlist in playlists if found.
+    var _getPlaylistIndexById = function (id) {
+        var playlistIndex = -1;
+        for (var i = 0; i < _playlists.length; i++) {
+            if (_playlists[i].id === id) {
+                playlistIndex = i;
+                break;
+            }
+        }
+
+        if (playlistIndex == -1)
+            throw "Couldn't find playlist with UID: " + id;
+
+        return playlistIndex;
+    };
+
 	var playlists = {
 		count: function(){
 			return _playlists.length;
@@ -60,9 +76,19 @@ function playlists(){
 		},
 
 		addPlaylist: function(playlistName){
+			console.log('addPlaylist called with: ' + playlistName);
 			var playlist = new Playlist(null, playlistName);
 			_playlists.push(playlist);
 			_save();
+		},
+
+		removePlaylistById: function(playlistId){
+			var index = _getPlaylistIndexById(playlistId);
+
+			if( index != -1 ){
+				_playlists.splice(index, 1);
+                _save();
+			}
 		}
 	}
 

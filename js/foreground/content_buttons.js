@@ -15,7 +15,6 @@ function contentButtons(){
                     $('#HomeContent').show();
                 break;
                 case 'PlaylistsMenuButton':
-                	_playlistList.load();
                     $('#PlaylistsContent').show();
                 break;
                 case 'SettingsMenuButton':

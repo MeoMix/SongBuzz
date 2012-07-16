@@ -10,6 +10,7 @@
 function uiElements() {
     var _playerControls = playerControls();
     var _header = header();
+    var _playlistList = playlistList();
     var _songList = songList();
     var _settings = settings();
 
@@ -49,6 +50,8 @@ function uiElements() {
             var currentSong = message.currentSong;
             _songList.reload(songs, currentSong);
             _header.updateTitle(currentSong);
+
+            _playlistList.reload();
         }
     }
 

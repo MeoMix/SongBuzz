@@ -28,6 +28,8 @@ function urlInput() {
 
         // _button.width('350px');
         _input.focus();
+
+        $('#addSongCancelIcon').one('click', _contract);
     }
 
     var _contract = function(){
@@ -38,11 +40,11 @@ function urlInput() {
             width: '120px'
         }, 150, 'linear')
 
+        $('#addSongButton').one('click', _expand);
         return false; //Clicking the 'X' icon bubbles the click event up to the parent button causing expand to call again.
     }
 
-    $('#addSongButton').click(_expand);
-    $('#addSongCancelIcon').click(_contract);
+    $('#addSongButton').one('click', _expand);
 
     _input.autocomplete({
         source: [],

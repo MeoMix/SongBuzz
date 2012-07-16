@@ -97,6 +97,12 @@ function player() {
 
         addPlaylist: function(playlistName){
             _playlists.addPlaylist(playlistName);
+             _sendUpdate();
+        },
+
+        removePlaylistById: function(playlistId){
+            _playlists.removePlaylistById(playlistId);
+            _sendUpdate();
         },
 
         getSongs: function () {
