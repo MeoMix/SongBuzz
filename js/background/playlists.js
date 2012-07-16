@@ -1,5 +1,5 @@
 function playlists(){
-	var _playlists = null;
+	var _playlists = new Array();
 	var _currentPlaylist = null;
 
 	var _save = function () {
@@ -7,29 +7,35 @@ function playlists(){
     };
 
 	var _loadPlaylists = function(){
-		_playlists = localStorage.getItem('playlists');
+		var playlistsWithoutMethods = localStorage.getItem('playlists');
 
 		try {
-			if (_playlists && _playlists != 'undefined')
-	            _playlists = JSON.parse(_playlists);
+			if (playlistsWithoutMethods && playlistsWithoutMethods != 'undefined')
+	            playlistsWithoutMethods = JSON.parse(playlistsWithoutMethods);
 
-	        for(var playlistIndex = 0; playlistIndex < _playlists; playlistIndex++; )
-	        {
+	        // for(var playlistIndex = 0; playlistIndex < _playlists; playlistIndex++ )
+	        // {
 	        	
-	        }
+	        // }
 		}
 		catch(exception){
 			console.error(exception);
 		}
 
-		if(!_playlists){
-			_playlists = new Array();
+		//Playlists were loaded. Need to reconstruct them as serialization strips off methods.
+		if(playlistsWithoutMethods){
+			for( var playlistIndex = 0; playlistIndex < playlistsWithoutMethods.length; playlistIndex++){
+				var playlistWithoutMethods = playlistsWithoutMethods[playlistIndex];
+				var playlist = new Playlist(playlistWithoutMethods.id, playlistWithoutMethods.title);
+				_playlists.push(playlist);
+			}
+		}
+		else{
 			var defaultPlaylist = new Playlist(null, null);
-			
 			_playlists.push(defaultPlaylist);
-			_save();
 		}
 
+		_save()
 	};
 
 	var playlists = {

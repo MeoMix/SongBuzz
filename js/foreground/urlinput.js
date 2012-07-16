@@ -16,25 +16,33 @@ function urlInput() {
     var _source = Source.NONE;
     _input.attr('placeholder', _placeholder);
 
-    var addopened = false;
-    $('#addSongButton').click( function(){
-        if(addopened == false){
-            _input.css('opacity', 1).css('cursor', "auto");
-            _icon.css('right', '0px');
-            _button.width('350px');
-            _input.focus();
-            addopened = true; 
-        }
-    });
+    //TODO: Play with animate until it feels right.
+    //http://jqueryui.com/demos/effect/easing.html
+    var _expand = function(){
+        _input.css('opacity', 1).css('cursor', "auto");
+        _icon.css('right', '0px');
 
-    $('#addSongCancelIcon').click(function(){
-        if(addopened == true){
-            _input.css('opacity', 0).css('cursor', "pointer").blur();
-            _icon.css('right', '-30px');
-            _button.width('120px');
-            setTimeout(function(){addopened=false;},500);
-        }
-    });
+        _button.animate({
+            width: '350px'
+        }, 250, 'easeInQuad')
+
+        // _button.width('350px');
+        _input.focus();
+    }
+
+    var _contract = function(){
+        _input.css('opacity', 0).css('cursor', "pointer").blur();
+        _icon.css('right', '-30px');
+
+        _button.animate({
+            width: '120px'
+        }, 150, 'linear')
+
+        return false; //Clicking the 'X' icon bubbles the click event up to the parent button causing expand to call again.
+    }
+
+    $('#addSongButton').click(_expand);
+    $('#addSongCancelIcon').click(_contract);
 
     _input.autocomplete({
         source: [],
@@ -88,11 +96,11 @@ function urlInput() {
         var code = e.which;
 
         //User can navigate suggestions with up/down. 
-        //UP: 38, DOWN: 40
+        //UP: 38, DOWN: 40, ENTER: 13
         if (code != 38 && code != 40) {
             _analyzeForSuggestion();
 
-            if (code == KEYCODES.ENTER) {
+            if (code == 13) {
                 e.preventDefault();
                 _validateInput();
             }
@@ -195,17 +203,4 @@ function urlInput() {
 
         return songId;
     };
-
-    //When user focuses input, remove the text being displayed to allow them to type.
-    //When user blurs input, replace text with previously-displayed.
-    $(function () {
-        //Remember the old filler text and be able to replace it.
-        var placeholderText = "";
-        _input.focus(function () {
-            placeholderText = $(this).attr('placeholder') == '' ? placeholderText : $(this).attr('placeholder');
-            $(this).attr('placeholder', '');
-        }).blur(function () {
-            $(this).attr('placeholder', placeholderText);
-        });
-    });
 }
