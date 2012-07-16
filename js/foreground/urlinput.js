@@ -2,6 +2,7 @@
 //TODO: This has gotten a bit bulky. I suspect it will be OK again once I transition song suggestions into a dialog, though.
 function urlInput() {
     //TODO: This is a hackjob. I am going to have the 'Song Suggest' become a pop-up window instead of an auto-complete suggestion in the future.
+    //I use this to keep track of what state the URL input is in -- nothing, displaying suggestions as the user types, or displaying songs.
     var Source = Object.freeze({
         NONE : 0,
         TYPING_SUGGEST : 1,
@@ -79,38 +80,14 @@ function urlInput() {
         });
     }
 
-    var KEYCODES = Object.freeze({
-        BACKSPACE: 8,
-        COMMA: 188,
-        DELETE: 46,
-        DOWN: 40,
-        END: 35,
-        ENTER: 13,
-        ESCAPE: 27,
-        HOME: 36,
-        LEFT: 37,
-        NUMPAD_ADD: 107,
-        NUMPAD_DECIMAL: 110,
-        NUMPAD_DIVIDE: 111,
-        NUMPAD_ENTER: 108,
-        NUMPAD_MULTIPLY: 106,
-        NUMPAD_SUBTRACT: 109,
-        PAGE_DOWN: 34,
-        PAGE_UP: 33,
-        PERIOD: 190,
-        RIGHT: 39,
-        SPACE: 32,
-        TAB: 9,
-        UP: 38
-    });
-
     //Validate URL input on enter key.
     //Otherwise show suggestions. Use keyup event because input's val is updated at that point.
     _input.keyup(function (e) {
         var code = e.which;
 
-        //User can navigate suggestions with up/down. Felt right to include left/right.
-        if (code != KEYCODES.UP && code != KEYCODES.DOWN && code != KEYCODES.LEFT && code != KEYCODES.RIGHT) {
+        //User can navigate suggestions with up/down. 
+        //UP: 38, DOWN: 40
+        if (code != 38 && code != 40) {
             _analyzeForSuggestion();
 
             if (code == KEYCODES.ENTER) {
@@ -130,7 +107,6 @@ function urlInput() {
 
     var _ensurePlayable = function (songId, callback) {
         //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
-        //TODO: Restrict by geo-location.
         $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + songId + '?v=2&alt=json-in-script&format=5&callback=?', function (youtubeVideo) {
             callback(YTHelper.isPlayable(youtubeVideo));
         });
@@ -160,8 +136,6 @@ function urlInput() {
         //Wrapped in a timeout to support 'rightclick->paste' 
         setTimeout(function () {
             var songId = _getSongIdFromInput();
-
-            console.log("songID: " + songId);
 
             //If found a valid YouTube link then just add the video.
             if (songId) {

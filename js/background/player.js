@@ -42,11 +42,19 @@ function player() {
                                 player.cueSongById(_playlist.getSongs()[0].id);
                         },
                         "onStateChange": function (playerState) {
+                            console.log(playerState.data);
                             //If the UI is closed we can't post a message to it -- so need to handle next song in background.
                             //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
                             if (playerState.data == PlayerStates.ENDED) {
                                 if (_playlist.songCount() > 1)
                                     player.loadSongById(player.getNextSong().id);
+                            }
+                            else if(playerState.data == PlayerStates.VIDCUED){
+                                //Don't leave the player in the VIDCUED state because it does not work well with seekTo.
+                                //If the vid is cued (not playing) and the user seeks to the middle of the song it will start playing.
+                                //If the vid is paused (not playing) and the user seeks to the middle of the song it will not start playing.
+                                player.play();
+                                player.pause();
                             }
                             else if (_port) {
                                 _sendUpdate();
@@ -116,6 +124,14 @@ function player() {
         sync: function (songIds) {
             _playlist.sync(songIds);
         },
+
+        //The allowSeekAhead parameter determines whether the player will make a new request to the server if the seconds parameter specifies a time outside of the currently buffered video data.
+        //Set to false when dragging and true when drag complete.
+        seekTo: function(timeInSeconds){
+            var allowSeekAhead = true;
+            _player.seekTo(timeInSeconds, allowSeekAhead);
+        },
+
         //TODO: Simplify
         removeSongById: function (id) {
             var song = _playlist.getSongById(id);

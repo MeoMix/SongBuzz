@@ -1,19 +1,18 @@
 ﻿//The buttons, sliders, etc. which serve as the middle-men between user interactions and player responses.
-//Created as a child of uielements.
 function playerControls() {
     //Private methods.
     var _buildToggleMusicButton = function (selector) {
-        var element = $(selector);
+        var toggleMusicButton = $(selector);
 
         //Change the music button to the 'Play' image and cause a song to play upon click.
-        element.setToPlay = function () {
+        toggleMusicButton.setToPlay = function () {
             this.attr('title', 'Play').off('click').on('click', function () { return Player.play(); });
             $('#pauseIcon').hide();
             $('#playIcon').show();
         }
 
         //Change the music button to the 'Pause' image and cause a song to pause upon click.
-        element.setToPause = function () {
+        toggleMusicButton.setToPause = function () {
             this.attr('title', 'Pause').off('click').on('click', function () { return Player.pause(); });
             $('#pauseIcon').show();
             $('#playIcon').hide();
@@ -21,45 +20,38 @@ function playerControls() {
 
         //Enable the button such that it can be clicked.
         //TODO: Remove dependency on checking for class.
-        element.enable = function () {
+        toggleMusicButton.enable = function () {
             if (this.hasClass('disabled')) {
                 this.removeClass('disabled');
-                $('#playPath').css('fill', 'black');
-                $('#pauseBarPath1').css('fill', 'black');
-                $('#pauseBarPath2').css('fill', 'black');
+                $(this).find('.path').css('fill', 'black');
             }
         }
 
         //Disable the button such that it cannot be clicked.
         //TODO: Remove dependency on checking for class.
         //NOTE: Pause button is never able to be shown disabled.
-        element.disable = function () {
+        toggleMusicButton.disable = function () {
             if (!this.hasClass('disabled')) {
                 this.setToPlay();
                 this.addClass('disabled').off('click');
-                $('#playPath').css('fill', 'gray');
-                $('#pauseBarPath1').css('fill', 'gray');
-                $('#pauseBarPath2').css('fill', 'gray');
+                $(this).find('.path').css('fill', 'gray');
             }
         }
 
-        return element;
+        return toggleMusicButton;
     }
 
     var _buildSkipButton = function (selector) {
-        var element = $(selector);
+        var skipButton = $(selector);
 
         //TODO: Remove dependency on checking for class.
-        element.enable = function () {
+        skipButton.enable = function () {
             if (this.hasClass('disabled')) {
-                $('#skipButtonPath1').css('fill', 'black');
-                $('#skipButtonPath2').css('fill', 'black');
-                $('#skipButtonPath3').css('fill', 'black');
+                $(this).find('.path').css('fill', 'black');
                 this.attr('src', "images/skip.png").removeClass('disabled').off('click').one('click', SkipSong);
                 var self = this;
                 function SkipSong() {
                     Player.skipSong();
-
                     //Prevent spamming by only allowing a next click once a second.
                     setTimeout(function () { self.off('click').one('click', SkipSong) }, 1000);
                 };
@@ -67,31 +59,29 @@ function playerControls() {
         };
 
         //TODO: Remove dependency on checking for class.
-        element.disable = function () {
+        skipButton.disable = function () {
             if (!this.hasClass('disabled')) {
                 this.attr('src', "images/skip-disabled.png").addClass('disabled').off('click');
-                $('#skipButtonPath1').css('fill', 'gray');
-                $('#skipButtonPath2').css('fill', 'gray');
-                $('#skipButtonPath3').css('fill', 'gray');
+                $(this).find('.path').css('fill', 'gray');
             }
         };
 
-        return element;
+        return skipButton;
     }
 
     var _buildShuffleButton = function (selector) {
-        var element = $(selector);
+        var shuffleButton = $(selector);
 
         //TODO: Remove dependency on checking for class.
-        element.disable = function () {
-            $('#shufflePath').css('fill', 'gray');
+        shuffleButton.disable = function () {
+            $(this).find('.path').css('fill', 'gray');
             this.attr('src', "images/shuffle-disabled.png").addClass('disabled').off('click');
         };
 
         //TODO: Remove dependency on checking for class.
-        element.enable = function () {
+        shuffleButton.enable = function () {
             this.attr('src', "images/shuffle.png").removeClass('disabled').off('click').one('click', ShuffleSong);
-            $('#shufflePath').css('fill', 'white');
+            $(this).find('.path').css('fill', 'white');
             var self = this;
             function ShuffleSong() {
                 //This will trigger an update. Necessary since no state change.
@@ -101,14 +91,14 @@ function playerControls() {
             };
         };
 
-        return element;
+        return shuffleButton;
     }
 
     var _buildMuteButton = function (selector) {
-        var element = $(selector);
+        var muteButton = $(selector);
 
         //Toggles the muted icon.
-        element.on('click', function () {
+        muteButton.on('click', function () {
             var isMuted = _volumeSlider.toggleMute();
             var title = isMuted ? 'Unmute' : 'Mute';
             $(this).attr('title', title);
@@ -120,7 +110,7 @@ function playerControls() {
           $("#soundSlider").css("top","-35px");
         });
 
-        return element;
+        return muteButton;
     }
 
     //A specific slider element which is responsible for controlling the volume indicator of the UI.
@@ -155,40 +145,25 @@ function playerControls() {
                 localStorage.setItem(MUSICVOLUME_LOCALSTORAGEKEY, JSON.stringify(_musicVolume));
             }
 
-            //TODO: Loosely couple Player with VolumeSlider.
             Player.setVolume(volume);
         }
 
         var _updateSoundIcon = function(volume){
+            //Repaint the amount of white filled in the bar showing the distance the grabber has been dragged.
             $(selector).css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
 
-            if(volume >= 25){
-                $('#volume1').css('fill', '#fff');
-            }
-            else{
-                $('#volume1').css('fill', '#555');
-            }
+            //Paint the various bars indicating the sound level. 
+            var fillColor = volume >= 25 ? '#fff' : '#555';
+            $('#volume1').css('fill', fillColor);
 
-            if(volume >= 50){
-                $('#volume2').css('fill', '#fff');
-            }
-            else{
-                $('#volume2').css('fill', '#555');
-            }
+            fillColor = volume >= 50 ? '#fff' : '#555';
+            $('#volume2').css('fill', fillColor);
 
-            if(volume >= 75){
-                $('#volume3').css('fill', '#fff');
-            }
-            else{
-                $('#volume3').css('fill', '#555');
-            }
+            fillColor = volume >= 75 ? '#fff' : '#555';
+            $('#volume3').css('fill', fillColor);
 
-            if(volume == 100){
-                $('#volume4').css('fill', '#fff');
-            }
-            else{
-                $('#volume4').css('fill', '#555');
-            }
+            fillColor = volume == 100 ? '#fff' : '#555';
+            $('#volume4').css('fill', fillColor);
         }
 
         $(selector).change(function(event, ui){
@@ -202,11 +177,7 @@ function playerControls() {
         var volumeSlider = {
             //Changes the muted state of the player and returns the state after toggling.
             toggleMute: function(){
-                if (_isMuted)
-                    this.setVolume(_musicVolume);
-                else
-                    this.setVolume(0);
-
+                _isMuted ? this.setVolume(_musicVolume) : this.setVolume(0);
                 //This value is the opposite of above because setting slider volume has side-effects.
                 return _isMuted;
             },
@@ -219,7 +190,6 @@ function playerControls() {
                 //Don't record value if muting so value can be set back when unmuting.
                 if(volume)
                     _musicVolume = volume;
-
             }
         }
 

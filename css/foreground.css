@@ -10,7 +10,6 @@
   position: absolute;
   -webkit-box-sizing:border-box;
   text-shadow: 0 1px 0 #fff;
-  cursor:default;
   overflow: hidden;
 }
   
@@ -422,7 +421,7 @@
   right: 0px;
   top: 40px;
   border-left:1px solid #ccc; 
-  overflow-y:scroll;
+  overflow-y:scroll !important;
   z-index:1;
 }
 

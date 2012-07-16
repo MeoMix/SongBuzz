@@ -10,11 +10,13 @@
     <script src="js/third_party/jquery-ui-1.8.21.custom.min.js"></script>
     <script src="js/third_party/date.js"></script>
     <script src="js/third_party/jquery.url.js"></script>
+    <script src="js/foreground/content_buttons.js"></script>
     <script src="js/foreground/foreground.js"></script>
     <script src="js/foreground/header.js"></script>
     <script src="js/foreground/urlinput.js"></script>
     <script src="js/foreground/uielements.js"></script>
-    <script src="js/foreground/songgrid.js"></script>
+    <script src="js/foreground/songlist.js"></script>
+    <script src="js/foreground/time_display.js"></script>
     <script src="js/third_party/youtube-player-api-helper.js"></script>
     <script src="js/foreground/settings.js"></script>
     <script src="js/playerstates.js"></script>
@@ -27,11 +29,11 @@
         <div id="head" class="gradient">
           <div id="ToggleMusicButton" class="disabled">
              <svg id="playIcon" width="22" height="22">
-               <polygon id="playPath" fill="gray" points="0,0 16.5,11 0,22 "/>
+               <polygon class="path" fill="gray" points="0,0 16.5,11 0,22 "/>
              </svg>
              <svg id="pauseIcon" width="22" height="22">
-               <rect id="pauseBarPath1" x="3" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
-               <rect id="pauseBarPath2" x="13" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
+               <rect class="path" x="3" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
+               <rect class="path" x="13" y="0" width="5" height="22" rx="2px" ry="2px" fill="#000" />
              </svg>
           </div>
           <div id="Header">
@@ -41,9 +43,9 @@
           </div>
           <div id="SkipButton" class="disabled">
             <svg width="16px" height="16px">
-              <rect id="skipButtonPath1" x="14" y="3" width="2" height="10" fill="gray" />
-              <path id="skipButtonPath2" d="M0,3 L7,8 L0,13z" fill="gray" />
-              <path id="skipButtonPath3" d="M7,3 L14,8, L7,13z" fill="gray" />
+              <rect class="path" x="14" y="3" width="2" height="10" fill="gray" />
+              <path class="path" d="M0,3 L7,8 L0,13z" fill="gray" />
+              <path class="path" d="M7,3 L14,8, L7,13z" fill="gray" />
             </svg>  
           </div>
           <div id="rowBottom">
