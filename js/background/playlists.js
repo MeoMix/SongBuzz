@@ -1,5 +1,5 @@
 function playlists(){
-	var _playlists = new Array();
+	var _playlists = [];
 	var _currentPlaylist = null;
 
 	var _save = function () {
@@ -23,7 +23,7 @@ function playlists(){
 		}
 
 		//Playlists were loaded. Need to reconstruct them as serialization strips off methods.
-		if(playlistsWithoutMethods){
+		if(playlistsWithoutMethods && playlistsWithoutMethods.length > 0){
 			for( var playlistIndex = 0; playlistIndex < playlistsWithoutMethods.length; playlistIndex++){
 				var playlistWithoutMethods = playlistsWithoutMethods[playlistIndex];
 				var playlist = new Playlist(playlistWithoutMethods.id, playlistWithoutMethods.title);
@@ -34,7 +34,7 @@ function playlists(){
 			var defaultPlaylist = new Playlist(null, null);
 			_playlists.push(defaultPlaylist);
 		}
-
+		
 		_save()
 	};
 
@@ -68,8 +68,10 @@ function playlists(){
 
 			if(!currentPlaylist){
 				_loadPlaylists();
-				currentPlaylist = _playlists[0];
-				currentPlaylist.selected = true;
+				if(_playlists.length > 0){
+					currentPlaylist = _playlists[0];
+					currentPlaylist.selected = true;
+				}
 			}
 
 			return currentPlaylist;

@@ -14,10 +14,13 @@ function uiElements() {
     var _songList = songList();
     var _settings = settings();
 
-    //No public methods so no object returned.
+    //No public methods so no object returned.    
+    contentHeader('#CurrentSongDisplay');
     timeDisplay();
     urlInput(); 
     contentButtons();
+
+
 
     //Set currently loaded playlist title.
     var h1 = $('#CurrentSongDisplay').children()[0];
