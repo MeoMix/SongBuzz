@@ -136,7 +136,7 @@ function playerControls() {
         if(_storedIsMuted && _storedIsMuted != 'undefined')
             _isMuted = JSON.parse(_storedIsMuted);
 
-        var _onVolumeChanged = function (event, volume) {
+        var _updateWithNewVolume = function(volume){
             _isMuted = volume == 0;
             localStorage.setItem(MUSICMUTED_LOCALSTORAGEKEY, JSON.stringify(_isMuted));
             if (volume != 0) {
@@ -144,6 +144,8 @@ function playerControls() {
                 _musicVolume = volume;
                 localStorage.setItem(MUSICVOLUME_LOCALSTORAGEKEY, JSON.stringify(_musicVolume));
             }
+
+            _updateSoundIcon(volume);
 
             Player.setVolume(volume);
         }
@@ -167,8 +169,7 @@ function playerControls() {
         }
 
         $(selector).change(function(event, ui){
-            _onVolumeChanged(event, this.value);
-            _updateSoundIcon(this.value);
+            _updateWithNewVolume(this.value);
         });
 
         $(selector).val(_musicVolume);
@@ -184,12 +185,7 @@ function playerControls() {
 
             setVolume: function(volume){
                 $(selector).val(volume);
-                _updateSoundIcon(volume);
-                _isMuted = volume == 0;
-
-                //Don't record value if muting so value can be set back when unmuting.
-                if(volume)
-                    _musicVolume = volume;
+                _updateWithNewVolume(volume);
             }
         }
 

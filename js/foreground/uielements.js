@@ -20,8 +20,6 @@ function uiElements() {
     urlInput(); 
     contentButtons();
 
-
-
     //Set currently loaded playlist title.
     var h1 = $('#CurrentSongDisplay').children()[0];
     $(h1).text(Player.getPlaylistTitle());
