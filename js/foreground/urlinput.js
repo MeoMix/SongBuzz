@@ -21,12 +21,7 @@ function urlInput() {
     var _expand = function(){
         _input.css('opacity', 1).css('cursor', "auto");
         _icon.css('right', '0px');
-
-        _button.animate({
-            width: '350px'
-        }, 250, 'easeInQuad')
-
-        // _button.width('350px');
+        _button.width('350px');
         _input.focus();
 
         $('#addSongCancelIcon').one('click', _contract);
@@ -35,11 +30,7 @@ function urlInput() {
     var _contract = function(){
         _input.css('opacity', 0).css('cursor', "pointer").blur();
         _icon.css('right', '-30px');
-
-        _button.animate({
-            width: '120px'
-        }, 150, 'linear')
-
+        _button.width('120px');
         $('#addSongButton').one('click', _expand);
         return false; //Clicking the 'X' icon bubbles the click event up to the parent button causing expand to call again.
     }

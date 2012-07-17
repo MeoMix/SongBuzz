@@ -102,6 +102,8 @@ function player() {
                 _playlist.deselect();
                 _playlist = _playlists.getPlaylistById(playlistId);
                 _playlist.select();
+                _currentSong = _playlist.getFirstSong();
+
                 _sendUpdate();
             }
         },

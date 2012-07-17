@@ -88,9 +88,13 @@ function Playlist(id, name) {
             return song;
         },
 
+        getFirstSong: function(){
+            var firstSong = _songs[0];
+            return firstSong;
+        },
+
         //Takes a song and returns the next song object by index.
         getNextSong: function (currentSongId) {
-            console.log("getNextSong");
             var nextSongIndex = _getSongIndexById(currentSongId) + 1;
 
             //Loop back to the front if at end. Should make this togglable in the future.
