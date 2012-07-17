@@ -61,6 +61,16 @@ function Playlist(id, name) {
             _save();
         },
 
+        deselect: function(){
+            this.selected = false;
+            _save();
+        },
+
+        select: function(){
+            this.selected = true;
+            _save();
+        },
+
         //Takes a song's UID and returns the full song object if found.
         getSongById: function (id) {
             var song = null;

@@ -12,6 +12,7 @@ function player() {
     //errorMessage is optional, used to display errors to GUI.
     var _sendUpdate = function (errorMessage) {
         var playerState = _player.getPlayerState();
+        console.log(_playlist.getSongs());
         _port.postMessage({playerState: playerState, songs: _playlist.getSongs(), currentSong: _currentSong, errorMessage: errorMessage });
     };
 
@@ -95,14 +96,29 @@ function player() {
             return _playlists.getPlaylists();
         },
 
+        selectPlaylist: function(playlistId){
+            if(_playlist.id != playlistId){
+                this.pause();
+                _playlist.deselect();
+                _playlist = _playlists.getPlaylistById(playlistId);
+                _playlist.select();
+                _sendUpdate();
+            }
+        },
+
         addPlaylist: function(playlistName){
             _playlists.addPlaylist(playlistName);
              _sendUpdate();
         },
 
         removePlaylistById: function(playlistId){
-            _playlists.removePlaylistById(playlistId);
-            _sendUpdate();
+            //Don't allow removing of active playlist.
+            //TODO: Perhaps just don't allow deleting the last playlist? More difficult.
+
+            if( _playlist.id != playlistId){
+                _playlists.removePlaylistById(playlistId);
+                _sendUpdate();
+            }
         },
 
         getSongs: function () {

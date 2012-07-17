@@ -63,6 +63,11 @@ function playlists(){
 			return _playlists;
 		},
 
+		getPlaylistById: function(playlistId){
+			var playlistIndex = _getPlaylistIndexById(playlistId);
+			return _playlists[playlistIndex];
+		},
+
 		getCurrentPlaylist: function(){
 			currentPlaylist = _currentPlaylist;
 
@@ -80,6 +85,7 @@ function playlists(){
 		addPlaylist: function(playlistName){
 			console.log('addPlaylist called with: ' + playlistName);
 			var playlist = new Playlist(null, playlistName);
+			playlist.clear();
 			_playlists.push(playlist);
 			_save();
 		},

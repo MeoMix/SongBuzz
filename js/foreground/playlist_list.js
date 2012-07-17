@@ -6,9 +6,14 @@ function playlistList(){
     var _button = $('#addPlaylistButton');
     var _icon = $('#addPlaylistCancelIcon');
 
+    //Paint all the rows back to unselected state
     var _selectRow = function(id){
-	    $('#PlaylistList li').removeClass('current');
-	    $('#' + id).addClass('current');
+	    $('#PlaylistList li').removeClass('current').children('.remove').css('cursor', 'pointer').off('click').click(_removePlaylist);
+        $('#PlaylistList li .remove svg path').attr('fill', "000");
+	    $('#' + id).addClass('current').children('.remove').css('cursor', 'default');
+        $('#' + id + ' .remove svg path').attr('fill', "#808080").off('click');
+
+        Player.selectPlaylist(id);
 	}
 
     //TODO: Play with animate until it feels right.
@@ -62,6 +67,11 @@ function playlistList(){
         }
     }
 
+    _removePlaylist = function(){
+        Player.removePlaylistById($(this).attr('playlistid'));
+        return false;
+    }
+
 	var playlistList = {
 		reload: function(){
 		    //Set currently loaded playlist title.
@@ -89,10 +99,11 @@ function playlistList(){
             _playlistList.append(items.join(''));
 
             //Add 'delete' to the 'X'
-            _playlistList.children('li').children('.remove').click(function(){
-                Player.removePlaylistById($(this).attr('playlistid'));
-                return false;
-            })
+            _playlistList.children('li').children('.remove').click(_removePlaylist);
+
+            _playlistList.children().click( function(){
+                _selectRow(this.id);
+            });
 
             _selectRow(selectedPlaylistId);
 		}
