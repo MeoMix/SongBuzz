@@ -2,10 +2,9 @@ function playlistList(){
     var _placeholder = 'Enter a playlist name.';
     var _playlistList = $('#PlaylistList ul');
 
-    var _input = $('#addPlaylistInput');
-    var _button = $('#addPlaylistButton');
-    var _icon = $('#addPlaylistCancelIcon');
-
+    var _addInput = $('#PlaylistDisplay .addInput');
+    var _addButton = $('.addButton');
+    var _addCancelIcon = $('.addCancelIcon');
     //Paint all the rows back to unselected state
     var _selectRow = function(id){
 	    $('#PlaylistList li').removeClass('current').children('.remove').css('cursor', 'pointer').off('click').click(_removePlaylist);
@@ -16,35 +15,15 @@ function playlistList(){
         Player.selectPlaylist(id);
 	}
 
-    //TODO: Play with animate until it feels right.
-    //http://jqueryui.com/demos/effect/easing.html
-    var _expand = function(){
-        _input.css('opacity', 1).css('cursor', "auto");
-        _icon.css('right', '0px');
-        _button.width('350px');
-        _input.focus();
-        $('#addPlaylistCancelIcon').one('click', _contract);
-    }
-
     //Display a message for X milliseconds inside of the input. 
     var _flashMessage = function (message, durationInMilliseconds) {
-        _input.val('').blur().attr('placeholder', message);
+        _addInput.val('').blur().attr('placeholder', message);
         window.setTimeout(function () {
-            _input.attr('placeholder', _placeholder);
+            _addInput.attr('placeholder', _placeholder);
         }, durationInMilliseconds);
     };
 
-    var _contract = function(){
-        _input.css('opacity', 0).css('cursor', "pointer").blur();
-        _icon.css('right', '-30px');
-        _button.width('120px');
-        $('#addPlaylistButton').one('click', _expand);
-        return false; //Clicking the 'X' icon bubbles the click event up to the parent button causing expand to call again.
-    }
-
-    $('#addPlaylistButton').one('click', _expand);
-
-    _input.keyup(function (e) {
+    _addInput.keyup(function (e) {
         var code = e.which;
         //ENTER: 13
         if (code == 13)
@@ -52,7 +31,7 @@ function playlistList(){
     }).bind('paste drop', function () { return _addPlaylist(); });
 
     _addPlaylist = function(){
-    	var playlistName = _input.val();
+    	var playlistName = _addInput.val();
         if( playlistName.trim() != ''){
             Player.addPlaylist(playlistName);
             _flashMessage('Thanks!', 2000);
@@ -66,10 +45,6 @@ function playlistList(){
 
 	var playlistList = {
 		reload: function(){
-		    //Set currently loaded playlist title.
-		    var h1 = $('#PlaylistDisplay').children()[0];
-		    $(h1).text(Player.getPlaylistTitle());
-
 			_playlistList.empty();
 
 			var items = [];
@@ -99,7 +74,6 @@ function playlistList(){
 
             _selectRow(selectedPlaylistId);
 		}
-
 	}
 
 	return playlistList;

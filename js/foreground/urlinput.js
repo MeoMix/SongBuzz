@@ -10,34 +10,12 @@ function urlInput() {
     });
 
     var _placeholder = 'Search or Enter YouTube URL';
-    var _input = $('#addSongInput');
-    var _button = $('#addSongButton');
-    var _icon = $('#addSongCancelIcon');
+    var _addInput = $('#CurrentSongDisplay .addInput');
+
     var _source = Source.NONE;
-    _input.attr('placeholder', _placeholder);
+    _addInput.attr('placeholder', _placeholder);
 
-    //TODO: Play with animate until it feels right.
-    //http://jqueryui.com/demos/effect/easing.html
-    var _expand = function(){
-        _input.css('opacity', 1).css('cursor', "auto");
-        _icon.css('right', '0px');
-        _button.width('350px');
-        _input.focus();
-
-        $('#addSongCancelIcon').one('click', _contract);
-    }
-
-    var _contract = function(){
-        _input.css('opacity', 0).css('cursor', "pointer").blur();
-        _icon.css('right', '-30px');
-        _button.width('120px');
-        $('#addSongButton').one('click', _expand);
-        return false; //Clicking the 'X' icon bubbles the click event up to the parent button causing expand to call again.
-    }
-
-    $('#addSongButton').one('click', _expand);
-
-    _input.autocomplete({
+    _addInput.autocomplete({
         source: [],
         position: {
             my: "left top",
@@ -58,9 +36,9 @@ function urlInput() {
     });
 
     var _analyzeForSuggestion = function () {
-        YTHelper.suggest(_input.val(), function (suggestions) {
+        YTHelper.suggest(_addInput.val(), function (suggestions) {
             _source = Source.TYPING_SUGGEST;
-            _input.autocomplete("option", "source", suggestions);
+            _addInput.autocomplete("option", "source", suggestions);
         });
     }
 
@@ -78,14 +56,14 @@ function urlInput() {
 
             _source = Source.SONG_SUGGEST;
             //Show songs found instead of suggestions.
-            _input.autocomplete("option", "source", songTitles);
-            _input.autocomplete("search", '');
+            _addInput.autocomplete("option", "source", songTitles);
+            _addInput.autocomplete("search", '');
         });
     }
 
     //Validate URL input on enter key.
     //Otherwise show suggestions. Use keyup event because input's val is updated at that point.
-    _input.keyup(function (e) {
+    _addInput.keyup(function (e) {
         var code = e.which;
 
         //User can navigate suggestions with up/down. 
@@ -102,9 +80,9 @@ function urlInput() {
 
     //Display a message for X milliseconds inside of the input. 
     var _flashMessage = function (message, durationInMilliseconds) {
-        _input.val('').blur().attr('placeholder', message);
+        _addInput.val('').blur().attr('placeholder', message);
         window.setTimeout(function () {
-            _input.attr('placeholder', _placeholder);
+            _addInput.attr('placeholder', _placeholder);
         }, durationInMilliseconds);
     };
 
@@ -172,7 +150,7 @@ function urlInput() {
             }
             else {
                 //If gave something other than a trimmed empty string - search YouTube automatically.
-                var value = _input.val().replace(/^\s+|\s+$/g, "");
+                var value = _addInput.val().replace(/^\s+|\s+$/g, "");
 
                 if (value && value != '') {
                     _analyzeForSong(value);
@@ -183,13 +161,13 @@ function urlInput() {
 
     //Looks for a YouTube song ID inside of the input's value and returns the ID if found.
     var _getSongIdFromInput = function () {
-        var userInput = _input.val();
+        var userInput = _addInput.val();
 
         var songId = $.url(userInput).param('v');
 
         if (!songId) {
             //TODO: match better / more maintainably.
-            var match = _input.val().match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/);
+            var match = _addInput.val().match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/);
             if (match && match[7].length == 11)
                 songId = match[7];
         }

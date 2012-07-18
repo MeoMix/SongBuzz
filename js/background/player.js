@@ -12,7 +12,6 @@ function player() {
     //errorMessage is optional, used to display errors to GUI.
     var _sendUpdate = function (errorMessage) {
         var playerState = _player.getPlayerState();
-        console.log(_playlist.getSongs());
         _port.postMessage({playerState: playerState, songs: _playlist.getSongs(), currentSong: _currentSong, errorMessage: errorMessage });
     };
 
@@ -29,7 +28,6 @@ function player() {
     else {
         _playlists = playlists();
         _playlist = _playlists.getCurrentPlaylist();
-        console.log(_playlist);
 
         //Create YT player iframe.
         YT_ready(function () {
