@@ -1,4 +1,4 @@
-﻿//UI Elements consist of:
+//UI Elements consist of:
 //  * Content Tabs.
 //  * Buttons
 //  * Current / Total Time
@@ -10,16 +10,19 @@
 function uiElements() {
     var _playerControls = playerControls();
     var _header = header();
-
-    var _songsTab = songsTab();
-    var _playlistsTab = playlistsTab();
-
+    var _playlistList = playlistList();
     var _songList = songList();
     var _settings = settings();
 
     //No public methods so no object returned.    
+    contentHeader('#CurrentSongDisplay');
     timeDisplay();
+    urlInput(); 
     contentButtons();
+
+    //Set currently loaded playlist title.
+    var h1 = $('#CurrentSongDisplay').children()[0];
+    $(h1).text(Player.getPlaylistTitle());
 
     var uiElements = {
         //Refereshes the visual state of the UI after the Player broadcasts a message.
@@ -49,10 +52,7 @@ function uiElements() {
             _songList.reload(songs, currentSong);
             _header.updateTitle(currentSong);
 
-            var playlistTitle = Player.getPlaylistTitle();
-            _songsTab.setContentHeaderTitle(playlistTitle);
-            _playlistsTab.setContentHeaderTitle(playlistTitle)
-            _playlistsTab.reloadList();
+            _playlistList.reload();
         }
     }
 
