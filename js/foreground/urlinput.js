@@ -22,13 +22,17 @@ function urlInput() {
             at: "left bottom"
         } ,
         minLength: 0, //Necessary for hackjob -- minLength: 0 allows empty search triggers for changing between 
+        focus: function(event, ui){
+            //Don't change the input as the user changes selections.
+            return false;
+        },
         select: function (event, ui) {
             //When the user selects a song suggestion the auto-complete source will change from suggestions to playable songs.
-            event.preventDefault();
-
-            if (_source == Source.TYPING_SUGGEST)
-                _analyzeForSong(ui.item.value);
+            if (_source == Source.TYPING_SUGGEST){
+                 _analyzeForSong(ui.item.value);
+            }
             else if (_source == Source.SONG_SUGGEST) {
+                event.preventDefault(); //Don't change the text when user clicks their song selection.
                 Player.addSongById(ui.item.value.videoId);
                 _flashMessage('Thanks!', 2000);
             }
@@ -36,7 +40,8 @@ function urlInput() {
     });
 
     var _analyzeForSuggestion = function () {
-        YTHelper.suggest(_addInput.val(), function (suggestions) {
+        var usersText = _addInput.val();
+        YTHelper.suggest(usersText, function (suggestions) {
             _source = Source.TYPING_SUGGEST;
             _addInput.autocomplete("option", "source", suggestions);
         });
@@ -66,9 +71,12 @@ function urlInput() {
     _addInput.keyup(function (e) {
         var code = e.which;
 
+        console.log("keyup detected")
+
         //User can navigate suggestions with up/down. 
         //UP: 38, DOWN: 40, ENTER: 13
         if (code != 38 && code != 40) {
+            console.log("analyzing for suggestions");
             _analyzeForSuggestion();
 
             if (code == 13) {

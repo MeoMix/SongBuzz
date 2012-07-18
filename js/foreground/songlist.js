@@ -6,14 +6,19 @@
     _songList.sortable({
         update: function (e, ui) {
             var getIds = function(){
-                var songRows = _songList.children();
+                //TODO: This is a very long, ugly selector..
+                var listItems = _songList.children('li');
+                var spans = listItems.children('span');
+                var songRows = spans.children('a');
+
                 var ids = [];
                 for( var index = 0; index < songRows.length; index++)
                     ids.push(songRows[index].id);
                 return ids;
             }
 
-            Player.sync(getIds());
+            var songIds = getIds();
+            Player.sync(songIds);
         }
     });
 
@@ -81,12 +86,6 @@
             //Whenever a song row is clicked it will be selected (doesn't do much just being selected currently)
             //Whenever a song row is doule-clicked it will be selected and start to play.
             _songList.children().click( function(){
-                var span = $(this).children()[0];
-                var link = $(span).children()[0];
-                Player.setCurrentSongById(link.id);
-                selectRow(link.id);
-                event.preventDefault();
-            }).dblclick( function(){
                 var span = $(this).children()[0];
                 var link = $(span).children()[0];
                 //Double-Clicking a song should always stop the song currently playing even if it is the same song.

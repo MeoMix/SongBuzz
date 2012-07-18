@@ -105,7 +105,14 @@ function player() {
                 _playlist.deselect();
                 _playlist = _playlists.getPlaylistById(playlistId);
                 _playlist.select();
-                _currentSong = _playlist.getFirstSong();
+
+                //If the newly loaded playlist has a song to play cue it to replace the currently loaded song.
+                var firstSongInPlaylist = _playlist.getFirstSong();
+
+                if(firstSongInPlaylist)
+                    this.cueSongById(firstSongInPlaylist.id)
+                else
+                    _currentSong = null;
 
                 _sendUpdate();
             }

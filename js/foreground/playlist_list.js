@@ -76,5 +76,7 @@ function playlistList(){
 		}
 	}
 
+    playlistList.reload();
+
 	return playlistList;
 }
