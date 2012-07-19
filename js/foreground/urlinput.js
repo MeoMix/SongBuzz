@@ -34,7 +34,7 @@ function urlInput(songListHeader) {
             else if (_source == Source.SONG_SUGGEST) {
                 event.preventDefault(); //Don't change the text when user clicks their song selection.
                 Player.addSongById(ui.item.value.videoId);
-                _flashMessage('Thanks!', 2000);
+                songListHeader.flashMessage('Thanks!', 2000);
             }
         }
     });
