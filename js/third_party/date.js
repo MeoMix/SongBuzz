@@ -1,4 +1,4 @@
-function GetTimeFromSeconds(seconds) {
+function SecondsToPrettyPrintTime(seconds) {
     var timeString = '';
 
     if (seconds >= 3600) {

@@ -44,11 +44,13 @@ function player() {
                                 player.cueSongById(_playlist.getSongs()[0].id);
                         },
                         "onStateChange": function (playerState) {
-                            if(playerState.data == PlayerStates.PLAYING){
-                                var nowPlayingNotification = webkitNotifications.createNotification(null, 'Now Playing', _currentSong.name);
-                                nowPlayingNotification.ondisplay = function(){setTimeout(function(){nowPlayingNotification.cancel()}, 2000)};
-                                nowPlayingNotification.show();
-                            }
+
+                            //TODO: Implement desktop notifications.
+                            // if(playerState.data == PlayerStates.PLAYING){
+                            //     var nowPlayingNotification = webkitNotifications.createNotification(null, 'Now Playing', _currentSong.name);
+                            //     nowPlayingNotification.ondisplay = function(){setTimeout(function(){nowPlayingNotification.cancel()}, 2000)};
+                            //     nowPlayingNotification.show();
+                            // }
 
                             //If the UI is closed we can't post a message to it -- so need to handle next song in background.
                             //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
@@ -281,4 +283,3 @@ function player() {
 
     return player;
 }
-

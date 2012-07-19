@@ -1,23 +1,17 @@
-﻿function songList() {
+﻿//Represents the songs in a given playlist.
+function songList() {
     var _songList = $('#SongList ul');
 
-    //Currently taking the lazy way out by just syncing the entire playlist whenever a user drags a song instead
-    //of figuring out how to move the element in the list.
+    //Allows for drag-and-drop of songs.
     _songList.sortable({
-        update: function (e, ui) {
-            var getIds = function(){
-                //TODO: This is a very long, ugly selector..
-                var listItems = _songList.children('li');
-                var spans = listItems.children('span');
-                var songRows = spans.children('a');
+        //Whenever a song row is moved inform the Player of the new songlist order.
+        //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
+        update: function () {
+            var songIds = [];
+            _songList.find('li a').each(function(){
+                songIds.push(this.id);
+            })
 
-                var ids = [];
-                for( var index = 0; index < songRows.length; index++)
-                    ids.push(songRows[index].id);
-                return ids;
-            }
-
-            var songIds = getIds();
             Player.sync(songIds);
         }
     });
@@ -44,6 +38,7 @@
         }
 
         // Create one test item for each context type.
+        //TODO: Not sure if people are actually going to use these context menus. If not, should remove this code.
         chrome.contextMenus.removeAll();
         chrome.contextMenus.create({"title": "Delete song", "contexts":["link"], "onclick": deleteSong});
         chrome.contextMenus.create({"title": "Copy song", "contexts":["link"], "onclick": copySong});
@@ -54,80 +49,56 @@
         reload: function (songs, currentSong) {
             _songList.empty();
 
-            var items = [];
-            //I create the entries as <a> to leverage Google Chrome's context menus. One of the filter options is 'by link' which allows right click -> song options.
+            //I create the entries as <a> to leverage Google Chrome's context menus. 
+            //One of the filter options is 'by link' which allows right click -> song options.
             for (var i = 0; i < songs.length; i++){
-                // var listItem = $('<li/>');
-                // listItem.appendTo(_songList);
+                var listItem = $('<li/>').appendTo(_songList);
 
-                // var span = $('<span/>');
-                // span.appendTo(listItem);
+                var link = $('<a/>', {
+                    id: songs[i].id,
+                    href: '#' + songs[i].id,
+                    text: songs[i].name
+                }).appendTo(listItem);
 
-                // var link = $('<a/>', {
-                //     id: songs[i].id,
-                //     href: '#' + songs[i].id,
-                //     text: songs[i].name
-                // }).appendTo(span);
+                var removeIcon = $('<div/>', {
+                    class: "remove",
+                    songid: songs[i].id
+                }).appendTo(listItem);
 
-                // var removeIcon = $('<div/>', {
-                //     class: "remove",
-                //     songid: songs[i].id
-                // }).appendTo(listItem);
+                //jQuery does not support appending paths to SVG elements. You MUST declare element inside of svg's HTML mark-up.
+                removeIcon.append('<svg><path d="M0,2 L2,0 L12,10 L10,12z"/> <path d="M12,2 L10,0 L0,10 L2,12z"/></svg>');
 
-                // var removeIconSvg = $('<svg width="12" height="12"/>').appendTo(removeIcon);
+                var copyIcon = $('<div/>', {
+                    class: "copy",
+                    songurl: songs[i].url
+                }).appendTo(listItem);
 
-                // var removeIconPath = $('<path/>', {
-                //     d: "M0,2 L2,0 L12,10 L10,12z",
-                //     fill: "#000"
-                // }).appendTo(removeIconSvg);
-
-                // var removeIconPathTwo = $('<path/>', {
-                //     d: "M12,2 L10,0 L0,10 L2,12z",
-                //     fill: "#000"
-                // }).appendTo(removeIconSvg);
-
-                // var copyIcon = $('<div/>', {
-                //     class: "copy",
-                //     songurl: songs[i].url
-                // }).appendTo(listItem);
-
-
-
-
-
-                var html = '<li><span> <a href="#' + songs[i].id + '" id="'+ songs[i].id + '">' + songs[i].name +'</a> </span>';
-                html += '<div class="remove" songid=' + songs[i].id + '><svg width="12" height="12"><path d="M0,2 L2,0 L12,10 L10,12z" fill="#000" /> <path d="M12,2 L10,0 L0,10 L2,12z" fill="#000" /> </svg> </div>';
-                html += '<div class="copy" songurl=' + songs[i].url + '><svg width="12" height="12"><rect x="4.625" y="0" width="2.75" height="12" fill="#000" /><rect x="0" y="4.625" width="12" height="2.75" fill="#000" /></svg></div>';
-                html += '</li>';
-                items.push(html);
+                //jQuery does not support appending paths to SVG elements. You MUST declare element inside of svg's HTML mark-up.
+                copyIcon.append('<svg><rect x="4.625" y="0" width="2.75" height="12"/><rect x="0" y="4.625" width="12" height="2.75"/></svg>');
             }
 
-            _songList.append(items.join(''));
-
             //Add 'delete' to the 'X'
-            _songList.children('li').children('.remove').click(function(){
+            _songList.find('li .remove').click(function(){
                 Player.removeSongById($(this).attr('songid'));
                 return false;
             })
 
-            //Add 'copy' to there '+'
-            _songList.children('li').children('.copy').click(function(){
+            //Add 'copy' to the '+'
+            _songList.find('li .copy').click(function(){
                 chrome.extension.sendRequest({ text: $(this).attr('songurl') });
                 return false;
             })
-
+                
+            //Removes the old 'current' marking and move it to the newly selected row.
             var selectRow = function(id){
-                $('#SongList li').removeClass('current');
-                $('#' + id).parent().parent().addClass('current');
+                _songList.find('li').removeClass('current');
+                $('#' + id).parent().addClass('current');
             }
 
-            //Whenever a song row is clicked it will be selected (doesn't do much just being selected currently)
-            //Whenever a song row is doule-clicked it will be selected and start to play.
+            //Load and start playing a song if it is clicked.
             _songList.children().click( function(){
-                var span = $(this).children()[0];
-                var link = $(span).children()[0];
-                //Double-Clicking a song should always stop the song currently playing even if it is the same song.
-                Player.loadSongById(link.id);
+                var clickedSongId = $(this).children()[0].id;
+                Player.loadSongById(clickedSongId);
             })
 
             //Since we emptied our list we lost the selection, reselect.

@@ -1,6 +1,6 @@
 //The input control where users may add songs via URL or search with queries.
 //TODO: This has gotten a bit bulky. I suspect it will be OK again once I transition song suggestions into a dialog, though.
-function urlInput() {
+function urlInput(songListHeader) {
     //TODO: This is a hackjob. I am going to have the 'Song Suggest' become a pop-up window instead of an auto-complete suggestion in the future.
     //I use this to keep track of what state the URL input is in -- nothing, displaying suggestions as the user types, or displaying songs.
     var Source = Object.freeze({
@@ -54,7 +54,7 @@ function urlInput() {
             //Only show up to 11 song suggestions as that is what fits on the display.
             for (var videoIndex = 0; videoIndex < videos.length && videoIndex < 11; videoIndex++) {
                 var video = videos[videoIndex];
-                var label = GetTimeFromSeconds(video.duration) + " | " + video.title;
+                var label = SecondsToPrettyPrintTime(video.duration) + " | " + video.title;
 
                 songTitles.push({ label: label, value: video});
             }
@@ -71,12 +71,9 @@ function urlInput() {
     _addInput.keyup(function (e) {
         var code = e.which;
 
-        console.log("keyup detected")
-
         //User can navigate suggestions with up/down. 
         //UP: 38, DOWN: 40, ENTER: 13
         if (code != 38 && code != 40) {
-            console.log("analyzing for suggestions");
             _analyzeForSuggestion();
 
             if (code == 13) {
@@ -85,14 +82,6 @@ function urlInput() {
             }
         }
     }).bind('paste drop', function () { return _validateInput(); });
-
-    //Display a message for X milliseconds inside of the input. 
-    var _flashMessage = function (message, durationInMilliseconds) {
-        _addInput.val('').blur().attr('placeholder', message);
-        window.setTimeout(function () {
-            _addInput.attr('placeholder', _placeholder);
-        }, durationInMilliseconds);
-    };
 
     var _ensurePlayable = function (songId, callback) {
         //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
@@ -141,7 +130,7 @@ function urlInput() {
                                     //Find a replacement.
                                     _findPlayable(songId, function (playableSong) {
                                         Player.addSongById(playableSong.videoId);
-                                        _flashMessage('Thanks!', 2000);
+                                        songListHeader.flashMessage('Thanks!', 2000);
                                     });
                                 },
                                 "Cancel": function () {
@@ -152,7 +141,7 @@ function urlInput() {
                     }
                     else {
                         Player.addSongById(songId);
-                        _flashMessage('Thanks!', 2000);
+                        songListHeader.flashMessage('Thanks!', 2000);
                     }
                 });
             }

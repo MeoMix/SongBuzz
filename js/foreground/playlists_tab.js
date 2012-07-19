@@ -1,6 +1,6 @@
 function playlistsTab(){
     var _contentHeader = contentHeader('#PlaylistDisplay', 'Add Playlist', 'Enter a playlist name')
-    var _playlistList = playlistList();
+    var _playlistList = playlistList(_contentHeader);
 
 	var playlistsTab = {
 		setContentHeaderTitle: function(title){

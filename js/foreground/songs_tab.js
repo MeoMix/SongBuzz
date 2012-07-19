@@ -1,8 +1,7 @@
 function songsTab(){
     var _contentHeader = contentHeader('#CurrentSongDisplay', 'Add Songs', 'Search for artists or songs');
 
-    urlInput(); 
-
+    urlInput(_contentHeader); 
 
 	var songsTab = {
 		setContentHeaderTitle: function(title){

@@ -1,6 +1,4 @@
 function contentButtons(){
-	var _playlistList = playlistList();
-
 	//User clicks on a different button on the LHS, possible change of content display.
     $('.menubutton').click(function(){
         //If the user clicked a button that isn't the current button.
@@ -21,7 +19,6 @@ function contentButtons(){
                     $('#SettingsContent').show();
                 break;
             }
-
         }
     })
 }

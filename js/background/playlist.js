@@ -26,7 +26,7 @@ function Playlist(id, name) {
                 _songs.splice(i, 1);
                 i--;
             }
-        }
+        }   
     };
     //Remove any corrupt entries from playlist.
     _ensureValidState();

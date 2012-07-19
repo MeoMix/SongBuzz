@@ -120,11 +120,23 @@
   border-radius:5px; 
 }
 
-#addIcon {
+#addButtonSvg {
   position: absolute; 
   top:50%; 
   left: 23px; 
-  margin: -6px 0 0 -6px
+  margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
+}
+
+#addCancelIconSvg{
+  width: 12px;
+  height: 12px;
+}
+
+#addButtonSvg rect,
+#addCancelIconSvg path {
+  fill: "#555";
 }
 
 .addButton span {
@@ -466,7 +478,7 @@
   fill:#fff
 }
 
-.list span {
+.list a {
   position:absolute; 
   top:0;
   left:20px;
@@ -497,14 +509,21 @@
   top:50%; 
   left:50%; 
   margin:-6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
 }
 
-.current span {
+.remove svg path,
+.copy svg path {
+  fill: "#000";
+}
+
+.current a {
   left:5px !important;
   font-weight: bold !important;
 }
 
-.current span:before {
+.current a:before {
   content:'► ';
 }
 

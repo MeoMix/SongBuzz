@@ -5,28 +5,33 @@
       <title></title>
     <link href="css/foreground.css" rel="stylesheet" type="text/css" />
     <link href="css/aristo/aristo.css" rel="stylesheet" type="text/css" />
+    <!--Needed to figure out GeoLocation to filter out some song suggestions.-->
     <script src="http://www.geoplugin.net/javascript.gp"></script>
+
     <script src="js/third_party/jquery-1.7.2.min.js"></script>
     <script src="js/third_party/jquery-ui-1.8.21.custom.min.js"></script>
     <script src="js/third_party/date.js"></script>
     <script src="js/third_party/jquery.url.js"></script>
+    <script src="js/third_party/youtube-player-api-helper.js"></script>
+
     <script src="js/foreground/content_buttons.js"></script>
     <script src="js/foreground/foreground.js"></script>
     <script src="js/foreground/header.js"></script>
+
+    <script src="js/foreground/content_header.js"></script>
+    <script src="js/foreground/player_controls.js"></script>
+    <script src="js/foreground/playlist_list.js"></script>
+    <script src="js/foreground/playlists_tab.js"></script>
+    <script src="js/foreground/progressbar.js"></script>
+    <script src="js/foreground/settings.js"></script>
+    <script src="js/foreground/songlist.js"></script>
+    <script src="js/foreground/songs_tab.js"></script>
+    <script src="js/foreground/time_display.js"></script>
     <script src="js/foreground/urlinput.js"></script>
     <script src="js/foreground/uielements.js"></script>
-    <script src="js/foreground/songlist.js"></script>
-    <script src="js/foreground/time_display.js"></script>
-    <script src="js/foreground/playlist_list.js"></script>
-    <script src="js/foreground/content_header.js"></script>
-    <script src="js/foreground/songs_tab.js"></script>
-    <script src="js/foreground/playlists_tab.js"></script>
-    <script src="js/third_party/youtube-player-api-helper.js"></script>
-    <script src="js/foreground/settings.js"></script>
+
     <script src="js/playerstates.js"></script>
-    <script src="js/foreground/player_controls.js"></script>
     <script src="js/yt_helper.js"></script>
-    <script src="js/foreground/progressbar.js"></script>
   </head>
   <body>
       <div id="content">
@@ -130,7 +135,6 @@
           Settings coming soon!
         </div>
       </div>
-
 
       <div id="ConfirmSearchDialog" title="Confirm Search?">
           <p>The song you provided was not playable due to content restrictions imposed by YouTube. OK to search for replacement?</p>
