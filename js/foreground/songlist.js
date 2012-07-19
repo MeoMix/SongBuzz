@@ -57,6 +57,44 @@
             var items = [];
             //I create the entries as <a> to leverage Google Chrome's context menus. One of the filter options is 'by link' which allows right click -> song options.
             for (var i = 0; i < songs.length; i++){
+                // var listItem = $('<li/>');
+                // listItem.appendTo(_songList);
+
+                // var span = $('<span/>');
+                // span.appendTo(listItem);
+
+                // var link = $('<a/>', {
+                //     id: songs[i].id,
+                //     href: '#' + songs[i].id,
+                //     text: songs[i].name
+                // }).appendTo(span);
+
+                // var removeIcon = $('<div/>', {
+                //     class: "remove",
+                //     songid: songs[i].id
+                // }).appendTo(listItem);
+
+                // var removeIconSvg = $('<svg width="12" height="12"/>').appendTo(removeIcon);
+
+                // var removeIconPath = $('<path/>', {
+                //     d: "M0,2 L2,0 L12,10 L10,12z",
+                //     fill: "#000"
+                // }).appendTo(removeIconSvg);
+
+                // var removeIconPathTwo = $('<path/>', {
+                //     d: "M12,2 L10,0 L0,10 L2,12z",
+                //     fill: "#000"
+                // }).appendTo(removeIconSvg);
+
+                // var copyIcon = $('<div/>', {
+                //     class: "copy",
+                //     songurl: songs[i].url
+                // }).appendTo(listItem);
+
+
+
+
+
                 var html = '<li><span> <a href="#' + songs[i].id + '" id="'+ songs[i].id + '">' + songs[i].name +'</a> </span>';
                 html += '<div class="remove" songid=' + songs[i].id + '><svg width="12" height="12"><path d="M0,2 L2,0 L12,10 L10,12z" fill="#000" /> <path d="M12,2 L10,0 L0,10 L2,12z" fill="#000" /> </svg> </div>';
                 html += '<div class="copy" songurl=' + songs[i].url + '><svg width="12" height="12"><rect x="4.625" y="0" width="2.75" height="12" fill="#000" /><rect x="0" y="4.625" width="12" height="2.75" fill="#000" /></svg></div>';
