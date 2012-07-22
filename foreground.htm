@@ -29,10 +29,13 @@
     <script src="js/foreground/time_display.js"></script>
     <script src="js/foreground/urlinput.js"></script>
     <script src="js/foreground/uielements.js"></script>
-
+    <script src="js/foreground/ytquickadd.js"></script>
+	
     <script src="js/playerstates.js"></script>
     <script src="js/yt_helper.js"></script>
     <script src="js/song.js"></script>
+    
+    <script src="js/foreground/runtime.js"></script>
   </head>
   <body>
       <div id="content">
@@ -147,6 +150,12 @@
         <div id="RestrictedSongList">
           <ul>
           </ul>
+        </div>
+      </div>
+      <div id="YtQuickAddBar">
+      	Add <span id="YTQATitle"></span> to the playlist?
+      	<button id="YTQAYes">Yes</button>
+      	<button id="YTQANo">No</button>
       </div>
   </body>
 </html>

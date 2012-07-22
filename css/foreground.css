@@ -530,3 +530,56 @@
 #ConfirmSearchDialog{
   display: none;
 }
+
+/*
+ Youtube Quick Add Styling
+*/
+#YtQuickAddBar {
+  width: 100%;
+  display:block !important;
+  position: absolute;
+  top: -36px;
+  left: 0;
+  z-index: 9999; /* get priority */
+  background: #EAEAEA;
+  border-bottom: 1px solid #CCC;
+  height: 35px;
+  text-align: center;
+  font-size: 1.1em;
+  line-height: 35px;
+}
+
+#YTQATitle {
+  max-width: 45%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  font-weight: bold;
+}
+
+#YtQuickAddBar button {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 6px 5px;
+  font-weight: bold;
+  min-width: 35px;
+  margin: 0;
+  border-color: #CCC;;
+  text-shadow: 0 1px 0 white;
+}
+#YtQuickAddBar button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #AAA;
+}
+
+#YtQuickAddBar button:active {
+  background-image: -webkit-gradient(linear,left top, left bottom, from(rgba(0, 0, 0, .2)), to(rgba(0, 0, 0, .05)));
+  border-bottom: 1px solid white;
+}
+
+#YTQANo {
+  text-decoration: underline; /* default choice */  
+}
