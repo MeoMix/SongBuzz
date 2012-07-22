@@ -62,6 +62,7 @@ function songList() {
 
                 var removeIcon = $('<div/>', {
                     class: "remove",
+                    title: "Remove " + songs[i].name,
                     songid: songs[i].id
                 }).appendTo(listItem);
 
@@ -70,6 +71,7 @@ function songList() {
 
                 var copyIcon = $('<div/>', {
                     class: "copy",
+                    title: "Copy " + songs[i].url,
                     songurl: songs[i].url
                 }).appendTo(listItem);
 

@@ -69,9 +69,10 @@ YTHelper = {
     //NOTE: YouTube has explicitly stated that the only way to know 'for sure' that a video will play is to click 'Play.'
     //This statement has been proven quite true. As such, this method will only state whether a video is playable based on information exposed via the YouTube API.
     isPlayable: function (youtubeVideoId, callback) {
+        var self = this;
         //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
         $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + youtubeVideoId + '?v=2&alt=json-in-script&format=5&callback=?', function (youtubeVideo) {
-            var isPlayable = _isVideoPlayable(youtubeVideo);
+            var isPlayable = self._isVideoPlayable(youtubeVideo);
             callback(isPlayable);   
         });
     },
