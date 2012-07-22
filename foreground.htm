@@ -32,6 +32,7 @@
 
     <script src="js/playerstates.js"></script>
     <script src="js/yt_helper.js"></script>
+    <script src="js/song.js"></script>
   </head>
   <body>
       <div id="content">
@@ -138,6 +139,14 @@
 
       <div id="ConfirmSearchDialog" title="Confirm Search?">
           <p>The song you provided was not playable due to content restrictions imposed by YouTube. OK to search for replacement?</p>
+      </div>
+
+      <div id="RestrictedSongDialog">
+        <div class="dialogHeader">Unable to use song due to content restrictions. OK to search?</div>
+
+        <div id="RestrictedSongList">
+          <ul>
+          </ul>
       </div>
   </body>
 </html>

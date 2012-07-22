@@ -1,4 +1,5 @@
-function SecondsToPrettyPrintTime(seconds) {
+//Takes a time in seconds and converts it to a displayable format of H:mm:ss or mm:ss.
+Date.secondsToPrettyPrintTime = function (seconds) {
     var timeString = '';
 
     if (seconds >= 3600) {

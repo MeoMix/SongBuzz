@@ -27,10 +27,8 @@ YTHelper = {
 
         return youtubeVideo;
     },
-    //Determine whether a given youtube video will play properly inside of the Google Chrome Extension.
-    //NOTE: YouTube has explicitly stated that the only way to know 'for sure' that a video will play is to click 'Play.'
-    //This statement has been proven quite true. As such, this method will only state whether a video is playable based on information exposed via the YouTube API.
-    isPlayable: function (youtubeVideo) {
+
+    _isVideoPlayable: function(youtubeVideo){
         //Support isPlayable for raw YouTube data.
         if (!youtubeVideo.videoId)
             youtubeVideo = this._buildYouTubeVideo(youtubeVideo.entry);
@@ -67,10 +65,22 @@ YTHelper = {
         return isPlayable;
     },
 
+    //Determine whether a given youtube video will play properly inside of the Google Chrome Extension.
+    //NOTE: YouTube has explicitly stated that the only way to know 'for sure' that a video will play is to click 'Play.'
+    //This statement has been proven quite true. As such, this method will only state whether a video is playable based on information exposed via the YouTube API.
+    isPlayable: function (youtubeVideoId, callback) {
+        //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
+        $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + youtubeVideoId + '?v=2&alt=json-in-script&format=5&callback=?', function (youtubeVideo) {
+            var isPlayable = _isVideoPlayable(youtubeVideo);
+            callback(isPlayable);   
+        });
+    },
+
     //Performs a search of YouTube with the provided text and returns a list of playable videos (<= max-results)
     //TODO: There is some code-repetition going on inside here. DRY!
     search: function (text, callback) {
         var self = this;
+
         $.getJSON(this._searchUrl + text, function (response) {
             var videos = [];
             if (response.feed) {
@@ -78,17 +88,16 @@ YTHelper = {
                 var entries = response.feed.entry;
                 for (entry in entries) {
                     var video = self._buildYouTubeVideo(entries[entry]);
-                    if (self.isPlayable(video)) {
-                        videos.push(video);
-                    }
-
+                    
+                    if(self._isVideoPlayable(video))
+                        videos.push(video);   
                 }
-            } else {
+            }
+            else {
                 var video = self._buildYouTubeVideo(response.entry);
-                if (self.isPlayable(video)) {
-                    videos.push(video);
-                }
 
+                if(self._isVideoPlayable(video))
+                    videos.push(video);   
             }
 
             callback(videos);
@@ -106,5 +115,40 @@ YTHelper = {
 
             callback(suggestions);
         });
+    },
+
+    //Takes a songid which is presumed to have content restrictions and looks through YouTube
+    //for a song with a similiar name that might be the right song to play.
+    findPlayable: function(songId, callback){
+        $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + songId + '?v=2&alt=json-in-script&callback=?', function (data) {
+            var songName = data.entry.title.$t;
+
+            YTHelper.search(songName, function (videos) {
+                var playableSong = null;
+                for (var videoIndex = 0; videoIndex < videos.length; videoIndex++) {
+                    if (YTHelper._isVideoPlayable(videos[videoIndex])) {
+                        playableSong = videos[videoIndex];
+                        break;
+                    }
+                }
+
+                callback(playableSong);
+            });
+        });
+    },
+
+    //Takes a URL and returns a YouTube song unique identifier if found inside of the URL.
+    parseUrl: function(url){
+        //First try the really simple match -- ?v=''
+        var songId = $.url(url).param('v');
+
+        if (!songId) {
+            //Try more robust matching pattern. I'm using this along with the URL jQuery plug-in because I can't decipher this regex, but it matches a lot.
+            var match = url.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/);
+            if (match && match[7].length == 11)
+                songId = match[7];
+        }
+
+        return songId;
     }
 }

@@ -1,13 +1,11 @@
+//This is the list of playlists on the playlists tab.
 function playlistList(playlistHeader){
-    var _placeholder = 'Enter a playlist name.';
     var _playlistList = $('#PlaylistList ul');
-
-    var _addInput = $('#PlaylistDisplay .addInput');
+    var _addInput = $('#PlaylistDisplay .addInput').attr('placeholder', 'Enter a playlist name');
     var _addButton = $('.addButton');
     var _addCancelIcon = $('.addCancelIcon');
 
-    _addInput.attr('placeholder', _placeholder);
-
+    //Whenever the user submits a name for a new playlist create a new playlist with that name.
     _addInput.keyup(function (e) {
         var code = e.which;
         //ENTER: 13
@@ -17,6 +15,7 @@ function playlistList(playlistHeader){
 
     _addPlaylist = function(){
     	var playlistName = _addInput.val();
+        //Only add the playlist if a name was provided.
         if( playlistName.trim() != ''){
             Player.addPlaylist(playlistName);
             playlistHeader.flashMessage('Thanks!', 2000);
@@ -25,6 +24,7 @@ function playlistList(playlistHeader){
 
     _removePlaylist = function(){
         Player.removePlaylistById($(this).attr('playlistid'));
+        //Don't want the click event to bubble up after removing a playlist row.
         return false;
     }
 
@@ -43,11 +43,13 @@ function playlistList(playlistHeader){
     }
 
 	var playlistList = {
+        //Refreshes the playlist display with the current playlist information.
 		reload: function(){
 			_playlistList.empty();
 
 			var playlists = Player.getPlaylists();
 
+            //Build up each row.
             $(playlists).each(function(){
                 var listItem = $('<li/>', {
                     id: this.id

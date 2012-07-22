@@ -4,8 +4,8 @@ function timeDisplay(){
     var currentTime = Player ? Player.getCurrentTime() : 0;
     var totalTime = Player ? Player.getTotalTime() : 0;
 
-    var _currentTimeLabel = $('#CurrentTimeLabel').text(SecondsToPrettyPrintTime(currentTime));
-    var _totalTimeLabel = $('#TotalTimeLabel').text(SecondsToPrettyPrintTime(totalTime));
+    var _currentTimeLabel = $('#CurrentTimeLabel').text(Date.secondsToPrettyPrintTime(currentTime));
+    var _totalTimeLabel = $('#TotalTimeLabel').text(Date.secondsToPrettyPrintTime(totalTime));
 
     //A nieve way of keeping the time up to date. 
     var _timeMonitorInterval = setInterval( function () {
@@ -17,10 +17,10 @@ function timeDisplay(){
         update : function(currentTimeInSeconds){
             //If told to update to a specific time (by user interaction) then use that time, otherwise get the players current time (automatic update)
             var currentTime = currentTimeInSeconds ? currentTimeInSeconds : Player.getCurrentTime();
-             _currentTimeLabel.text(SecondsToPrettyPrintTime(currentTime));
+             _currentTimeLabel.text(Date.secondsToPrettyPrintTime(currentTime));
 
             var totalTime = Player.getTotalTime();
-            _totalTimeLabel.text(SecondsToPrettyPrintTime(totalTime));
+            _totalTimeLabel.text(Date.secondsToPrettyPrintTime(totalTime));
         }
     }
 

@@ -10,6 +10,8 @@
   },
   "permissions": [
     "contextMenus",
-    "notifications"
+    "notifications",
+    "tabs",
+    "bookmarks"
 	]
 }
