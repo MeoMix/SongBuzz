@@ -4,19 +4,28 @@
 // @global      YT_ready(Function:function [, Boolean:qeue_at_start])
 // @global      onYouTubePlayerAPIReady()  - Used to trigger the qeued functions
 // @website     http://stackoverflow.com/a/7988536/938089?listening-for-youtube-event-in-javascript-or-jquery
-
 function getFrameID(id) {
+    "use strict";
+
     var elem = document.getElementById(id);
     if (elem) {
-        if (/^iframe$/i.test(elem.tagName)) return id; //Frame, OK
+        if (/^iframe$/i.test(elem.tagName)){
+            return id; //Frame, OK
+        } 
         // else: Look for frame
         var elems = elem.getElementsByTagName("iframe");
-        if (!elems.length) return null; //No iframe found, FAILURE
+        if (!elems.length){
+            return null; //No iframe found, FAILURE
+        }
         for (var i = 0; i < elems.length; i++) {
-            if (/^https?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com(\/|$)/i.test(elems[i].src)) break;
+            if (/^https?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com(\/|$)/i.test(elems[i].src)){
+                break;
+            } 
         }
         elem = elems[i]; //The only, or the best iFrame
-        if (elem.id) return elem.id; //Existing ID, return it
+        if (elem.id){
+            return elem.id; //Existing ID, return it
+        }
         // else: Create a new ID
         do { //Keep postfixing `-frame` until the ID is unique
             id += "-frame";
@@ -30,6 +39,8 @@ function getFrameID(id) {
 
 // Define YT_ready function.
 var YT_ready = (function () {
+    "use strict";
+
     var onReady_funcs = [], api_isReady = false;
     /* @param func function     Function to execute on ready
     * @param func Boolean      If true, all qeued functions are executed
@@ -43,17 +54,27 @@ var YT_ready = (function () {
                 onReady_funcs.shift()();
             }
         }
-        else if (typeof func == "function") {
-            if (api_isReady) func();
-            else onReady_funcs[b_before ? "unshift" : "push"](func);
+        else if (typeof func === "function") {
+            if (api_isReady){
+                func();
+            }
+            else{
+                onReady_funcs[b_before ? "unshift" : "push"](func);
+            }
         }
-    }
+    };
 })();
+
 // This function will be called when the API is fully loaded
-function onYouTubePlayerAPIReady() { YT_ready(true); }
+function onYouTubePlayerAPIReady() {
+    "use strict";
+    new YT_ready(true);
+}
 
 // Load YouTube Frame API
 (function () { //Closure, to not leak to the scope
+    "use strict";
+
     var s = document.createElement("script");
     s.src = "http://www.youtube.com/player_api"; /* Load Player API*/
     var before = document.getElementsByTagName("script")[0];

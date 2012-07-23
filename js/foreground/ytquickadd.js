@@ -2,8 +2,7 @@
 // provide a quick add bar when they click
 // the popup button
 
-var YtQuickAdd = {
-
+var YtQuickAdd = (function(){
 		providedSong: null,
 	    ele : function(){ return $('#YtQuickAddBar')},
 	    _title : function(){ return $('#YTQATitle')},
@@ -42,7 +41,7 @@ var YtQuickAdd = {
 	    		});
 	    	});
 	    }
-};
+})();
 
 // close if clicked outside the alert
 $(document).ready(function(){

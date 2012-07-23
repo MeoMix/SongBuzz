@@ -41,7 +41,7 @@ Screenshots & Usage Demo
 * Screenshot: http://i.imgur.com/sBGZ6.png
 * Video: http://screencast.com/t/JG03NwwaxVKs
 
-Licenscing
+Licensing
 ========
 
 Licensed under The MIT License (MIT). http://www.opensource.org/licenses/mit-license.php

@@ -1,13 +1,10 @@
 function songsTab(){
-    var _contentHeader = contentHeader('#CurrentSongDisplay', 'Add Songs', 'Search for artists or songs');
+    var contentHeader = contentHeader('#CurrentSongDisplay', 'Add Songs', 'Search for artists or songs');
+    urlInput(contentHeader); 
 
-    urlInput(_contentHeader); 
-
-	var songsTab = {
+	return {
 		setContentHeaderTitle: function(title){
-			_contentHeader.setTitle(title);
+			contentHeader.setTitle(title);
 		}
-	}
-
-	return songsTab;
+	};
 }

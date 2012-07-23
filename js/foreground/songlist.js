@@ -1,9 +1,9 @@
 ﻿//Represents the songs in a given playlist.
 function songList() {
-    var _songList = $('#SongList ul');
+    var songList = $('#SongList ul');
 
     //Allows for drag-and-drop of songs.
-    _songList.sortable({
+    songList.sortable({
         //Whenever a song row is moved inform the Player of the new songlist order.
         //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
         update: function () {
@@ -43,16 +43,16 @@ function songList() {
         chrome.contextMenus.create({"title": "Delete song", "contexts":["link"], "onclick": deleteSong});
         chrome.contextMenus.create({"title": "Copy song", "contexts":["link"], "onclick": copySong});
     }(); //Call to setup context menu options.
-
-    var songList = {
+    
+    return {
         //Refresh all the songs displayed to ensure they GUI matches background's data.
         reload: function (songs, currentSong) {
-            _songList.empty();
+            songList.empty();
 
             //I create the entries as <a> to leverage Google Chrome's context menus. 
             //One of the filter options is 'by link' which allows right click -> song options.
             for (var i = 0; i < songs.length; i++){
-                var listItem = $('<li/>').appendTo(_songList);
+                var listItem = $('<li/>').appendTo(songList);
 
                 var link = $('<a/>', {
                     id: songs[i].id,
@@ -80,25 +80,25 @@ function songList() {
             }
 
             //Add 'delete' to the 'X'
-            _songList.find('li .remove').click(function(){
+            songList.find('li .remove').click(function(){
                 Player.removeSongById($(this).attr('songid'));
                 return false;
             })
 
             //Add 'copy' to the '+'
-            _songList.find('li .copy').click(function(){
+            songList.find('li .copy').click(function(){
                 chrome.extension.sendRequest({ text: $(this).attr('songurl') });
                 return false;
             })
                 
             //Removes the old 'current' marking and move it to the newly selected row.
             var selectRow = function(id){
-                _songList.find('li').removeClass('current');
+                songList.find('li').removeClass('current');
                 $('#' + id).parent().addClass('current');
             }
 
             //Load and start playing a song if it is clicked.
-            _songList.children().click( function(){
+            songList.children().click( function(){
                 var clickedSongId = $(this).children()[0].id;
                 Player.loadSongById(clickedSongId);
             })
@@ -107,7 +107,5 @@ function songList() {
             if (currentSong)
                 selectRow(currentSong.id)
         }
-    }
-
-    return songList;
+    };
 }

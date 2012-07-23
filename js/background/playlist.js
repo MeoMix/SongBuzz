@@ -1,23 +1,29 @@
 ﻿//Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
 function Playlist(id, name) {
+    "use strict";
     var _songs = null;
 
-    if(!id)
-        id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); });
+    //If ID has not been defined then generate a new unique ID.
+    if(!id){
+        id = Helpers.generateGuid();
+    }
 
     //Get songs from localstorage.
     try {
         var item = localStorage.getItem(id);
-        if (item && item != 'undefined')
+        //Treat accidentally serializing undefined as undefined.
+        if (item && item !== 'undefined'){
             _songs = JSON.parse(item);
+        }
     }
     catch (exception) {
         console.error(exception);
     }
 
     //Provide some default songs for first timers.
-    if (!_songs)
+    if (!_songs){
         _songs = [{ "id": "ec5367e5-0026-4abf-8202-6a6b8fd10878", "songId": "_U4KUmr36Q0", "url": "http://youtu.be/_U4KUmr36Q0", "name": "Dj Alias and Benson - San Francisco Bay", "totalTime": "274" }, { "id": "3bc1b5e6-0055-4d55-bca0-ee472c8474ed", "songId": "bU639WhxTIs", "url": "http://youtu.be/bU639WhxTIs", "name": "Bondax - All Inside | HD", "totalTime": "235" }, { "id": "a7b60601-636f-41db-ac96-5e0fd1a0f7d0", "songId": "CxHFnVCZDRo", "url": "http://youtu.be/CxHFnVCZDRo", "name": "The Beatles - Don't Let Me Down (Gramatik 2012 Remix)", "totalTime": "327"}];
+    }
 
     var _ensureValidState = function () {
         for (var i = 0; i < _songs.length; i++) {
@@ -45,13 +51,14 @@ function Playlist(id, name) {
             }
         }
 
-        if (songIndex == -1)
+        if (songIndex === -1){
             throw "Couldn't find song with UID: " + id;
+        }
 
         return songIndex;
     };
 
-    var playlist = {
+    return {
         id: id,
         title: name ? name : "New Playlist",
         selected: false,
@@ -76,14 +83,15 @@ function Playlist(id, name) {
             var song = null;
 
             for (var i = 0; i < _songs.length; i++) {
-                if (_songs[i].id == id) {
+                if (_songs[i].id === id) {
                     song = _songs[i];
                     break;
                 }
             }
 
-            if (song == null)
+            if (song === null){
                 throw "Couldn't find song with UID:  " + id;
+            }
 
             return song;
         },
@@ -98,8 +106,9 @@ function Playlist(id, name) {
             var nextSongIndex = _getSongIndexById(currentSongId) + 1;
 
             //Loop back to the front if at end. Should make this togglable in the future.
-            if (_songs.length <= nextSongIndex)
+            if (_songs.length <= nextSongIndex){
                 nextSongIndex = 0;
+            }
 
             return _songs[nextSongIndex];
         },
@@ -123,7 +132,7 @@ function Playlist(id, name) {
         removeSongById: function (id) {
             var index = _getSongIndexById(id);
 
-            if (index != -1) {
+            if (index !== -1) {
                 _songs.splice(index, 1);
                 _save();
             }
@@ -132,10 +141,12 @@ function Playlist(id, name) {
         //Naieve implementation
         //Sync is used to ensure proper song order after the user drag-and-drops a song on the playlist. 
         sync: function (songIds) {
-            var syncedSongs = new Array();
+            var syncedSongs = [];
 
-            for (var i = 0; i < songIds.length; i++)
-                syncedSongs.push(this.getSongById(songIds[i]));
+            for (var songIndex = 0; songIndex < songIds.length; songIndex++){
+                var song = this.getSongById(songIds[songIndex]);
+                syncedSongs.push(song);
+            }
 
             _songs = syncedSongs;
             _save();
@@ -146,7 +157,7 @@ function Playlist(id, name) {
             var i, j, t;
             for (i = 1; i < _songs.length; i++) {
                 j = Math.floor(Math.random() * (1 + i));  // choose j in [0..i]
-                if (j != i) {
+                if (j !== i) {
                     t = _songs[i];                        // swap _songs[i] and _songs[j]
                     _songs[i] = _songs[j];
                     _songs[j] = t;
@@ -155,8 +166,6 @@ function Playlist(id, name) {
 
             _save();
         }
-    }
-
-    return playlist;
+    };
 }
 

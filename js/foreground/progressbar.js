@@ -1,56 +1,56 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
 function progressbar(currentTime, totalTime, timeDisplay) {
-    var _selector = $('#progress');
+    var selector = $('#progress');
 
     //Repaints the progress bar's filled-in amount based on the % of time elapsed for current song.
-    var _repaint = function(){
-        var elapsedTime = _selector.val();
-        var totalTime = _selector.prop('max');
+    var repaint = function(){
+        var elapsedTime = selector.val();
+        var totalTime = selector.prop('max');
 
         //Don't divide by 0.
         var fill = totalTime != 0 ? elapsedTime / totalTime : 0;
         var backgroundImage = '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ fill +',#ccc), color-stop('+ fill+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))';
-        _selector.css('background-image', backgroundImage)
+        selector.css('background-image', backgroundImage)
     }
 
     //If a song is currently playing when the GUI opens then initialize with those values.
     if(currentTime && totalTime){
-        _selector.prop('max', totalTime);
-        _selector.val(currentTime);
-        _repaint();
+        selector.prop('max', totalTime);
+        selector.val(currentTime);
+        repaint();
     }
 
     //Keep track of when the user is changing the value so that our update interval does not conflict.
-    var _userChangingValue = false;
-    _selector.mousedown(function(){
-        _userChangingValue = true;
+    var userChangingValue = false;
+    selector.mousedown(function(){
+        userChangingValue = true;
     })
 
     //Bind to selector mouse-up to support dragging as well as clicking.
     //I don't want to send a message until drag ends, so mouseup works nicely.
-    _selector.mouseup(function(){
-        Player.seekTo(_selector.val());
+    selector.mouseup(function(){
+        Player.seekTo(selector.val());
 
         //Once the user has seeked to the new value let our update function run again.
         //Wrapped in a set timeout because there is some delay before the seekTo and the equivalent of flickering happens.
         setTimeout(function(){
-            _userChangingValue = false;
+            userChangingValue = false;
         }, 1500);
     })
 
-    _selector.change(function(){
-        _repaint();
+    selector.change(function(){
+        repaint();
         //TODO: Decouple timeDisplay from progressBar if possible.
-        timeDisplay.update(_selector.val());
+        timeDisplay.update(selector.val());
     })
 
     //A nieve way of keeping the progress bar up to date. 
-    var _timeMonitorInterval = setInterval(function () { return _update(); }, 500);
+    var timeMonitorInterval = setInterval(function () { return update(); }, 500);
 
     //Pause the GUI's refreshes for updating the timers while the user is dragging the song time slider around.
-    var _update = function(){
-        if(!_userChangingValue) {
+    var update = function(){
+        if(!userChangingValue) {
             var currentTime = Player.getCurrentTime();
             progressbar.setElapsedTime(currentTime);
 
@@ -59,17 +59,15 @@ function progressbar(currentTime, totalTime, timeDisplay) {
         }
     }
 
-    var progressbar = {
+    return {
         setElapsedTime: function (value) {
-            _selector.val(value);
-            _repaint();
+            selector.val(value);
+            repaint();
         },
 
         setTotalTime: function (maxValue) {
-            _selector.prop('max', maxValue);
-            _repaint();
+            selector.prop('max', maxValue);
+            repaint();
         }
     };
-
-    return progressbar;
 }

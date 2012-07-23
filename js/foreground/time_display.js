@@ -4,11 +4,11 @@ function timeDisplay(){
     var currentTime = Player ? Player.getCurrentTime() : 0;
     var totalTime = Player ? Player.getTotalTime() : 0;
 
-    var _currentTimeLabel = $('#CurrentTimeLabel').text(Date.secondsToPrettyPrintTime(currentTime));
-    var _totalTimeLabel = $('#TotalTimeLabel').text(Date.secondsToPrettyPrintTime(totalTime));
+    var currentTimeLabel = $('#CurrentTimeLabel').text(Helpers.prettyPrintTime(currentTime));
+    var totalTimeLabel = $('#TotalTimeLabel').text(Helpers.prettyPrintTime(totalTime));
 
     //A nieve way of keeping the time up to date. 
-    var _timeMonitorInterval = setInterval( function () {
+    var timeMonitorInterval = setInterval( function () {
         return timeDisplay.update(); 
     }, 500);
 
@@ -17,12 +17,12 @@ function timeDisplay(){
         update : function(currentTimeInSeconds){
             //If told to update to a specific time (by user interaction) then use that time, otherwise get the players current time (automatic update)
             var currentTime = currentTimeInSeconds ? currentTimeInSeconds : Player.getCurrentTime();
-             _currentTimeLabel.text(Date.secondsToPrettyPrintTime(currentTime));
+             currentTimeLabel.text(Helpers.prettyPrintTime(currentTime));
 
             var totalTime = Player.getTotalTime();
-            _totalTimeLabel.text(Date.secondsToPrettyPrintTime(totalTime));
+            totalTimeLabel.text(Helpers.prettyPrintTime(totalTime));
         }
     }
 
-    var _progressbar = progressbar(currentTime, totalTime, timeDisplay);
+    var progressbar = progressbar(currentTime, totalTime, timeDisplay);
 }

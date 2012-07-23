@@ -8,20 +8,20 @@
 //  * Volume Slider
 //  * Song Progress Bar
 function uiElements() {
-    var _playerControls = playerControls();
-    var _header = header();
+    var playerControls = playerControls();
+    var header = header();
 
-    var _songsTab = songsTab();
-    var _playlistsTab = playlistsTab();    
+    var songsTab = songsTab();
+    var playlistsTab = playlistsTab();    
 
-    var _songList = songList();
-    var _settings = settings();
+    var songList = songList();
+    var settings = settings();
 
     //No public methods so no object returned.  
     timeDisplay();
     contentButtons();
 
-    var uiElements = {
+    return {
         //Refereshes the visual state of the UI after the Player broadcasts a message.
         //This keeps the UI synced with the background.
         updateWithMessage: function (message) {
@@ -30,31 +30,29 @@ function uiElements() {
                 case PlayerStates.ENDED:
                 case PlayerStates.VIDCUED:
                 case PlayerStates.PAUSED:
-                    _playerControls.setToggleMusicToPlay();
+                    playerControls.setToggleMusicToPlay();
                     break;
                 case PlayerStates.PLAYING:
                     //Volume only becomes available once a video has become cued or when popup reopens.
                     var volume = Player.getVolume();
-                    _playerControls.setVolume(volume);
-                    _playerControls.setToggleMusicToPause();
+                    playerControls.setVolume(volume);
+                    playerControls.setToggleMusicToPause();
                     break;
             }
 
             var songs = message.songs;
-            _playerControls.setEnableToggleMusicButton(songs.length > 0);
-            _playerControls.setEnableSkipButton(songs.length > 1);
-            _playerControls.setEnableShuffleButton(songs.length > 1);
+            playerControls.setEnableToggleMusicButton(songs.length > 0);
+            playerControls.setEnableSkipButton(songs.length > 1);
+            playerControls.setEnableShuffleButton(songs.length > 1);
 
             var currentSong = message.currentSong;
-            _songList.reload(songs, currentSong);
-            _header.updateTitle(currentSong);
+            songList.reload(songs, currentSong);
+            header.updateTitle(currentSong);
 
             var playlistTitle = Player.getPlaylistTitle();
-            _songsTab.setContentHeaderTitle(playlistTitle);
-            _playlistsTab.setContentHeaderTitle(playlistTitle)
-            _playlistsTab.reloadList();
+            songsTab.setContentHeaderTitle(playlistTitle);
+            playlistsTab.setContentHeaderTitle(playlistTitle)
+            playlistsTab.reloadList();
         }
-    }
-
-    return uiElements;
+    };
 }

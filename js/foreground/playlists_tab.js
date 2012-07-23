@@ -1,16 +1,14 @@
 function playlistsTab(){
-    var _contentHeader = contentHeader('#PlaylistDisplay', 'Add Playlist', 'Enter a playlist name')
-    var _playlistList = playlistList(_contentHeader);
+    var contentHeader = contentHeader('#PlaylistDisplay', 'Add Playlist', 'Enter a playlist name')
+    var playlistList = playlistList(contentHeader);
 
-	var playlistsTab = {
+	return {
 		setContentHeaderTitle: function(title){
-			_contentHeader.setTitle(title);
+			contentHeader.setTitle(title);
 		},
 
 		reloadList: function(){
-			_playlistList.reload();
+			playlistList.reload();
 		}
-	}
-
-	return playlistsTab;
+	};
 }

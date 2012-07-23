@@ -1,12 +1,12 @@
-function playlists(){
-	var _playlists = [];
-	var _currentPlaylist = null;
+function playlists() {
+	var playlists = [];
+	var currentPlaylist = null;
 
-	var _save = function () {
-		localStorage.setItem('playlists', JSON.stringify(_playlists));
+	var save = function () {
+		localStorage.setItem('playlists', JSON.stringify(playlists));
     };
 
-	var _loadPlaylists = function(){
+	var loadPlaylists = function(){
 		//Any objects returned from localStorage will only have properties and not their methods.
 		var playlistsWithoutMethods = localStorage.getItem('playlists');
 
@@ -22,22 +22,22 @@ function playlists(){
 		if(playlistsWithoutMethods && playlistsWithoutMethods.length > 0){
 			$(playlistsWithoutMethods).each(function(){
 				var playlist = new Playlist(this.id, this.title);
-				_playlists.push(playlist);
-			})
+				playlists.push(playlist);
+			});
 		}
 		else{
 			var defaultPlaylist = new Playlist(null, null);
-			_playlists.push(defaultPlaylist);
+			playlists.push(defaultPlaylist);
 		}
 		
-		_save()
+		save();
 	};
 
     //Takes a playlist's UID and returns the index of that playlist in playlists if found.
-    var _getPlaylistIndexById = function (id) {
+    var getPlaylistIndexById = function (id) {
         var playlistIndex = -1;
-        for (var i = 0; i < _playlists.length; i++) {
-            if (_playlists[i].id === id) {
+        for (var i = 0; i < playlists.length; i++) {
+            if (playlists[i].id === id) {
                 playlistIndex = i;
                 break;
             }
@@ -49,27 +49,27 @@ function playlists(){
         return playlistIndex;
     };
 
-	var playlists = {
+	return {
 		count: function(){
-			return _playlists.length;
+			return playlists.length;
 		},
 
 		getPlaylists: function(){
-			return _playlists;
+			return playlists;
 		},
 
 		getPlaylistById: function(playlistId){
-			var playlistIndex = _getPlaylistIndexById(playlistId);
-			return _playlists[playlistIndex];
+			var playlistIndex = getPlaylistIndexById(playlistId);
+			return playlists[playlistIndex];
 		},
 
 		getCurrentPlaylist: function(){
-			currentPlaylist = _currentPlaylist;
+			currentPlaylist = currentPlaylist;
 
 			if(!currentPlaylist){
-				_loadPlaylists();
-				if(_playlists.length > 0){
-					currentPlaylist = _playlists[0];
+				loadPlaylists();
+				if(playlists.length > 0){
+					currentPlaylist = playlists[0];
 					currentPlaylist.selected = true;
 				}
 			}
@@ -80,19 +80,17 @@ function playlists(){
 		addPlaylist: function(playlistName){
 			var playlist = new Playlist(null, playlistName);
 			playlist.clear();
-			_playlists.push(playlist);
-			_save();
+			playlists.push(playlist);
+			save();
 		},
 
 		removePlaylistById: function(playlistId){
-			var index = _getPlaylistIndexById(playlistId);
+			var index = getPlaylistIndexById(playlistId);
 
 			if( index != -1 ){
-				_playlists.splice(index, 1);
-                _save();
+				playlists.splice(index, 1);
+                save();
 			}
 		}
-	}
-
-	return playlists;
+	};
 }

@@ -10,9 +10,9 @@ $(document).ready(function () {
 
 function foreground() {
     //Initialize foreground UI and maintain a handle to be able to update UI.
-    var _uiElements = uiElements();
+    var uiElements = uiElements();
 
-    var _listen = function () {
+    var listen = function () {
         //Background's player object will notify the foreground whenever its state changes.
         chrome.extension.onConnect.addListener(function (port) {
             port.onMessage.addListener(function (message) {
@@ -21,7 +21,7 @@ function foreground() {
                 if (message.errorMessage)
                     alert(message.errorMessage);
 
-                _uiElements.updateWithMessage(message);
+                uiElements.updateWithMessage(message);
             });
         });
     } (); //Start listening for YT player events.

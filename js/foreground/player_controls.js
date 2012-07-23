@@ -1,7 +1,7 @@
 ﻿//The buttons, sliders, etc. which serve as the middle-men between user interactions and player responses.
 function playerControls() {
     //Private methods.
-    var _buildToggleMusicButton = function (selector) {
+    var buildToggleMusicButton = function (selector) {
         var toggleMusicButton = $(selector);
 
         //Change the music button to the 'Play' image and cause a song to play upon click.
@@ -39,9 +39,9 @@ function playerControls() {
         }
 
         return toggleMusicButton;
-    }
+    };
 
-    var _buildSkipButton = function (selector) {
+    var buildSkipButton = function (selector) {
         var skipButton = $(selector);
 
         //TODO: Remove dependency on checking for class.
@@ -67,9 +67,9 @@ function playerControls() {
         };
 
         return skipButton;
-    }
+    };
 
-    var _buildShuffleButton = function (selector) {
+    var buildShuffleButton = function (selector) {
         var shuffleButton = $(selector);
 
         //TODO: Remove dependency on checking for class.
@@ -92,14 +92,12 @@ function playerControls() {
         };
 
         return shuffleButton;
-    }
+    };
 
-    var _buildMuteButton = function (selector) {
-        var muteButton = $(selector);
-
+    var buildMuteButton = function (selector) {
         //Toggles the muted icon.
-        muteButton.on('click', function () {
-            var isMuted = _volumeSlider.toggleMute();
+        $(selector).on('click', function () {
+            var isMuted = volumeSlider.toggleMute();
             var title = isMuted ? 'Unmute' : 'Mute';
             $(this).attr('title', title);
         });
@@ -110,47 +108,47 @@ function playerControls() {
           $("#soundSlider").css("top","-35px");
         });
 
-        return muteButton;
-    }
+        return {};
+    };
 
     //A specific slider element which is responsible for controlling the volume indicator of the UI.
     //TODO: Fix rapid hovering in and out causing flickering.
-    var _buildVolumeSlider = function (selector) {
+    var buildVolumeSlider = function (selector) {
         var MUSICMUTED_LOCALSTORAGEKEY = 'musicMuted';
         var MUSICVOLUME_LOCALSTORAGEKEY = 'musicVolume';
 
         //When foreground is closed the music's volume is forgotten, but the player may continue to play.
         //Upon re-opening we need the last known values.
         //TODO: An unhandled scenario is when a user interacts with the YouTube player outside of SongBuzz, toggles mute, and then reopens SongBuzz -- incorrect values will display.
-        var _musicVolume = 100;
-        var _storedMusicVolume = localStorage.getItem(MUSICVOLUME_LOCALSTORAGEKEY);
+        var musicVolume = 100;
+        var storedMusicVolume = localStorage.getItem(MUSICVOLUME_LOCALSTORAGEKEY);
 
         //I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
-        if(_storedMusicVolume && _storedMusicVolume != 'undefined')
-            _musicVolume = JSON.parse(_storedMusicVolume);
+        if(storedMusicVolume && storedMusicVolume != 'undefined')
+            musicVolume = JSON.parse(storedMusicVolume);
 
-        var _isMuted = false;
-        var _storedIsMuted = localStorage.getItem(MUSICMUTED_LOCALSTORAGEKEY);
+        var isMuted = false;
+        var storedIsMuted = localStorage.getItem(MUSICMUTED_LOCALSTORAGEKEY);
 
         //I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
-        if(_storedIsMuted && _storedIsMuted != 'undefined')
-            _isMuted = JSON.parse(_storedIsMuted);
+        if(storedIsMuted && storedIsMuted != 'undefined')
+            isMuted = JSON.parse(storedIsMuted);
 
-        var _updateWithNewVolume = function(volume){
-            _isMuted = volume == 0;
-            localStorage.setItem(MUSICMUTED_LOCALSTORAGEKEY, JSON.stringify(_isMuted));
+        var updateWithNewVolume = function(volume){
+            isMuted = volume == 0;
+            localStorage.setItem(MUSICMUTED_LOCALSTORAGEKEY, JSON.stringify(isMuted));
             if (volume != 0) {
                 //Remember old music value if muting so that unmute is possible.
-                _musicVolume = volume;
-                localStorage.setItem(MUSICVOLUME_LOCALSTORAGEKEY, JSON.stringify(_musicVolume));
+                musicVolume = volume;
+                localStorage.setItem(MUSICVOLUME_LOCALSTORAGEKEY, JSON.stringify(musicVolume));
             }
 
-            _updateSoundIcon(volume);
+            updateSoundIcon(volume);
 
             Player.setVolume(volume);
         }
 
-        var _updateSoundIcon = function(volume){
+        var updateSoundIcon = function(volume){
             //Repaint the amount of white filled in the bar showing the distance the grabber has been dragged.
             $(selector).css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
 
@@ -169,62 +167,58 @@ function playerControls() {
         }
 
         $(selector).change(function(event, ui){
-            _updateWithNewVolume(this.value);
+            updateWithNewVolume(this.value);
         });
 
-        $(selector).val(_musicVolume);
-        _updateSoundIcon(_musicVolume);
+        $(selector).val(musicVolume);
+        updateSoundIcon(musicVolume);
 
-        var volumeSlider = {
+        //TODO: This returns a custom object but other methods return the DOM element. Need to decide on a pattern.
+        return {
             //Changes the muted state of the player and returns the state after toggling.
             toggleMute: function(){
-                _isMuted ? this.setVolume(_musicVolume) : this.setVolume(0);
+                isMuted ? this.setVolume(musicVolume) : this.setVolume(0);
                 //This value is the opposite of above because setting slider volume has side-effects.
-                return _isMuted;
+                return isMuted;
             },
 
             setVolume: function(volume){
                 $(selector).val(volume);
-                _updateWithNewVolume(volume);
+                updateWithNewVolume(volume);
             }
-        }
-
-        return volumeSlider;
-    }
+        };
+    };
 
     //Private Fields
-    var _volumeSlider = _buildVolumeSlider('#VolumeSlider');
-    var _muteButton = _buildMuteButton('#MuteButton');
-    var _toggleMusicButton = _buildToggleMusicButton('#ToggleMusicButton');
-    var _skipButton = _buildSkipButton('#SkipButton');
-    var _shuffleButton = _buildShuffleButton('#ShuffleButton');
+    var volumeSlider = buildVolumeSlider('#VolumeSlider');
+    var toggleMusicButton = buildToggleMusicButton('#ToggleMusicButton');
+    var skipButton = buildSkipButton('#SkipButton');
+    var shuffleButton = buildShuffleButton('#ShuffleButton');
+    buildMuteButton('#MuteButton');
 
-    //Object exposes public methods.
-    var playerControls = {
+    return {
         setVolume: function (volume) {
-            _volumeSlider.setVolume(volume);
+            volumeSlider.setVolume(volume);
         },
 
         setEnableShuffleButton: function (enable) {
-            enable ? _shuffleButton.enable() : _shuffleButton.disable();
+            enable ? shuffleButton.enable() : shuffleButton.disable();
         },
 
         setToggleMusicToPlay: function () {
-            _toggleMusicButton.setToPlay();
+            toggleMusicButton.setToPlay();
         },
 
         setToggleMusicToPause: function () {
-            _toggleMusicButton.setToPause();
+            toggleMusicButton.setToPause();
         },
 
         setEnableToggleMusicButton: function (enable) {
-            enable ? _toggleMusicButton.enable() : _toggleMusicButton.disable();
+            enable ? toggleMusicButton.enable() : toggleMusicButton.disable();
         },
 
         setEnableSkipButton: function (enable) {
-            enable ? _skipButton.enable() : _skipButton.disable();
+            enable ? skipButton.enable() : skipButton.disable();
         }
-    }
-
-    return playerControls;
+    };
 }

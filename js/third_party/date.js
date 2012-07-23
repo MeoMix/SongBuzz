@@ -1,18 +1,3 @@
-//Takes a time in seconds and converts it to a displayable format of H:mm:ss or mm:ss.
-Date.secondsToPrettyPrintTime = function (seconds) {
-    var timeString = '';
-
-    if (seconds >= 3600) {
-        //An hour will need to be displayed.
-        timeString = (new Date).clearTime().addSeconds(seconds).toString('H:mm:ss');
-    }
-    else {
-        timeString = (new Date).clearTime().addSeconds(seconds).toString('mm:ss');
-    }
-
-    return timeString;
-}
-
 /**
  * Version: 1.0 Alpha-1 
  * Build Date: 13-Nov-2007
