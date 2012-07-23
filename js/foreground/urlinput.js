@@ -2,7 +2,7 @@
 //Clicking Add Songs will allow the user to either search w/ auto-complete suggestions, or to paste youtube URLs into the input.
 //Alternatively, the user can click-and-hold on the button which will cause all open tabs to be parsed for songs.
 //TODO: This has gotten a bit bulky.
-function urlInput(songListHeader) {
+function UrlInput(songListHeader) {
     "use strict";
 
     var addInput = $('#CurrentSongDisplay .addInput').attr('placeholder', 'Search or Enter YouTube URL');

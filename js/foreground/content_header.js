@@ -1,4 +1,4 @@
-function contentHeader(selector, addText, addInputPlaceholder){
+function ContentHeader(selector, addText, addInputPlaceholder){
 	var contentHeader = $(selector);
 
   $('<h1/>', {

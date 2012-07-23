@@ -1,5 +1,5 @@
 ﻿//TODO: This isn't really implemented yet. Don't worry about it.
-function settings() {
+function Settings() {
     var exploreCheckBox = $('#ExploreCheckBox');
     var settingsDialogSelector = $('#SettingsDialog');
 
@@ -8,7 +8,7 @@ function settings() {
     }
 
     var buildDialog = function (selector) {
-        var dialog = _settingsDialogSelector.dialog({
+        var dialog = settingsDialogSelector.dialog({
             autoOpen: false,
             buttons: [
                 {

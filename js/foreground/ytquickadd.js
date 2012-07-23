@@ -3,30 +3,31 @@
 // the popup button
 
 var YtQuickAdd = (function(){
+	return {
 		providedSong: null,
-	    ele : function(){ return $('#YtQuickAddBar')},
-	    _title : function(){ return $('#YTQATitle')},
-	    promptShow : function(ytid) {
-	    	var song = new Song(ytid, function(){
-	    		//TODO check if song is already in playlist
-	    		var playable = YTHelper.isPlayable(song.songId, function (isPlayable) {
-	    			if(playable != false) { //getting playable = undefined ..?
-	    				YtQuickAdd._renderInfo(song);
-	    			}
-	    		});
-	    	});
+		ele: function(){ return $('#YtQuickAddBar')},
+		title: function(){ return $('#YTQATitle')},
+		promptShow: function(ytid) {
+			var song = new Song(ytid, function(){
+				//TODO check if song is already in playlist
+				var playable = YTHelper.isPlayable(song.songId, function (isPlayable) {
+					if(playable != false) { //getting playable = undefined ..?
+						YtQuickAdd.renderInfo(song);
+					}
+				});
+			});
 	    },
 	    promptHide : function( /* optional function */ callback) {
 	    	// hide the bar
 	    	YtQuickAdd.ele().animate({"top": "-36px"});
 	    	YtQuickAdd.providedSong = null;
 	    },
-	    _renderInfo : function( /* song.js:Song */ song) {
+	    renderInfo : function( /* song.js:Song */ song) {
 	    	YtQuickAdd.providedSong = song;
-	    	YtQuickAdd._title().text(song.name);
+	    	YtQuickAdd.title().text(song.name);
 	    	YtQuickAdd.ele().animate({"top": "0px"});
 	    },
-	    _addToPlayList : function() {
+	    addToPlayList : function() {
 	    	Player.addSongById(YtQuickAdd.providedSong.songId);
 	    	//some visual feedback to the user
 	    	$('#YTQAYes').css({
@@ -41,6 +42,7 @@ var YtQuickAdd = (function(){
 	    		});
 	    	});
 	    }
+	}
 })();
 
 // close if clicked outside the alert

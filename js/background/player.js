@@ -8,7 +8,7 @@ var playlists = null;
 var playlist = null;
 
 //Handles communications between the GUI and the YT Player API.
-function player() {
+function YoutubePlayer() {
     //errorMessage is optional, used to display errors to GUI.
     var sendUpdate = function (errorMessage) {
         var playerState = player.getPlayerState();
@@ -39,11 +39,11 @@ function player() {
         sendUpdate();
     }
     else {
-        playlists = playlists();
+        playlists = Playlists();
         playlist = playlists.getCurrentPlaylist();
 
         //Create YT player iframe.
-        YTready(function () {
+        YT_ready(function () {
             var frameID = getFrameID("MusicHolder");
             if (frameID) {
                 player = new YT.Player(frameID, {

@@ -1,4 +1,4 @@
-function playlists() {
+function Playlists() {
 	var playlists = [];
 	var currentPlaylist = null;
 

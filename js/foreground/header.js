@@ -1,5 +1,5 @@
 ﻿//Displays the currently playing song or a default welcome message.
-function header() {
+function Header() {
     var header = $('#Header');
     var title = $('#HeaderTitle');
     var defaultCaption = 'Welcome to SongBuzz!';

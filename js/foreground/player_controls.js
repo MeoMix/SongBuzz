@@ -1,5 +1,5 @@
 ﻿//The buttons, sliders, etc. which serve as the middle-men between user interactions and player responses.
-function playerControls() {
+function PlayerControls() {
     //Private methods.
     var buildToggleMusicButton = function (selector) {
         var toggleMusicButton = $(selector);

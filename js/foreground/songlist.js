@@ -1,5 +1,5 @@
 ﻿//Represents the songs in a given playlist.
-function songList() {
+function SongList() {
     var songList = $('#SongList ul');
 
     //Allows for drag-and-drop of songs.
@@ -8,7 +8,7 @@ function songList() {
         //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
         update: function () {
             var songIds = [];
-            _songList.find('li a').each(function(){
+            songList.find('li a').each(function(){
                 songIds.push(this.id);
             })
 
@@ -43,7 +43,7 @@ function songList() {
         chrome.contextMenus.create({"title": "Delete song", "contexts":["link"], "onclick": deleteSong});
         chrome.contextMenus.create({"title": "Copy song", "contexts":["link"], "onclick": copySong});
     }(); //Call to setup context menu options.
-    
+
     return {
         //Refresh all the songs displayed to ensure they GUI matches background's data.
         reload: function (songs, currentSong) {

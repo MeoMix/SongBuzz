@@ -7,19 +7,19 @@
 //  * Current Playlist Songs
 //  * Volume Slider
 //  * Song Progress Bar
-function uiElements() {
-    var playerControls = playerControls();
-    var header = header();
+function UiElements() {
+    var playerControls = PlayerControls();
+    var header = Header();
 
-    var songsTab = songsTab();
-    var playlistsTab = playlistsTab();    
+    var songsTab = SongsTab();
+    var playlistsTab = PlaylistsTab();    
 
-    var songList = songList();
-    var settings = settings();
+    var songList = SongList();
+    var settings = Settings();
 
     //No public methods so no object returned.  
-    timeDisplay();
-    contentButtons();
+    TimeDisplay();
+    ContentButtons();
 
     return {
         //Refereshes the visual state of the UI after the Player broadcasts a message.

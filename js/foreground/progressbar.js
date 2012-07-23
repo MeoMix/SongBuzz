@@ -1,6 +1,6 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
-function progressbar(currentTime, totalTime, timeDisplay) {
+function Progressbar(currentTime, totalTime, timeDisplay) {
     var selector = $('#progress');
 
     //Repaints the progress bar's filled-in amount based on the % of time elapsed for current song.
@@ -45,6 +45,16 @@ function progressbar(currentTime, totalTime, timeDisplay) {
         timeDisplay.update(selector.val());
     })
 
+    var setElapsedTime = function(value){
+        selector.val(value);
+        repaint();
+    };
+
+    var setTotalTime = function(maxValue){
+        selector.prop('max', maxValue);
+        repaint();
+    };
+
     //A nieve way of keeping the progress bar up to date. 
     var timeMonitorInterval = setInterval(function () { return update(); }, 500);
 
@@ -52,22 +62,20 @@ function progressbar(currentTime, totalTime, timeDisplay) {
     var update = function(){
         if(!userChangingValue) {
             var currentTime = Player.getCurrentTime();
-            progressbar.setElapsedTime(currentTime);
+            setElapsedTime(currentTime);
 
             var totalTime = Player.getTotalTime();
-            progressbar.setTotalTime(totalTime);
+            setTotalTime(totalTime);
         }
     }
 
     return {
         setElapsedTime: function (value) {
-            selector.val(value);
-            repaint();
+            setElapsedTime(value);
         },
 
         setTotalTime: function (maxValue) {
-            selector.prop('max', maxValue);
-            repaint();
+            setTotalTime(maxValue);
         }
     };
 }

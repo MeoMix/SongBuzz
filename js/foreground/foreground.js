@@ -4,13 +4,13 @@ var Player = null;
 
 //This fires everytime the UI opens or is re-opened. 
 $(document).ready(function () {
-    Player = chrome.extension.getBackgroundPage().player();
-    foreground();
+    Player = chrome.extension.getBackgroundPage().YoutubePlayer();
+    Foreground();
 });
 
-function foreground() {
+function Foreground() {
     //Initialize foreground UI and maintain a handle to be able to update UI.
-    var uiElements = uiElements();
+    var uiElements = UiElements();
 
     var listen = function () {
         //Background's player object will notify the foreground whenever its state changes.
