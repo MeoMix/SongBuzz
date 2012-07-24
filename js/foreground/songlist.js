@@ -98,9 +98,11 @@ function SongList() {
             }
 
             //Load and start playing a song if it is clicked.
-            songList.children().click( function(){
+            songList.children().click( function(e){
                 var clickedSongId = $(this).children()[0].id;
                 Player.loadSongById(clickedSongId);
+                e.preventDefault();
+                return false;
             })
 
             //Since we emptied our list we lost the selection, reselect.

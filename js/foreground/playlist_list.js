@@ -78,6 +78,8 @@ function PlaylistList(playlistHeader){
             //Clicking on a playlist will select that playlist.
             playlistList.children().click( function(){
                 selectRow(this.id);
+                e.preventDefault();
+                return false;
             });
         }
     };

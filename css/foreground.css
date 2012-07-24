@@ -6,6 +6,30 @@
   font:12px/1.3 sans-serif;
 }
 
+/*http://beautifulpixels.com/goodies/create-custom-webkit-scrollbar/*/
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/*TODO: Add some nice looking buttons perhaps?*/
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+  height: 0px;
+}
+
+::-webkit-scrollbar-track-piece  {
+  background-color: #efefef;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  height: 50px;
+  background-color: #666;
+  border: 1px solid #eee;
+  -webkit-border-radius: 6px;
+}
+
 #content div {
   position: absolute;
   -webkit-box-sizing:border-box;
@@ -107,6 +131,7 @@
   font: normal 16px/40px sans-serif;
   margin:0;
 }
+
 
 .addButton {
   right: 6px; 

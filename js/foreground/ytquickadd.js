@@ -1,7 +1,6 @@
 // if the user is on youtube viewing a song
 // provide a quick add bar when they click
 // the popup button
-
 var YtQuickAdd = (function(){
 	return {
 		providedSong: null,
