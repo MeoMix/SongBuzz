@@ -1,5 +1,6 @@
 ﻿//Represents the songs in a given playlist.
 function SongList() {
+    "use strict";
     var songList = $('#SongList ul');
 
     //Allows for drag-and-drop of songs.
@@ -10,7 +11,7 @@ function SongList() {
             var songIds = [];
             songList.find('li a').each(function(){
                 songIds.push(this.id);
-            })
+            });
 
             Player.sync(songIds);
         }
@@ -61,7 +62,7 @@ function SongList() {
                 }).appendTo(listItem);
 
                 var removeIcon = $('<div/>', {
-                    class: "remove",
+                    'class': "remove",
                     title: "Remove " + songs[i].name,
                     songid: songs[i].id
                 }).appendTo(listItem);
@@ -70,7 +71,7 @@ function SongList() {
                 removeIcon.append('<svg><path d="M0,2 L2,0 L12,10 L10,12z"/> <path d="M12,2 L10,0 L0,10 L2,12z"/></svg>');
 
                 var copyIcon = $('<div/>', {
-                    class: "copy",
+                    'class': "copy",
                     title: "Copy " + songs[i].url,
                     songurl: songs[i].url
                 }).appendTo(listItem);
@@ -83,31 +84,31 @@ function SongList() {
             songList.find('li .remove').click(function(){
                 Player.removeSongById($(this).attr('songid'));
                 return false;
-            })
+            });
 
             //Add 'copy' to the '+'
             songList.find('li .copy').click(function(){
                 chrome.extension.sendRequest({ text: $(this).attr('songurl') });
                 return false;
-            })
+            });
                 
             //Removes the old 'current' marking and move it to the newly selected row.
             var selectRow = function(id){
                 songList.find('li').removeClass('current');
                 $('#' + id).parent().addClass('current');
-            }
+            };
 
             //Load and start playing a song if it is clicked.
-            songList.children().click( function(e){
+            songList.children().click(function(){
                 var clickedSongId = $(this).children()[0].id;
                 Player.loadSongById(clickedSongId);
-                e.preventDefault();
                 return false;
-            })
+            });
 
             //Since we emptied our list we lost the selection, reselect.
-            if (currentSong)
-                selectRow(currentSong.id)
+            if (currentSong){
+                selectRow(currentSong.id);
+            }
         }
     };
 }

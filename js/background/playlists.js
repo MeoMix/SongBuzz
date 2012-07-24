@@ -1,18 +1,21 @@
 function Playlists() {
+	"use strict";
+
 	var playlists = [];
 	var currentPlaylist = null;
 
 	var save = function () {
 		localStorage.setItem('playlists', JSON.stringify(playlists));
-    };
+	};
 
 	var loadPlaylists = function(){
 		//Any objects returned from localStorage will only have properties and not their methods.
 		var playlistsWithoutMethods = localStorage.getItem('playlists');
 
 		try {
-			if (playlistsWithoutMethods && playlistsWithoutMethods != 'undefined')
-	            playlistsWithoutMethods = JSON.parse(playlistsWithoutMethods);
+			if (playlistsWithoutMethods){
+				playlistsWithoutMethods = JSON.parse(playlistsWithoutMethods);
+			}
 		}
 		catch(exception){
 			console.error(exception);
@@ -33,21 +36,22 @@ function Playlists() {
 		save();
 	};
 
-    //Takes a playlist's UID and returns the index of that playlist in playlists if found.
-    var getPlaylistIndexById = function (id) {
-        var playlistIndex = -1;
-        for (var i = 0; i < playlists.length; i++) {
-            if (playlists[i].id === id) {
-                playlistIndex = i;
-                break;
-            }
-        }
+	//Takes a playlist's UID and returns the index of that playlist in playlists if found.
+	var getPlaylistIndexById = function (id) {
+		var playlistIndex = -1;
+		for (var i = 0; i < playlists.length; i++) {
+			if (playlists[i].id === id) {
+				playlistIndex = i;
+				break;
+			}
+		}
 
-        if (playlistIndex == -1)
-            throw "Couldn't find playlist with UID: " + id;
+		if (playlistIndex === -1){
+			throw "Couldn't find playlist with UID: " + id;
+		}
 
-        return playlistIndex;
-    };
+		return playlistIndex;
+	};
 
 	return {
 		count: function(){
@@ -87,9 +91,9 @@ function Playlists() {
 		removePlaylistById: function(playlistId){
 			var index = getPlaylistIndexById(playlistId);
 
-			if( index != -1 ){
+			if( index !== -1 ){
 				playlists.splice(index, 1);
-                save();
+				save();
 			}
 		}
 	};

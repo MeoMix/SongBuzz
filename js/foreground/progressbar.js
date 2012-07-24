@@ -1,6 +1,7 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
 function Progressbar(currentTime, totalTime, timeDisplay) {
+    "use strict";
     var selector = $('#progress');
 
     //Repaints the progress bar's filled-in amount based on the % of time elapsed for current song.
@@ -9,10 +10,10 @@ function Progressbar(currentTime, totalTime, timeDisplay) {
         var totalTime = selector.prop('max');
 
         //Don't divide by 0.
-        var fill = totalTime != 0 ? elapsedTime / totalTime : 0;
+        var fill = totalTime !== 0 ? elapsedTime / totalTime : 0;
         var backgroundImage = '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ fill +',#ccc), color-stop('+ fill+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))';
-        selector.css('background-image', backgroundImage)
-    }
+        selector.css('background-image', backgroundImage);
+    };
 
     //If a song is currently playing when the GUI opens then initialize with those values.
     if(currentTime && totalTime){
@@ -25,7 +26,7 @@ function Progressbar(currentTime, totalTime, timeDisplay) {
     var userChangingValue = false;
     selector.mousedown(function(){
         userChangingValue = true;
-    })
+    });
 
     //Bind to selector mouse-up to support dragging as well as clicking.
     //I don't want to send a message until drag ends, so mouseup works nicely.
@@ -37,13 +38,13 @@ function Progressbar(currentTime, totalTime, timeDisplay) {
         setTimeout(function(){
             userChangingValue = false;
         }, 1500);
-    })
+    });
 
     selector.change(function(){
         repaint();
         //TODO: Decouple timeDisplay from progressBar if possible.
         timeDisplay.update(selector.val());
-    })
+    });
 
     var setElapsedTime = function(value){
         selector.val(value);
@@ -67,7 +68,7 @@ function Progressbar(currentTime, totalTime, timeDisplay) {
             var totalTime = Player.getTotalTime();
             setTotalTime(totalTime);
         }
-    }
+    };
 
     return {
         setElapsedTime: function (value) {

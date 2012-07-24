@@ -1,5 +1,6 @@
 //Holds onto the currentTime and totalTime song labels as well as the elapsed time progress bar.
 function TimeDisplay(){
+    "use strict";
     //Player will exist if UI is opened after the first time. If player exists initialize with current data to prevent flickering. 
     var currentTime = Player ? Player.getCurrentTime() : 0;
     var totalTime = Player ? Player.getTotalTime() : 0;
@@ -22,7 +23,7 @@ function TimeDisplay(){
             var totalTime = Player.getTotalTime();
             totalTimeLabel.text(Helpers.prettyPrintTime(totalTime));
         }
-    }
+    };
 
-    Progressbar(currentTime, totalTime, timeDisplay);
+    new Progressbar(currentTime, totalTime, timeDisplay);
 }

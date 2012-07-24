@@ -8,18 +8,19 @@
 //  * Volume Slider
 //  * Song Progress Bar
 function UiElements() {
-    var playerControls = PlayerControls();
-    var header = Header();
+    "use strict";
+    var playerControls = new PlayerControls();
+    var header = new Header();
 
-    var songsTab = SongsTab();
-    var playlistsTab = PlaylistsTab();    
+    var songsTab = new SongsTab();
+    var playlistsTab = new PlaylistsTab();    
 
-    var songList = SongList();
-    var settings = Settings();
+    var songList = new SongList();
+    var settings = new Settings();
 
     //No public methods so no object returned.  
-    TimeDisplay();
-    ContentButtons();
+    new TimeDisplay();
+    new ContentButtons();
 
     return {
         //Refereshes the visual state of the UI after the Player broadcasts a message.
@@ -51,7 +52,7 @@ function UiElements() {
 
             var playlistTitle = Player.getPlaylistTitle();
             songsTab.setContentHeaderTitle(playlistTitle);
-            playlistsTab.setContentHeaderTitle(playlistTitle)
+            playlistsTab.setContentHeaderTitle(playlistTitle);
             playlistsTab.reloadList();
         }
     };

@@ -1,22 +1,22 @@
 ﻿//The buttons, sliders, etc. which serve as the middle-men between user interactions and player responses.
 function PlayerControls() {
-    //Private methods.
+    "use strict";
     var buildToggleMusicButton = function (selector) {
         var toggleMusicButton = $(selector);
 
         //Change the music button to the 'Play' image and cause a song to play upon click.
         toggleMusicButton.setToPlay = function () {
-            this.attr('title', 'Play').off('click').on('click', function () { return Player.play(); });
+            this.off('click').on('click', function () { return Player.play(); });
             $('#pauseIcon').hide();
             $('#playIcon').show();
-        }
+        };
 
         //Change the music button to the 'Pause' image and cause a song to pause upon click.
         toggleMusicButton.setToPause = function () {
-            this.attr('title', 'Pause').off('click').on('click', function () { return Player.pause(); });
+            this.off('click').on('click', function () { return Player.pause(); });
             $('#pauseIcon').show();
             $('#playIcon').hide();
-        }
+        };
 
         //Enable the button such that it can be clicked.
         //TODO: Remove dependency on checking for class.
@@ -25,7 +25,7 @@ function PlayerControls() {
                 this.removeClass('disabled');
                 $(this).find('.path').css('fill', 'black');
             }
-        }
+        };
 
         //Disable the button such that it cannot be clicked.
         //TODO: Remove dependency on checking for class.
@@ -36,7 +36,7 @@ function PlayerControls() {
                 this.addClass('disabled').off('click');
                 $(this).find('.path').css('fill', 'gray');
             }
-        }
+        };
 
         return toggleMusicButton;
     };
@@ -44,24 +44,26 @@ function PlayerControls() {
     var buildSkipButton = function (selector) {
         var skipButton = $(selector);
 
+        function skipSong() {
+            Player.skipSong();
+            //Prevent spamming by only allowing a next click once a second.
+            setTimeout(function () { 
+                skipButton.off('click').one('click', skipSong);
+            }, 1000);
+        }
+
         //TODO: Remove dependency on checking for class.
         skipButton.enable = function () {
             if (this.hasClass('disabled')) {
                 $(this).find('.path').css('fill', 'black');
-                this.attr('src', "images/skip.png").removeClass('disabled').off('click').one('click', SkipSong);
-                var self = this;
-                function SkipSong() {
-                    Player.skipSong();
-                    //Prevent spamming by only allowing a next click once a second.
-                    setTimeout(function () { self.off('click').one('click', SkipSong) }, 1000);
-                };
+                this.prop('src', "images/skip.png").removeClass('disabled').off('click').one('click', skipSong);
             }
         };
 
         //TODO: Remove dependency on checking for class.
         skipButton.disable = function () {
             if (!this.hasClass('disabled')) {
-                this.attr('src', "images/skip-disabled.png").addClass('disabled').off('click');
+                this.prop('src', "images/skip-disabled.png").addClass('disabled').off('click');
                 $(this).find('.path').css('fill', 'gray');
             }
         };
@@ -75,20 +77,22 @@ function PlayerControls() {
         //TODO: Remove dependency on checking for class.
         shuffleButton.disable = function () {
             $(this).find('.path').css('fill', 'gray');
-            this.attr('src', "images/shuffle-disabled.png").addClass('disabled').off('click');
+            this.prop('src', "images/shuffle-disabled.png").addClass('disabled').off('click');
         };
 
         //TODO: Remove dependency on checking for class.
         shuffleButton.enable = function () {
-            this.attr('src', "images/shuffle.png").removeClass('disabled').off('click').one('click', ShuffleSong);
+            this.prop('src', "images/shuffle.png").removeClass('disabled').off('click').one('click', ShuffleSong);
             $(this).find('.path').css('fill', 'white');
             var self = this;
             function ShuffleSong() {
                 //This will trigger an update. Necessary since no state change.
                 Player.shuffle();
                 //Prevent spamming by only allowing a shuffle click once a second.
-                setTimeout(function () { self.off('click').one('click', ShuffleSong) }, 1000);
-            };
+                setTimeout(function () {
+                    self.off('click').one('click', ShuffleSong);
+                }, 1000);
+            }
         };
 
         return shuffleButton;
@@ -98,8 +102,6 @@ function PlayerControls() {
         //Toggles the muted icon.
         $(selector).on('click', function () {
             var isMuted = volumeSlider.toggleMute();
-            var title = isMuted ? 'Unmute' : 'Mute';
-            $(this).attr('title', title);
         });
 
         $("#MuteButton, #soundSlider").hover(function(){
@@ -124,33 +126,35 @@ function PlayerControls() {
         var storedMusicVolume = localStorage.getItem(MUSICVOLUME_LOCALSTORAGEKEY);
 
         //I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
-        if(storedMusicVolume && storedMusicVolume != 'undefined')
+        if(storedMusicVolume && storedMusicVolume !== 'undefined'){
             musicVolume = JSON.parse(storedMusicVolume);
+        }
 
         var isMuted = false;
         var storedIsMuted = localStorage.getItem(MUSICMUTED_LOCALSTORAGEKEY);
 
         //I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
-        if(storedIsMuted && storedIsMuted != 'undefined')
+        if(storedIsMuted && storedIsMuted !== 'undefined'){
             isMuted = JSON.parse(storedIsMuted);
+        }
 
         var updateWithNewVolume = function(volume){
-            isMuted = volume == 0;
+            isMuted = volume === 0;
             localStorage.setItem(MUSICMUTED_LOCALSTORAGEKEY, JSON.stringify(isMuted));
-            if (volume != 0) {
+            if (volume !== 0) {
                 //Remember old music value if muting so that unmute is possible.
                 musicVolume = volume;
                 localStorage.setItem(MUSICVOLUME_LOCALSTORAGEKEY, JSON.stringify(musicVolume));
             }
 
             updateSoundIcon(volume);
-
             Player.setVolume(volume);
-        }
+        };
 
         var updateSoundIcon = function(volume){
             //Repaint the amount of white filled in the bar showing the distance the grabber has been dragged.
-            $(selector).css('background-image', '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))')
+            var backgroundImage = '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))';
+            $(selector).css('background-image', backgroundImage);
 
             //Paint the various bars indicating the sound level. 
             var fillColor = volume >= 25 ? '#fff' : '#555';
@@ -162,9 +166,9 @@ function PlayerControls() {
             fillColor = volume >= 75 ? '#fff' : '#555';
             $('#volume3').css('fill', fillColor);
 
-            fillColor = volume == 100 ? '#fff' : '#555';
+            fillColor = volume === 100 ? '#fff' : '#555';
             $('#volume4').css('fill', fillColor);
-        }
+        };
 
         $(selector).change(function(event, ui){
             updateWithNewVolume(this.value);
@@ -177,7 +181,13 @@ function PlayerControls() {
         return {
             //Changes the muted state of the player and returns the state after toggling.
             toggleMute: function(){
-                isMuted ? this.setVolume(musicVolume) : this.setVolume(0);
+                if(isMuted){
+                    this.setVolume(musicVolume);
+                }
+                else{
+                    this.setVolume(0);
+                }
+
                 //This value is the opposite of above because setting slider volume has side-effects.
                 return isMuted;
             },
@@ -202,7 +212,12 @@ function PlayerControls() {
         },
 
         setEnableShuffleButton: function (enable) {
-            enable ? shuffleButton.enable() : shuffleButton.disable();
+            if(enable){
+                shuffleButton.enable();
+            }
+            else{
+                shuffleButton.disable();
+            }
         },
 
         setToggleMusicToPlay: function () {
@@ -214,11 +229,21 @@ function PlayerControls() {
         },
 
         setEnableToggleMusicButton: function (enable) {
-            enable ? toggleMusicButton.enable() : toggleMusicButton.disable();
+            if(enable){
+                toggleMusicButton.enable();
+            }
+            else {
+                toggleMusicButton.disable();
+            }
         },
 
         setEnableSkipButton: function (enable) {
-            enable ? skipButton.enable() : skipButton.disable();
+            if(enable){
+                skipButton.enable();
+            }
+            else{
+                skipButton.disable();
+            }
         }
     };
 }
