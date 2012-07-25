@@ -158,11 +158,6 @@
   height: 12px;
 }
 
-#addButtonSvg rect,
-#addCancelIconSvg path {
-  fill: "#555";
-}
-
 .addButton span {
   position: absolute; 
   top:0; 
@@ -226,7 +221,7 @@
   display: none;
 }
 
-#ToggleMusicButton {
+#PlayPauseButton {
   top:0;
   left:0;
   width:70px;
@@ -245,18 +240,18 @@
   cursor:pointer;
 }
 
-#ToggleMusicButton.disabled:hover,
+#PlayPauseButton.disabled:hover,
 #SkipButton.disabled:hover{
   background-color: transparent;
   cursor: default;
 }
 
-#ToggleMusicButton.disabled:active,
+#PlayPauseButton.disabled:active,
 #SkipButton.disabled:active{
   background-image: none;
 }
 
-#ToggleMusicButton:hover, 
+#PlayPauseButton:hover, 
 #SkipButton:hover,
 #HomeMenuButton:hover,
 #SettingsMenuButton:hover,
@@ -264,12 +259,12 @@
   background-color:rgba(255,255,255,0.3);
 }
 
-#ToggleMusicButton:active, 
+#PlayPauseButton:active, 
 #SkipButton:active {
   background-image: -webkit-gradient(linear,left top, left bottom, from(rgba(0,0,0,.1)), color-stop(0.5,rgba(0,0,0,0)));
 }
 
-#ToggleMusicButton svg {
+#PlayPauseButton svg {
   position:absolute; 
   top:50%;
   left:50%;
@@ -385,7 +380,7 @@
   border-right:none;
 }
 
-#soundSlider {
+#VolumeSliderWrapper {
   -webkit-transition: top 0.5s;
   width:40px; 
   height:100px; 
@@ -535,11 +530,6 @@
   margin:-6px 0 0 -6px;
   width: 12px;
   height: 12px;
-}
-
-.remove svg path,
-.copy svg path {
-  fill: "#000";
 }
 
 .current a {

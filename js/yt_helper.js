@@ -13,8 +13,6 @@ YTHelper = (function(){
 
     //Convert JSON response into object.
     var buildYouTubeVideo = function(entry){
-        console.log(entry);
-
         //The id entry has tag information stored in it, strip off this information.
         var id = entry.id.$t;
         var start = id.lastIndexOf(':') + 1;

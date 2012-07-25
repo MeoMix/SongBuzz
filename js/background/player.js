@@ -1,6 +1,7 @@
 ﻿//TODO: These variables need to persist because they maintain state when GUI isn't open, but this does not seem like the right place for them to be.
 var player = null;
 var currentSong = null;
+var port = null;
 var ready = false;
 var exploreEnabled = false;
 var playlists = null;
@@ -11,7 +12,7 @@ function YoutubePlayer() {
     "use strict";
 
     //Open a connection between the background and foreground. The connection will become invalid every time the foreground closes.
-    var port = chrome.extension.connect({ name: "statusPoller" })
+    port = chrome.extension.connect({ name: "statusPoller" });
     port.onDisconnect.addListener(function () { port = null; });
 
     //errorMessage is optional, used to display errors to GUI.
@@ -53,17 +54,13 @@ function YoutubePlayer() {
                             }
                         },
                         "onStateChange": function (playerState) {
-                            //If the UI is closed we can't post a message to it -- so need to handle next song in background.
+                            //Don't pass message to UI if it is closed. Handle sock change in the background.
                             //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
-                            if (playerState.data === PlayerStates.ENDED) {
-                                if (playlist.songCount() > 1){
-                                    player.loadSongById(player.getNextSong().id);  
-                                }
+                            if (playerState.data === PlayerStates.ENDED && playlist.songCount() > 1) {
+                                player.loadSongById(player.getNextSong().id);  
                             }
                             else if(playerState.data === PlayerStates.VIDCUED){
-                                //Don't leave the player in the VIDCUED state because it does not work well with seekTo.
-                                //If the vid is cued (not playing) and the user seeks to the middle of the song it will start playing.
-                                //If the vid is paused (not playing) and the user seeks to the middle of the song it will not start playing.
+                                //Don't leave the player in the VIDCUED state because YouTube's seekTo API will play a song in the VIDCUED state.
                                 player.playVideo();
                                 player.pauseVideo();
                             }

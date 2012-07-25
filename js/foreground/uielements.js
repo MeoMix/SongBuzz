@@ -9,15 +9,14 @@
 //  * Song Progress Bar
 function UiElements() {
     "use strict";
-    console.log("Reloading playerControls");
     var playerControls = new PlayerControls();
     var header = new Header();
 
     var songsTab = new SongsTab();
     var playlistsTab = new PlaylistsTab();    
 
+    //TODO: Move into songs tab.
     var songList = new SongList();
-    var settings = new Settings();
 
     //No public methods so no object returned.  
     new TimeDisplay();
@@ -32,13 +31,13 @@ function UiElements() {
                 case PlayerStates.ENDED:
                 case PlayerStates.VIDCUED:
                 case PlayerStates.PAUSED:
-                    playerControls.setToggleMusicToPlay();
+                    playerControls.setPlayPauseButtonToPlay();
                     break;
                 case PlayerStates.PLAYING:
                     //Volume only becomes available once a video has become cued or when popup reopens.
                     var volume = Player.getVolume();
                     playerControls.setVolume(volume);
-                    playerControls.setToggleMusicToPause();
+                    playerControls.setPlayPauseButtonToPlay();
                     break;
             }
 
