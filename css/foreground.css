@@ -241,13 +241,14 @@
 }
 
 #PlayPauseButton.disabled:hover,
-#SkipButton.disabled:hover{
+#SkipButton.disabled:hover {
   background-color: transparent;
   cursor: default;
 }
 
 #PlayPauseButton.disabled:active,
-#SkipButton.disabled:active{
+#SkipButton.disabled:active, 
+#ShuffleButton.disabled:active{
   background-image: none;
 }
 
@@ -257,6 +258,11 @@
 #SettingsMenuButton:hover,
 #PlaylistsMenuButton:hover {
   background-color:rgba(255,255,255,0.3);
+}
+
+#ShuffleButton.disabled:hover{
+  background: rgba(0,0,0,.5);
+  cursor: default;
 }
 
 #PlayPauseButton:active, 
