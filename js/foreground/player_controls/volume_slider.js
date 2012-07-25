@@ -93,6 +93,7 @@ var VolumeSlider = (function(){
 		updateWithVolume(volume);
 	};
 
+	//NOTE: This wouldn't be necessary if YT's muted property returned properly. Keep checking back to see if its fixed.
 	var toggleMute = function(){
 		if(isMuted){
 			setVolume(musicVolume);
