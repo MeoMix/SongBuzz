@@ -4,8 +4,10 @@ function PlayerControls() {
     var buildToggleMusicButton = function (selector) {
         var toggleMusicButton = $(selector);
 
+        console.log("setting property setToPlay");
         //Change the music button to the 'Play' image and cause a song to play upon click.
         toggleMusicButton.setToPlay = function () {
+            console.log('setToPlay');
             this.off('click').on('click', function () { return Player.play(); });
             $('#pauseIcon').hide();
             $('#playIcon').show();
@@ -13,6 +15,7 @@ function PlayerControls() {
 
         //Change the music button to the 'Pause' image and cause a song to pause upon click.
         toggleMusicButton.setToPause = function () {
+            console.log('setToPause');
             this.off('click').on('click', function () { return Player.pause(); });
             $('#pauseIcon').show();
             $('#playIcon').hide();
@@ -21,6 +24,7 @@ function PlayerControls() {
         //Enable the button such that it can be clicked.
         //TODO: Remove dependency on checking for class.
         toggleMusicButton.enable = function () {
+            console.log('enable');
             if (this.hasClass('disabled')) {
                 this.removeClass('disabled');
                 $(this).find('.path').css('fill', 'black');
@@ -201,6 +205,7 @@ function PlayerControls() {
 
     //Private Fields
     var volumeSlider = buildVolumeSlider('#VolumeSlider');
+    console.log('buildToggleMusicButton');
     var toggleMusicButton = buildToggleMusicButton('#ToggleMusicButton');
     var skipButton = buildSkipButton('#SkipButton');
     var shuffleButton = buildShuffleButton('#ShuffleButton');

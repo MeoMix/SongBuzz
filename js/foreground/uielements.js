@@ -9,6 +9,7 @@
 //  * Song Progress Bar
 function UiElements() {
     "use strict";
+    console.log("Reloading playerControls");
     var playerControls = new PlayerControls();
     var header = new Header();
 

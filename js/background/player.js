@@ -1,7 +1,6 @@
 ﻿//TODO: These variables need to persist because they maintain state when GUI isn't open, but this does not seem like the right place for them to be.
 var player = null;
 var currentSong = null;
-var port = null;
 var ready = false;
 var exploreEnabled = false;
 var playlists = null;
@@ -10,6 +9,10 @@ var playlist = null;
 //Handles communications between the GUI and the YT Player API.
 function YoutubePlayer() {
     "use strict";
+
+    //Open a connection between the background and foreground. The connection will become invalid every time the foreground closes.
+    var port = chrome.extension.connect({ name: "statusPoller" })
+    port.onDisconnect.addListener(function () { port = null; });
 
     //errorMessage is optional, used to display errors to GUI.
     var sendUpdate = function (errorMessage) {
@@ -21,21 +24,7 @@ function YoutubePlayer() {
         currentSong = playlist.getSongById(id);
         player.cueVideoById(currentSong.songId);
     };
-
-    var playVideo = function(){
-        player.playVideo();
-    };
-
-    var pauseVideo = function(){
-        player.pauseVideo();
-    };
-
-    //Open a port between background and foreground. Connection closes every time foreground closes.
-    if (!port) {
-        port = chrome.extension.connect({ name: "statusPoller" });
-        port.onDisconnect.addListener(function () { port = null; });
-    }
-
+    
     if (player) {
         //GUI has been re-opened and player is already initialized -- send an update to the GUI.
         sendUpdate();
@@ -64,14 +53,6 @@ function YoutubePlayer() {
                             }
                         },
                         "onStateChange": function (playerState) {
-
-                            //TODO: Implement desktop notifications.
-                            // if(playerState.data == PlayerStates.PLAYING){
-                            //     var nowPlayingNotification = webkitNotifications.createNotification(null, 'Now Playing', currentSong.name);
-                            //     nowPlayingNotification.ondisplay = function(){setTimeout(function(){nowPlayingNotification.cancel()}, 2000)};
-                            //     nowPlayingNotification.show();
-                            // }
-
                             //If the UI is closed we can't post a message to it -- so need to handle next song in background.
                             //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
                             if (playerState.data === PlayerStates.ENDED) {
@@ -83,8 +64,8 @@ function YoutubePlayer() {
                                 //Don't leave the player in the VIDCUED state because it does not work well with seekTo.
                                 //If the vid is cued (not playing) and the user seeks to the middle of the song it will start playing.
                                 //If the vid is paused (not playing) and the user seeks to the middle of the song it will not start playing.
-                                playVideo();
-                                pauseVideo();
+                                player.playVideo();
+                                player.pauseVideo();
                             }
                             else if (port) {
                                 sendUpdate();
@@ -282,11 +263,11 @@ function YoutubePlayer() {
         },
 
         play: function () {
-            playVideo();
+            player.playVideo();
         },
 
         pause: function () {
-            pauseVideo();
+            player.pauseVideo();
         },
 
         loadSongById: function (id) {
