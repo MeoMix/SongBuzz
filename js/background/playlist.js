@@ -104,6 +104,16 @@ function Playlist(id, name) {
 
             return songs[nextSongIndex];
         },
+        getPreviousSong: function (currentId) {
+            var previousSongIndex = getSongIndexById(currentId) - 1;
+
+            // Goes to the end of the current playlist.
+            if (previousSongIndex < 0){
+                previousSongIndex = songs.length - 1;
+            }
+            
+            return songs[previousSongIndex];
+        },
         songCount: function () {
             return songs.length;
         },
