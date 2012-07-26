@@ -34,6 +34,7 @@
     <script src="js/foreground/player_controls/player_controls.js"></script>
     <script src="js/foreground/player_controls/shuffle_button.js"></script>
     <script src="js/foreground/player_controls/skip_button.js"></script>
+    <script src="js/foreground/player_controls/previous_button.js"></script>
     <script src="js/foreground/player_controls/playpause_button.js"></script>
     <script src="js/foreground/player_controls/volume_slider.js"></script>
 
@@ -60,6 +61,13 @@
               </span>
           </div>
           <div id="SkipButton" class="disabled">
+            <svg width="16px" height="16px">
+              <rect class="path" x="14" y="3" width="2" height="10" fill="gray" />
+              <path class="path" d="M0,3 L7,8 L0,13z" fill="gray" />
+              <path class="path" d="M7,3 L14,8, L7,13z" fill="gray" />
+            </svg>  
+          </div>
+          <div id="PreviousButton" class="disabled">
             <svg width="16px" height="16px">
               <rect class="path" x="14" y="3" width="2" height="10" fill="gray" />
               <path class="path" d="M0,3 L7,8 L0,13z" fill="gray" />

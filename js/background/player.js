@@ -141,6 +141,13 @@ function YoutubePlayer() {
 
             return nextSong;
         },
+        getPreviousSong: function (id) {
+            var previousSong = null;
+            if(currentSong)
+                previousSong = playlist.getPreviousSong(currentSong.id);
+
+            return previousSong;
+        },
         setVolume: function (volume) {
             if(volume){
                 player.setVolume(volume);
@@ -237,8 +244,15 @@ function YoutubePlayer() {
             sendUpdate();
         },
         //Skips to the next song. Will start playing the song if the player was already playing.
-        skipSong: function () {
-            var nextSong = this.getNextSong();
+        //if where == "next" it'll skip to the next song. otherwise it will skip to the previous song.
+        skipSong: function (where) {
+            var nextSong = "";
+
+            if (where == "next")
+                nextSong = this.getNextSong();
+            else
+                nextSong = this.getPreviousSong();
+
             if (player.getPlayerState() === PlayerStates.PLAYING){
                 this.loadSongById(nextSong.id);
             }
