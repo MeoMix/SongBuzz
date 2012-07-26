@@ -4,6 +4,7 @@ var PlayerControls = (function() {
     var volumeSlider = new VolumeSlider();
     var playPauseButton = new PlayPauseButton();
     var skipButton = new SkipButton();
+    var previousButton = new PreviousButton();
     var shuffleButton = new ShuffleButton();
 
     return {
@@ -40,9 +41,11 @@ var PlayerControls = (function() {
         setEnableSkipButton: function (enable) {
             if(enable){
                 skipButton.enable();
+                previousButton.enable();
             }
             else{
                 skipButton.disable();
+                previousButton.disable();
             }
         }
     };
