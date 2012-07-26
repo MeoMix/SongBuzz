@@ -51,3 +51,5 @@ Thank You's
 ========
 
 Misostc - Responsible for the entirety of the UI theme.
+Hfern - Contributor
+Sabarasaba - Contributor
