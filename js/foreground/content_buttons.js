@@ -1,24 +1,29 @@
 function ContentButtons(){
     "use strict";
+    var menuButtons = $('.menubutton');
+    var content = $('.content');
+    var homeContent = $('#HomeContent');
+    var playlistsContent = $('#PlaylistsContent');
+    var settingsContent = $('#SettingsContent');
 
 	//User clicks on a different button on the LHS, possible change of content display.
-    $('.menubutton').click(function(){
+    menuButtons.click(function(){
         //If the user clicked a button that isn't the current button.
         if(!$(this).hasClass('active')){
             //Clear content and show new content based on button clicked.
-            $('.menubutton').removeClass('active');
+            menuButtons.removeClass('active');
             $(this).addClass('active');
-            $('.content').hide();
-
+            
+            content.hide();
             switch(this.id){
                 case 'HomeMenuButton':
-                    $('#HomeContent').show();
+                    homeContent.show();
                 break;
                 case 'PlaylistsMenuButton':
-                    $('#PlaylistsContent').show();
+                    playlistsContent.show();
                 break;
                 case 'SettingsMenuButton':
-                    $('#SettingsContent').show();
+                    settingsContent.show();
                 break;
             }
         }

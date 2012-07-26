@@ -11,8 +11,7 @@ function Playlist(id, name) {
     //Get songs from localstorage.
     try {
         var item = localStorage.getItem(id);
-        //Treat accidentally serializing undefined as undefined.
-        if (item && item !== 'undefined'){
+        if (item){
             songs = JSON.parse(item);
         }
     }
@@ -22,20 +21,19 @@ function Playlist(id, name) {
 
     //Provide some default songs for first timers.
     if (!songs){
-        songs = [{ "id": "ec5367e5-0026-4abf-8202-6a6b8fd10878", "songId": "_U4KUmr36Q0", "url": "http://youtu.be/_U4KUmr36Q0", "name": "Dj Alias and Benson - San Francisco Bay", "totalTime": "274" }, { "id": "3bc1b5e6-0055-4d55-bca0-ee472c8474ed", "songId": "bU639WhxTIs", "url": "http://youtu.be/bU639WhxTIs", "name": "Bondax - All Inside | HD", "totalTime": "235" }, { "id": "a7b60601-636f-41db-ac96-5e0fd1a0f7d0", "songId": "CxHFnVCZDRo", "url": "http://youtu.be/CxHFnVCZDRo", "name": "The Beatles - Don't Let Me Down (Gramatik 2012 Remix)", "totalTime": "327"}];
+        songs = [{ "id": "ec5367e5-0026-4abf-8202-6a6b8fd10878", "videoId": "_U4KUmr36Q0", "url": "http://youtu.be/_U4KUmr36Q0", "name": "Dj Alias and Benson - San Francisco Bay", "totalTime": "274" }, { "id": "3bc1b5e6-0055-4d55-bca0-ee472c8474ed", "videoId": "bU639WhxTIs", "url": "http://youtu.be/bU639WhxTIs", "name": "Bondax - All Inside | HD", "totalTime": "235" }, { "id": "a7b60601-636f-41db-ac96-5e0fd1a0f7d0", "videoId": "CxHFnVCZDRo", "url": "http://youtu.be/CxHFnVCZDRo", "name": "The Beatles - Don't Let Me Down (Gramatik 2012 Remix)", "totalTime": "327"}];
     }
 
+    //Remove any corrupt entries from playlist.
     var ensureValidState = function () {
         for (var i = 0; i < songs.length; i++) {
             var song = songs[i];
-            if (!song || !song.url || !song.id || !song.songId || !song.name) {
+            if (!song || !song.url || !song.id || !song.videoId || !song.name) {
                 songs.splice(i, 1);
                 i--;
             }
         }   
-    };
-    //Remove any corrupt entries from playlist.
-    ensureValidState();
+    }();
 
     var save = function () {
         localStorage.setItem(id, JSON.stringify(songs));
@@ -62,22 +60,18 @@ function Playlist(id, name) {
         id: id,
         title: name ? name : "New Playlist",
         selected: false,
-
         clear: function(){
             songs = [];
             save();
         },
-
         deselect: function(){
             this.selected = false;
             save();
         },
-
         select: function(){
             this.selected = true;
             save();
         },
-
         //Takes a song's UID and returns the full song object if found.
         getSongById: function (id) {
             var song = null;
@@ -95,15 +89,13 @@ function Playlist(id, name) {
 
             return song;
         },
-
         getFirstSong: function(){
             var firstSong = songs[0];
             return firstSong;
         },
-
         //Takes a song and returns the next song object by index.
-        getNextSong: function (currentSongId) {
-            var nextSongIndex = getSongIndexById(currentSongId) + 1;
+        getNextSong: function (currentId) {
+            var nextSongIndex = getSongIndexById(currentId) + 1;
 
             //Loop back to the front if at end. Should make this togglable in the future.
             if (songs.length <= nextSongIndex){
@@ -112,23 +104,20 @@ function Playlist(id, name) {
 
             return songs[nextSongIndex];
         },
-
         songCount: function () {
             return songs.length;
         },
-
         getSongs: function () {
             return songs;
         },
-
-        addSongById: function (songId, callback) {
-            var song = new Song(songId, function () {
+        addSongById: function (videoId, callback) {
+            YTHelper.getVideoInformation(videoId, function(videoInformation){
+                var song = new Song(videoInformation);
                 songs.push(song);
                 save();
                 callback(song);
-            });
+            })
         },
-
         removeSongById: function (id) {
             var index = getSongIndexById(id);
 
@@ -137,21 +126,19 @@ function Playlist(id, name) {
                 save();
             }
         },
-
         //Naieve implementation
         //Sync is used to ensure proper song order after the user drag-and-drops a song on the playlist. 
-        sync: function (songIds) {
+        sync: function (ids) {
             var syncedSongs = [];
 
-            for (var songIndex = 0; songIndex < songIds.length; songIndex++){
-                var song = this.getSongById(songIds[songIndex]);
+            $(ids).each(function(){
+                var song = this.getSongById(this);
                 syncedSongs.push(song);
-            }
+            });
 
             songs = syncedSongs;
             save();
         },
-
         //Randomizes the playlist and then saves it.
         shuffle: function () {
             var i, j, t;

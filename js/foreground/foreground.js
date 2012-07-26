@@ -5,13 +5,12 @@ var Player = null;
 //This fires everytime the UI opens or is re-opened. 
 $(function () {
     "use strict";
-
     var Foreground = (function() {
         Player = chrome.extension.getBackgroundPage().YoutubePlayer();
-        //Initialize foreground UI and maintain a handle to be able to update UI.
-        var uiElements = new UiElements();
 
         var listen = function () {
+            //Initialize foreground UI and maintain a handle to be able to update UI.
+            var uiElements = new UiElements();
             //Background's player object will notify the foreground whenever its state changes.
             chrome.extension.onConnect.addListener(function (port) {
                 port.onMessage.addListener(function (message) {
@@ -20,12 +19,9 @@ $(function () {
                         alert(message.errorMessage);
                     }
 
-                    uiElements.updateWithMessage(message);
+                    uiElements.update(message.playerState, message.songs, message.currentSong);
                 });
             });
         } (); //Start listening for YT player events.
     })();
 });
-
-
-

@@ -1,19 +1,15 @@
 ﻿//Holds all the relevant data for a song.
-//Goes out to the YT data feed to interogate for some song-specific information.
-var Song = function(songId, callback) {
+var Song = function(videoInformation) {
     "use strict";
+    //Strip out the videoid. An example of $t's contents: tag:youtube.com,2008:video:UwHQp8WWMlg
+    var videoId = videoInformation.id.$t.substring(videoInformation.id.$t.length - 11);
 
-    var self = this;
-    $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + songId + '?v=2&alt=json-in-script&callback=?', function (data) {
-        //Generate a unique ID for the song.
-        self.id = Helpers.generateGuid();
-        //The youtube song ID.
-        self.songId = songId;
-        //Short URL
-        self.url = "http://youtu.be/" + songId;
-        self.name = data.entry.title.$t;
-        self.totalTime = data.entry.media$group.yt$duration.seconds;
-        callback();
-    });
+    return {
+        id: Helpers.generateGuid(),
+        videoId: videoId,
+        url: 'http://youtu.be/' + videoId,
+        name: videoInformation.title.$t,
+        totalTime: videoInformation.media$group.yt$duration.seconds
+    }
 }
 

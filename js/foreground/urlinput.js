@@ -4,7 +4,6 @@
 //TODO: This has gotten a bit bulky.
 function UrlInput(songListHeader) {
     "use strict";
-
     var addInput = $('#CurrentSongDisplay .addInput').attr('placeholder', 'Search or Enter YouTube URL');
     var addButton = $('#CurrentSongDisplay .addButton');
 
@@ -18,27 +17,25 @@ function UrlInput(songListHeader) {
                 var tabsProcessed = 0;
                 var restrictedSongs = [];
                 $(tabs).each(function(){
-                    var songId = YTHelper.parseUrl(this.url); 
+                    var videoId = YTHelper.parseUrl(this.url); 
 
-                    if (songId) {
-                        var playable = YTHelper.isPlayable(songId, function (isPlayable) {
+                    if (videoId) {
+                        var playable = YTHelper.isPlayable(videoId, function (isPlayable) {
                             if (!isPlayable) {
-                                var songAfterCreated = function(){
+                                YTHelper.getVideoInformation(videoId, function(videoInformation){
+                                    restrictedSongs.push(new Song(videoInformation));
                                     tabsProcessed++;
-                                    restrictedSongs.push(song);
 
                                     //Notify user that all songs in restrictedSongs were unable to be played and prompt for action.
                                     //TODO: Don't repeat code just because there is a callback function.
                                     if(tabsProcessed === tabs.length){
                                         showRestrictedSongDialog(restrictedSongs);
                                     }
-                                };
-
-                                var song = new Song(songId, songAfterCreated);
+                                })
                             }
                             else {
                                 tabsProcessed++;
-                                Player.addSongById(songId);
+                                Player.addSongById(videoId);
                                 songListHeader.flashMessage('Thanks!', 2000);
                             }
                         });
@@ -142,19 +139,19 @@ function UrlInput(songListHeader) {
     var parseUrlInput = function () {
         //Wrapped in a timeout to support 'rightclick->paste' 
         setTimeout(function () {
-            var songId = YTHelper.parseUrl(addInput.val());
+            var videoId = YTHelper.parseUrl(addInput.val());
 
             //If found a valid YouTube link then just add the video.
-            if (songId) {
-                var playable = YTHelper.isPlayable(songId, function (isPlayable) {
+            if (videoId) {
+                var playable = YTHelper.isPlayable(videoId, function (isPlayable) {
                     if (!isPlayable) {
                         //Notify the user that the song they attempted to add had content restrictions, ask if it is OK to find a replacement.
-                        var song = new Song(songId, function () {
-                            showRestrictedSongDialog(song);
-                        });
+                        YTHelper.getVideoInformation(videoId, function(videoInformation){
+                            showRestrictedSongDialog(new Song(videoInformation));
+                        })
                     }
                     else {
-                        Player.addSongById(songId);
+                        Player.addSongById(videoId);
                         songListHeader.flashMessage('Thanks!', 2000);
                     }
                 });
@@ -176,14 +173,14 @@ function UrlInput(songListHeader) {
                 var listItem = $('<li/>').appendTo(restrictedSongList);
 
                 var restrictedSongLink = $('<a/>', {
-                    id: this.songId,
-                    href: '#' + this.songId,
+                    id: this.id,
+                    href: '#' + this.videoId,
                     text: this.name
                 }).appendTo(listItem);
 
                 var findPlayableCheckBox = $('<input/>', {
                     type: 'checkbox',
-                    songid: this.songId
+                    videoId: this.videoId
                 }).appendTo(listItem);
             });
 
@@ -198,7 +195,7 @@ function UrlInput(songListHeader) {
                         //If the user confirms then go find each checked song and find a replacement for it.
                         restrictedSongList.find('input').each(function(){
                             if(this.checked){
-                                YTHelper.findPlayable($(this).attr('songid'), function(playableSong){
+                                YTHelper.findPlayable($(this).attr('videoId'), function(playableSong){
                                     Player.addSongById(playableSong.videoId);
                                 });
                             }

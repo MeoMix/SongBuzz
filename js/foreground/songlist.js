@@ -8,12 +8,12 @@ function SongList() {
         //Whenever a song row is moved inform the Player of the new songlist order.
         //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
         update: function () {
-            var songIds = [];
+            var ids = [];
             songList.find('li a').each(function(){
-                songIds.push(this.id);
+                ids.push(this.id);
             });
 
-            Player.sync(songIds);
+            Player.sync(ids);
         }
     });
 
@@ -100,8 +100,8 @@ function SongList() {
 
             //Load and start playing a song if it is clicked.
             songList.children().click(function(){
-                var clickedSongId = $(this).children()[0].id;
-                Player.loadSongById(clickedSongId);
+                var clickedId = $(this).children()[0].id;
+                Player.loadSongById(clickedId);
                 return false;
             });
 

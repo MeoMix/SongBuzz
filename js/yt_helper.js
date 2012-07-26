@@ -6,30 +6,20 @@ YTHelper = (function(){
     var searchUrl = "http://gdata.youtube.com/feeds/api/videos?orderBy=relevance&time=all_time&max-results=30&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
     var suggestUrl = "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
         
-    //TODO: Allow users to submit songs which do not play.
     //This is necessary because not all songs will play embedded, but YouTube does not expose all the criterion for a song not playing.
     //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
     var blacklist = ['7AW9C3-qWug'];
 
     //Convert JSON response into object.
     var buildYouTubeVideo = function(entry){
-        //The id entry has tag information stored in it, strip off this information.
-        var id = entry.id.$t;
-        var start = id.lastIndexOf(':') + 1;
-        var end = id.length;
-
         var youtubeVideo = {
-            videoId: id.substring(start, end),
-            entry: entry, //Provide access to the entry itself so that its clear we have more information if needed.
+            //Strip out the videoid. An example of $t's contents: tag:youtube.com,2008:video:UwHQp8WWMlg
+            videoId: entry.id.$t.substring(entry.id.$t.length - 11),
             title: entry.title.$t,
             duration: entry.media$group.yt$duration.seconds,
-            category: entry.media$group.media$category[0].$t,
-            categoryLabel: entry.media$group.media$category[0].label,
-            description: entry.media$group.media$description.$t,
             accessControls: entry.yt$accessControls,
             appControl: entry.app$control,
-
-            //Returns a value indicating whether the current video has any content restrictions.
+            //Returns whether the video was found to have any content restrictions which would restrict playback.
             isPlayable: function(){
                 var isPlayable = $.inArray(this.videoId, blacklist) !== 0;
 
@@ -65,8 +55,7 @@ YTHelper = (function(){
             //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
             $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + youtubeVideoId + '?v=2&alt=json-in-script&format=5&callback=?', function (data) {
                 var video = buildYouTubeVideo(data.entry);
-                var isPlayable = video.isPlayable();
-                callback(isPlayable);   
+                callback(video.isPlayable());   
             });
         },
 
@@ -76,28 +65,18 @@ YTHelper = (function(){
             var self = this;
 
             $.getJSON(searchUrl + text, function (response) {
-                var videos = [];
-                if (response.feed) {
-                    var feed = response.feed;
-                    var entries = response.feed.entry;
+                var playableVideos = [];
 
-                    $(entries).each(function(){
-                        var video = buildYouTubeVideo(this);
+                //Add all playable songs to a list and return.
+                $(response.feed.entry).each(function(){
+                    var video = buildYouTubeVideo(this);
 
-                        if(video.isPlayable()){
-                            videos.push(video);
-                        }
-                    });
-                }
-                else {
-                    var video = buildYouTubeVideo(response.entry);
-
-                    if(video.isPlayable()) {
-                        videos.push(video);
+                    if(video.isPlayable()){
+                        playableVideos.push(video);
                     }
-                }
+                });
 
-                callback(videos);
+                callback(playableVideos);
             });
         },
         
@@ -114,10 +93,10 @@ YTHelper = (function(){
             });
         },
 
-        //Takes a songid which is presumed to have content restrictions and looks through YouTube
+        //Takes a videoId which is presumed to have content restrictions and looks through YouTube
         //for a song with a similiar name that might be the right song to play.
-        findPlayable: function(songId, callback){
-            $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + songId + '?v=2&alt=json-in-script&callback=?', function (data) {
+        findPlayable: function(videoId, callback){
+            $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json-in-script&callback=?', function (data) {
                 var songName = data.entry.title.$t;
 
                 YTHelper.search(songName, function (videos) {
@@ -135,20 +114,26 @@ YTHelper = (function(){
             });
         },
 
-        //Takes a URL and returns a YouTube song unique identifier if found inside of the URL.
+        //Takes a URL and returns a videoId if found inside of the URL.
         parseUrl: function(url){
             //First try the really simple match -- ?v=''
-            var songId = $.url(url).param('v');
+            var videoId = $.url(url).param('v');
 
-            if (!songId) {
+            if (!videoId) {
                 //Try more robust matching pattern. I'm using this along with the URL jQuery plug-in because I can't decipher this regex, but it matches a lot.
                 var match = url.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/);
                 if (match && match[7].length === 11){
-                    songId = match[7];
+                    videoId = match[7];
                 }
             }
 
-            return songId;
+            return videoId;
+        },
+
+        getVideoInformation: function(videoId, callback){
+            $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json-in-script&callback=?', function (data) {
+                callback(data.entry);
+            });
         }
     };
 })();

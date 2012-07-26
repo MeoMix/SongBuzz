@@ -31,6 +31,5 @@ function Settings() {
     }
 
     var settingsDialog = buildDialog(settingsDialogSelector);
-
     $('#Settings').on('click', function () { settingsDialog.dialog('open'); });
 }

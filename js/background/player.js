@@ -1,39 +1,20 @@
-﻿//TODO: These variables need to persist because they maintain state when GUI isn't open, but this does not seem like the right place for them to be.
+﻿//TODO: These variables need to persist because they maintain state when UI isn't open, but this does not seem like the right place for them.
 var player = null;
 var currentSong = null;
 var port = null;
-var ready = false;
-var exploreEnabled = false;
 var playlists = null;
 var playlist = null;
 
 //Handles communications between the GUI and the YT Player API.
 function YoutubePlayer() {
-    "use strict";
-
+    "use strict";                            
     //Open a connection between the background and foreground. The connection will become invalid every time the foreground closes.
     port = chrome.extension.connect({ name: "statusPoller" });
     port.onDisconnect.addListener(function () { port = null; });
-
-    //errorMessage is optional, used to display errors to GUI.
-    var sendUpdate = function (errorMessage) {
-        var playerState = player.getPlayerState();
-        port.postMessage({playerState: playerState, songs: playlist.getSongs(), currentSong: currentSong, errorMessage: errorMessage });
-    };
-
-    var cueSongById = function(id) {
-        currentSong = playlist.getSongById(id);
-        player.cueVideoById(currentSong.songId);
-    };
     
-    if (player) {
-        //GUI has been re-opened and player is already initialized -- send an update to the GUI.
-        sendUpdate();
-    }
-    else {
+    if (!player) {
         playlists = new Playlists();
         playlist = playlists.getCurrentPlaylist();
-
         //Create YT player iframe.
         YTPlayerApiHelper.ready(function () {
             var frameID = YTPlayerApiHelper.getFrameID("MusicHolder");
@@ -44,25 +25,17 @@ function YoutubePlayer() {
                 player = new YT.Player(frameID, {
                     events: {
                         "onReady": function () {
-                            //player functionality not available until ready   
-                            ready = true;
-
                             //If there is a song to cue might as well have it ready to go.
                             if (playlist.songCount() > 0){
-                                var defaultSongId = playlist.getSongs()[0].id;
-                                cueSongById(defaultSongId);
+                                cueSongById(playlist.getSongs()[0].id);
                             }
                         },
                         "onStateChange": function (playerState) {
                             //Don't pass message to UI if it is closed. Handle sock change in the background.
                             //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
                             if (playerState.data === PlayerStates.ENDED && playlist.songCount() > 1) {
-                                player.loadSongById(player.getNextSong().id);  
-                            }
-                            else if(playerState.data === PlayerStates.VIDCUED){
-                                //Don't leave the player in the VIDCUED state because YouTube's seekTo API will play a song in the VIDCUED state.
-                                player.playVideo();
-                                player.pauseVideo();
+                                var nextSong = playlist.getNextSong(currentSong.id);
+                                player.loadSongById(nextSong.id);  
                             }
                             else if (port) {
                                 sendUpdate();
@@ -80,9 +53,6 @@ function YoutubePlayer() {
                                 case 150:
                                     sendUpdate("Video requested does not allow playback in the embedded players");
                                     break;
-                                default:
-                                    sendUpdate("I received an error and I don't know what happened!");
-                                    break;
                             }
                         }
                     }
@@ -91,15 +61,28 @@ function YoutubePlayer() {
         });
     }
 
+    //errorMessage is optional, used to pass error messages to the UI.
+    var sendUpdate = function (errorMessage) {
+        port.postMessage({
+            playerState: player.getPlayerState(),
+            songs: playlist.getSongs(),
+            currentSong: currentSong,
+            errorMessage: errorMessage
+        });
+    };
+
+    var cueSongById = function(id) {
+        currentSong = playlist.getSongById(id);
+        player.cueVideoById(currentSong.videoId);
+    };
+
     return {
         getPlaylistTitle: function(){
             return playlist.title;
         },
-
         getPlaylists: function(){
             return playlists.getPlaylists();
         },
-
         selectPlaylist: function(playlistId){
             if(playlist.id !== playlistId){
                 this.pause();
@@ -111,7 +94,7 @@ function YoutubePlayer() {
                 var firstSongInPlaylist = playlist.getFirstSong();
 
                 if(firstSongInPlaylist){
-                    this.cueSongById(firstSongInPlaylist.id);
+                    cueSongById(firstSongInPlaylist.id);
                 }
                 else{
                     currentSong = null;
@@ -120,50 +103,44 @@ function YoutubePlayer() {
                 sendUpdate();
             }
         },
-
         addPlaylist: function(playlistName){
             playlists.addPlaylist(playlistName);
              sendUpdate();
         },
-
         removePlaylistById: function(playlistId){
             //Don't allow removing of active playlist.
             //TODO: Perhaps just don't allow deleting the last playlist? More difficult.
-
             if(playlist.id !== playlistId){
                 playlists.removePlaylistById(playlistId);
                 sendUpdate();
             }
         },
-
+        getPlayerState: function(){
+            var playerState = PlayerStates.UNSTARTED;
+            //When the UI first loads it may request the player state before the API is ready to give it up.
+            if(player.getPlayerState)
+                playerState = player.getPlayerState();
+            return playerState;
+        },
         getSongs: function () {
             return playlist.getSongs();
         },
-
         getCurrentSong: function () {
             return currentSong;
         },
-
         getSongById: function(id){
             return playlist.getSongById(id);
         },
-
         setCurrentSongById: function (id) {
             currentSong = playlist.getSongById(id);
         },
-
-        setExploreEnabled: function (enable) {
-            exploreEnabled = enable;
-        },
-
-        getExploreEnabled: function () {
-            return exploreEnabled;
-        },
-
         getNextSong: function () {
-            return playlist.getNextSong(currentSong.id);
-        },
+            var nextSong = null;
+            if(currentSong)
+                nextSong = playlist.getNextSong(currentSong.id);
 
+            return nextSong;
+        },
         setVolume: function (volume) {
             if(volume){
                 player.setVolume(volume);
@@ -172,61 +149,44 @@ function YoutubePlayer() {
                 player.mute();
             }
         },
-
         //Will return undefined until PlayerStates.VIDCUED
         getVolume: function () {
             return player.getVolume();
         },
-
-        sync: function (songIds) {
-            playlist.sync(songIds);
+        sync: function (ids) {
+            playlist.sync(ids);
         },
-
         //The allowSeekAhead parameter determines whether the player will make a new request to the server if the seconds parameter specifies a time outside of the currently buffered video data.
         //Set to false when dragging and true when drag complete.
         seekTo: function(timeInSeconds){
+            //YouTube's seekTo method will cause the video to play if it is left in the VIDCUED state.
+            if(player.getPlayerState() === PlayerStates.VIDCUED){
+                player.pause();
+            }
+
             var allowSeekAhead = true;
             player.seekTo(timeInSeconds, allowSeekAhead);
         },
-
-        //TODO: Simplify
         removeSongById: function (id) {
-            var song = playlist.getSongById(id);
-            var nextSong = this.getNextSong();
+            if(id === currentSong.id){
+                currentSong = null;
+                player.pauseVideo();
+            }
 
             playlist.removeSongById(id);
 
-            //Deleting the visually-selected song.
-            if (currentSong.id === song.id) {
-                //No songs left to delete because getNextSong looped around.
-                if (nextSong.id === currentSong.id) {
-                    //**WARNING**: Do not use clearVideo(); here. Doing so will fire VIDCUED events.
-                    currentSong = null;
+            var nextSong = this.getNextSong();
+            if(nextSong){
+                cueSongById(nextSong.id);
+            }
 
-                    //Send a message either via pauseVideo or a custom message -- no event sent if video isn't playing.
-                    if (player.getPlayerState() === PlayerStates.PLAYING){
-                        player.pauseVideo();
-                    }
-                    else{
-                        sendUpdate();
-                    }
-                }
-                else{
-                    this.cueSongById(nextSong.id); 
-                }
-            }
-            else {
-                //If state of player hasn't changed (due to stopping or cueing) send a message to inform of song removal.
-                sendUpdate();
-            }
+            sendUpdate();
         },
         //Adds a song to the playlist. If it is the first song in the playlist, that song is loaded as the current song.
         addSongById: function (id) {
-            var self = this;
             playlist.addSongById(id, function (song) {
-                var songCount = playlist.songCount();
-                if (songCount === 1){
-                    self.cueSongById(song.id);
+                if (playlist.songCount() === 1){
+                    cueSongById(song.id);
                 }
 
                 sendUpdate();
@@ -238,7 +198,7 @@ function YoutubePlayer() {
             var currentTime = null;
             var timeInSeconds = 0;
 
-            if (ready && currentSong) {
+            if (currentSong) {
                 if (player.getPlayerState() === PlayerStates.ENDED){
                     currentTime = currentSong.totalTime; 
                 }
@@ -258,20 +218,16 @@ function YoutubePlayer() {
 
             return totalTime;
         },
-
         play: function () {
             player.playVideo();
         },
-
         pause: function () {
             player.pauseVideo();
         },
-
         loadSongById: function (id) {
             currentSong = playlist.getSongById(id);
-            player.loadVideoById(currentSong.songId);
+            player.loadVideoById(currentSong.videoId);
         },
-
         cueSongById: function (id) {
             cueSongById(id);
         },
@@ -287,7 +243,7 @@ function YoutubePlayer() {
                 this.loadSongById(nextSong.id);
             }
             else{
-                this.cueSongById(nextSong.id);  
+                cueSongById(nextSong.id);  
             }
         }
     };

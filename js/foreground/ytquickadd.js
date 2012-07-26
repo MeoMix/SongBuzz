@@ -23,14 +23,16 @@ var YtQuickAdd = (function(){
 		ele: function(){ return $('#YtQuickAddBar'); },
 		title: function(){ return $('#YTQATitle'); },
 		promptShow: function(ytid) {
-			var song = new Song(ytid, function(){
+			YTHelper.getVideoInformat(ytid, function(videoInformation){
+				var song = new Song(videoInformation);
+
 				//TODO check if song is already in playlist
-				var playable = YTHelper.isPlayable(song.songId, function (isPlayable) {
+				var playable = YTHelper.isPlayable(song.videoId, function (isPlayable) {
 					if(playable != false) { //getting playable = undefined ..?
 						YtQuickAdd.renderInfo(song);
 					}
 				});
-			});
+			})
 		},
 		promptHide : function( /* optional function */ callback) {
 			// hide the bar
@@ -43,7 +45,7 @@ var YtQuickAdd = (function(){
 			YtQuickAdd.ele().animate({"top": "0px"});
 		},
 		addToPlayList : function() {
-			Player.addSongById(YtQuickAdd.providedSong.songId);
+			Player.addSongById(YtQuickAdd.providedSong.videoId);
 			//some visual feedback to the user
 			$('#YTQAYes').css({
 				color: "rgba(0, 128, 0, 0.85)",

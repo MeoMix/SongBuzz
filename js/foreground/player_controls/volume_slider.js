@@ -5,7 +5,14 @@ var VolumeSlider = (function(){
 	var VOLUME_KEY = 'musicVolume';  
 
 	//Whenever the mute button is clicked toggle the muted state.
-	var muteButton = $('#MuteButton').on('click', toggleMute);
+	var muteButton = $('#MuteButton').on('click', function(){
+		if(isMuted){
+			setVolume(musicVolume);
+		}
+		else{
+			setVolume(0);
+		}
+	});
 
 	//Whenever the volume slider is interacted with by the user, change the volume to reflect.
 	var volumeSlider = $('#VolumeSlider').change(function(){ 
@@ -42,42 +49,40 @@ var VolumeSlider = (function(){
 		$('#MuteButtonBar4').css('fill', fillColor);
 	};
 
-	//Initialize the music volume.
-	var musicVolume = (function(){
-		var volume = 100;
-		//When foreground is closed the music's volume is forgotten, but the player may continue to play.
-		//Upon re-opening we need the last known values.
-		//TODO: An unhandled scenario is when a user interacts with the YouTube player outside of SongBuzz, toggles mute, and then reopens SongBuzz -- incorrect values will display.
-		var storedMusicVolume = localStorage.getItem(VOLUME_KEY);
-
-		//I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
-		if(storedMusicVolume && storedMusicVolume !== 'undefined'){
-			volume = JSON.parse(storedMusicVolume);
-		}
-
-		volumeSlider.val(volume);
-		updateSoundIcon(volume);
-
-		return volume;
-	})();
-
 	//Initialize the muted state;
 	var isMuted = (function(){
 		var muted = false;
-		var storedIsMuted = localStorage.getItem(MUTED_KEY);
 
-		//I've managed to serialize 'undefined' back to the stored volume. That should be treated as null, though.
-		if(storedIsMuted && storedIsMuted !== 'undefined'){
+		var storedIsMuted = localStorage.getItem(MUTED_KEY);
+		if(storedIsMuted){
 			muted = JSON.parse(storedIsMuted);
 		}
 
 		return muted;
 	})();
 
+	//Initialize player's volume and muted state to last known information or 100 / unmuted.
+	var musicVolume = (function(){
+		var volume = 100;
+
+		//TODO: Difficult to properly represent state when not already known -- can't get info from YouTube API until a song is playing.
+		var storedMusicVolume = localStorage.getItem(VOLUME_KEY);
+		if(storedMusicVolume){
+			volume = JSON.parse(storedMusicVolume);
+		}
+
+		var volumeForPlayer = isMuted ? 0 : volume;
+		volumeSlider.val(volumeForPlayer);
+		updateSoundIcon(volumeForPlayer);
+
+		return volume;
+	})();
+
 	var updateWithVolume = function(volume){
 		isMuted = volume === 0;
+		
 		localStorage.setItem(MUTED_KEY, JSON.stringify(isMuted));
-		if (volume !== 0) {
+		if (volume) {
 			//Remember old music value if muting so that unmute is possible.
 			musicVolume = volume;
 			localStorage.setItem(VOLUME_KEY, JSON.stringify(musicVolume));
@@ -87,27 +92,12 @@ var VolumeSlider = (function(){
 		Player.setVolume(volume);
 	};
 	
-	//Changes the muted state of the player and returns the state after toggling.
 	var setVolume = function(volume){
 		volumeSlider.val(volume);
 		updateWithVolume(volume);
 	};
 
-	//NOTE: This wouldn't be necessary if YT's muted property returned properly. Keep checking back to see if its fixed.
-	var toggleMute = function(){
-		if(isMuted){
-			setVolume(musicVolume);
-		}
-		else{
-			setVolume(0);
-		}
-
-		//This value is the opposite of above because setting slider volume has side-effects.
-		return isMuted;
-	};
-
 	return {
-		toggleMute: toggleMute,
 		setVolume: setVolume
 	};
 });
