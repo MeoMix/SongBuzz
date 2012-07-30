@@ -12,6 +12,8 @@
     "contextMenus",
     "notifications",
     "tabs",
-    "bookmarks"
+    "bookmarks",
+    "http://*.com/",
+    "https://.com/"
 	]
 }
