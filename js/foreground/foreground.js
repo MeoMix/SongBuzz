@@ -6,14 +6,6 @@ var Player = null;
 $(function () {
     "use strict";
     var Foreground = (function() {
-
-        jQuery.get("http://songbuzz.herokuapp.com/api/playlists", function (data, textStatus, jqXHR) {
-            console.log("Get response:");
-            console.dir(data);
-            console.log(textStatus);
-            console.log(jqXHR);
-        });
-
         Player = chrome.extension.getBackgroundPage().YoutubePlayer();
 
         var listen = function () {

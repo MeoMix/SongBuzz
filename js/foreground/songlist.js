@@ -5,6 +5,7 @@ function SongList() {
 
     //Allows for drag-and-drop of songs.
     songList.sortable({
+        axis: 'y',
         //Whenever a song row is moved inform the Player of the new songlist order.
         //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
         update: function () {

@@ -23,7 +23,7 @@ var YtQuickAdd = (function(){
 		ele: function(){ return $('#YtQuickAddBar'); },
 		title: function(){ return $('#YTQATitle'); },
 		promptShow: function(ytid) {
-			YTHelper.getVideoInformat(ytid, function(videoInformation){
+			YTHelper.getVideoInformation(ytid, function(videoInformation){
 				var song = new Song(videoInformation);
 
 				//TODO check if song is already in playlist

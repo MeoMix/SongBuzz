@@ -10,12 +10,18 @@ function YoutubePlayer() {
     "use strict";                            
     //Open a connection between the background and foreground. The connection will become invalid every time the foreground closes.
     port = chrome.extension.connect({ name: "statusPoller" });
-    port.onDisconnect.addListener(function () { port = null; });
+    port.onDisconnect.addListener( function () {
+        port = null; 
+    });
     
     if (!player) {
         playlists = new Playlists();
         playlist = playlists.getCurrentPlaylist();
+
         //Create YT player iframe.
+        //Listen for firstPlay to call pause on the video. This is necessary to keep the player out of VIDCUED because VIDCUED does not work well with seekTo.
+        //https://code.google.com/p/gdata-issues/issues/detail?id=2916
+        var firstPlay = true;
         YTPlayerApiHelper.ready(function () {
             var frameID = YTPlayerApiHelper.getFrameID("MusicHolder");
             if (frameID) {
@@ -27,16 +33,22 @@ function YoutubePlayer() {
                         "onReady": function () {
                             //If there is a song to cue might as well have it ready to go.
                             if (playlist.songCount() > 0){
-                                cueSongById(playlist.getSongs()[0].id);
+                                loadSongById(playlist.getSongs()[0].id);
                             }
                         },
                         "onStateChange": function (playerState) {
-                            //Don't pass message to UI if it is closed. Handle sock change in the background.
-                            //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
-                            if (playerState.data === PlayerStates.ENDED && playlist.songCount() > 1) {
-                                var nextSong = playlist.getNextSong(currentSong.id);
-                                player.loadSongById(nextSong.id);  
+                            if (firstPlay && playerState.data === PlayerStates.PLAYING){
+                                //If its the first time a video has played it was caused by us.
+                                //Pause playing to exit out of VIDCUED so that seekTo won't start playing.
+                                firstPlay = false;
+                                player.pauseVideo();
                             }
+                            else if (playerState.data === PlayerStates.ENDED && playlist.songCount() > 1) {
+                                //Don't pass message to UI if it is closed. Handle sock change in the background.
+                                //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
+                                var nextSong = playlist.getNextSong(currentSong.id);
+                                loadSongById(nextSong.id);  
+                            } 
                             else if (port) {
                                 sendUpdate();
                             }
@@ -76,7 +88,14 @@ function YoutubePlayer() {
         player.cueVideoById(currentSong.videoId);
     };
 
+    var loadSongById = function(id){
+        currentSong = playlist.getSongById(id);
+        player.loadVideoById(currentSong.videoId);
+    };
+
     return {
+        isSeeking: false,
+        wasPlayingBeforeSeek: false,
         getPlaylistTitle: function(){
             return playlist.title;
         },
@@ -163,26 +182,37 @@ function YoutubePlayer() {
         sync: function (ids) {
             playlist.sync(ids);
         },
-        //The allowSeekAhead parameter determines whether the player will make a new request to the server if the seconds parameter specifies a time outside of the currently buffered video data.
-        //Set to false when dragging and true when drag complete.
-        seekTo: function(timeInSeconds){
-            //YouTube's seekTo method will cause the video to play if it is left in the VIDCUED state.
-            if(player.getPlayerState() === PlayerStates.VIDCUED){
-                player.pause();
-            }
+        //Called when the user clicks mousedown on the progress bar dragger.
+        seekStart: function(){
+            this.isSeeking = true;
+            this.wasPlayingBeforeSeek = player.getPlayerState() === PlayerStates.PLAYING;
+            this.pause();
+        },
+        seekTo: function(timeInSeconds){        
+            //Once the user has seeked to the new value let our update function run again.
+            //Wrapped in a set timeout because there is some delay before the seekTo finishes executing and I want to prevent flickering.
+            var self = this;
+            setTimeout(function(){
+                self.isSeeking = false;
+            }, 1500);
 
-            var allowSeekAhead = true;
-            player.seekTo(timeInSeconds, allowSeekAhead);
+            //allowSeekAhead determines whether the player will make a new request to the server if the time specified is outside of the currently buffered video data.
+            player.seekTo(timeInSeconds, true);
+            if(this.wasPlayingBeforeSeek){
+                this.play();
+            }
         },
         removeSongById: function (id) {
-            if(id === currentSong.id){
+            //Get nextSong before removing currentSong because the position of currentSong is important.
+            var nextSong = this.getNextSong();
+
+            if(currentSong && id === currentSong.id){
                 currentSong = null;
                 player.pauseVideo();
             }
 
             playlist.removeSongById(id);
 
-            var nextSong = this.getNextSong();
             if(nextSong){
                 cueSongById(nextSong.id);
             }
@@ -231,9 +261,8 @@ function YoutubePlayer() {
         pause: function () {
             player.pauseVideo();
         },
-        loadSongById: function (id) {
-            currentSong = playlist.getSongById(id);
-            player.loadVideoById(currentSong.videoId);
+        loadSongById: function(id){
+            loadSongById(id);
         },
         cueSongById: function (id) {
             cueSongById(id);
