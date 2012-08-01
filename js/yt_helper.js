@@ -52,8 +52,13 @@ YTHelper = (function(){
         //This statement has been proven quite true. As such, this method will only state whether a video is playable based on information exposed via the YouTube API.
         isPlayable: function (youtubeVideoId, callback) {
             this.getVideoInformation(youtubeVideoId, function(videoInformation){
-                var video = buildYouTubeVideo(videoInformation);
-                callback(video.isPlayable());   
+                if (videoInformation != null){
+                    var video = buildYouTubeVideo(videoInformation);
+                    callback(video.isPlayable());   
+                }
+                else{
+                    callback(false);
+                }
             });
         },
 
@@ -92,20 +97,22 @@ YTHelper = (function(){
         //for a song with a similiar name that might be the right song to play.
         findPlayable: function(videoId, callback){
             this.getVideoInformation(videoId, function(videoInformation){
-                var songName = videoInformation.title.$t;
+                if (videoInformation != null) {
+                    var songName = videoInformation.title.$t;
 
-                YTHelper.search(songName, function (videos) {
-                    var playableSong = null;
+                    YTHelper.search(songName, function (videos) {
+                        var playableSong = null;
 
-                    $(videos).each(function(){
-                        if(this.isPlayable()){
-                            playableSong = this;
-                            return;
-                        }
+                        $(videos).each(function(){
+                            if(this.isPlayable()){
+                                playableSong = this;
+                                return;
+                            }
+                        });
+
+                        callback(playableSong);
                     });
-
-                    callback(playableSong);
-                });
+                }
             });
         },
 
@@ -125,10 +132,19 @@ YTHelper = (function(){
             return videoId;
         },
 
-        //TODO: This method will throw a 403 if videoId has been banned on copyright grounds.
+        // Returns NULL if the request throws a 403 error if videoId has been banned on copyright grounds.
         getVideoInformation: function(videoId, callback){
-            $.getJSON('http://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json-in-script&callback=?', function (data) {
-                callback(data.entry);
+            $.jsonp({
+              "url": 'http://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json-in-script&callback=?',
+              "data": {
+                  "alt": "json-in-script"
+              },
+              "success": function(result) {
+                  callback(result.entry);
+              },
+              "error": function(d,msg) {
+                  callback(null);
+              }
             });
         }
     };

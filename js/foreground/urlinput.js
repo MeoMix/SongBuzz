@@ -147,8 +147,24 @@ function UrlInput(songListHeader) {
                     if (!isPlayable) {
                         //Notify the user that the song they attempted to add had content restrictions, ask if it is OK to find a replacement.
                         YTHelper.getVideoInformation(videoId, function(videoInformation){
-                            showRestrictedSongDialog(new Song(videoInformation));
-                        })
+                            if (videoInformation != null){
+                                showRestrictedSongDialog(new Song(videoInformation));
+                            }
+                            else{
+                                var restrictedSongDialog = $('#BannedSongDialog');
+
+                                restrictedSongDialog.dialog({
+                                    autoOpen: true,
+                                    modal: true,
+                                    buttons: {
+                                        "Ok": function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
                     }
                     else {
                         Player.addSongById(videoId);
