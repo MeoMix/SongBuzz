@@ -153,11 +153,6 @@
   height: 12px;
 }
 
-#addCancelIconSvg{
-  width: 12px;
-  height: 12px;
-}
-
 .addButton span {
   position: absolute; 
   top:0; 
@@ -195,6 +190,8 @@
   width: 30px; 
   background-color:#efefef; 
   cursor: pointer;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .addCancelIcon svg {
@@ -202,6 +199,8 @@
   top: 50%; 
   left:50%; 
   margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
 }
 
 .content {

@@ -2,10 +2,24 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   "use strict";
 	var contentHeader = $(selector);
 
-  var headerTitle = $('<h1/>', {
-    'class': 'headerTitle',
-    text: Player.getPlaylistTitle()
+  var headerTitle = $('<span/>', {
+    'class': 'headerTitle'
   }).appendTo(contentHeader);
+
+  // var headerLabel = $('<label/>', {
+  //   'data-type': 'editable',
+  //   'data-for': 'headerInput',
+  //   text: Player.getPlaylistTitle()
+  // }).appendTo(headerTitle);
+
+  $('<input/>', {
+    'class': 'headerInput'
+  }).appendTo(headerTitle);
+
+  // var headerTitle = $('<h1/>', {
+  //   'class': 'headerTitle',
+  //   text: Player.getPlaylistTitle()
+  // }).appendTo(contentHeader);
 
   var addButton = $('<div/>', {
     'class': 'addButton'
@@ -44,6 +58,8 @@ function ContentHeader(selector, addText, addInputPlaceholder){
       //Prevent click event from bubbling up so button does not expand on click.
       return false; 
   };
+
+  $('body').editables( { editOn: 'click' } );
 
   return {
     setTitle: function(title){
