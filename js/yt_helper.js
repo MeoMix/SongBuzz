@@ -2,8 +2,8 @@
 YTHelper = (function(){
     "use strict";
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
-    var searchUrl = "http://gdata.youtube.com/feeds/api/videos?orderBy=relevance&time=all_time&max-results=30&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
-    var suggestUrl = "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
+    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?orderBy=relevance&time=all_time&max-results=30&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
+    var suggestUrl = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
         
     //This is necessary because not all songs will play embedded, but YouTube does not expose all the criterion for a song not playing.
     //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
@@ -135,7 +135,7 @@ YTHelper = (function(){
         // Returns NULL if the request throws a 403 error if videoId has been banned on copyright grounds.
         getVideoInformation: function(videoId, callback){
             $.jsonp({
-              "url": 'http://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json-in-script&callback=?',
+              "url": 'https://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json-in-script&callback=?',
               "data": {
                   "alt": "json-in-script"
               },
