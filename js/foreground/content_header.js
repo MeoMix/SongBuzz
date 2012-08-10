@@ -6,20 +6,16 @@ function ContentHeader(selector, addText, addInputPlaceholder){
     'class': 'headerTitle'
   }).appendTo(contentHeader);
 
-  // var headerLabel = $('<label/>', {
-  //   'data-type': 'editable',
-  //   'data-for': 'headerInput',
-  //   text: Player.getPlaylistTitle()
-  // }).appendTo(headerTitle);
-
-  $('<input/>', {
-    'class': 'headerInput'
+  var headerLabel = $('<label/>', {
+    'data-type': 'editable',
+    'data-for': '.headerInput',
+    text: Player.getPlaylistTitle()
   }).appendTo(headerTitle);
 
-  // var headerTitle = $('<h1/>', {
-  //   'class': 'headerTitle',
-  //   text: Player.getPlaylistTitle()
-  // }).appendTo(contentHeader);
+  $('<input/>', {
+    'class': 'headerInput',
+    type: 'text',
+  }).appendTo(headerTitle);
 
   var addButton = $('<div/>', {
     'class': 'addButton'
@@ -59,11 +55,18 @@ function ContentHeader(selector, addText, addInputPlaceholder){
       return false; 
   };
 
-  $('body').editables( { editOn: 'click' } );
+  $('body').editables({
+    editOn: 'click',
+    onFreeze: function(e, i){
+      if(this.val() != ''){
+        
+      }
+    }
+  });
 
   return {
     setTitle: function(title){
-      headerTitle.text(title);
+      headerLabel.text(title);
     },
     
     //Display a message for X milliseconds inside of the input. 

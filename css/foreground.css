@@ -123,7 +123,7 @@
   z-index: 2;
 }
 
-.header h1 {
+.header span {
   position: absolute; 
   top:0;
   left:20px;
