@@ -528,7 +528,7 @@
   position:absolute; 
   top:0;
   left:20px;
-  right:60px; 
+  right:0px; 
   overflow: hidden; 
   white-space: nowrap; 
   text-overflow: ellipsis;

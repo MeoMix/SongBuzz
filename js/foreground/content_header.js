@@ -56,7 +56,13 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   };
 
   $('body').editables({
-    editOn: 'click',
+    editOn: 'mouseenter',
+    freezeOn: 'mouseleave',
+    beforeEdit: function(){
+      console.log(headerLabel.text());
+      $(this).val(headerLabel.text());
+      console.log(this);
+    },
     onFreeze: function(e, i){
       var inputValue = $(this).val();
       if(inputValue != ''){
