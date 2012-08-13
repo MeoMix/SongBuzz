@@ -58,8 +58,10 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   $('body').editables({
     editOn: 'click',
     onFreeze: function(e, i){
-      if(this.val() != ''){
-        
+      var inputValue = $(this).val();
+      if(inputValue != ''){
+        Player.setPlaylistTitle(inputValue);
+        headerLabel.text(inputValue);
       }
     }
   });

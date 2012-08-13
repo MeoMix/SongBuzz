@@ -1,12 +1,13 @@
 SongBuzz
 ========
 
-A Google Chrome extension which allows users to create, maintain, and interact with playlists streamed from YouTube.
+A Google Chrome extension which allows users to create playlists containing songs streamed from YouTube.
 
 Requirements
 ========
 1. The latest version of Google Chrome.
 2. A stable Internet connection.
+3. Google Chrome's experimental API enabled.
 
 Installation
 ========
@@ -19,21 +20,22 @@ Installation
 Overview
 ========
 
-I initially began writing this Google Chrome extension with the purpose of solving a simple goal. I had become accustom to bookmarking YouTube songs while leveraging the bookmarks as a pseudo-playlist. I grew tired of this solution and decided to take things into my own hands. As such, SongBuzz was born.
+SongBuzz was created with the intention of making the process of playing music much simpler. Previously, I had found that the most convenient way to play music was through YouTube. This lent itself to keeping a list of bookmarks of pleasant songs. I noticed, though, that my bookmarking solution did not scale well with large collections of songs. SongBuzz was designed with the intention of being just as simple, quick and easy as using YouTube itself, but with all of the functionality of a desktop MP3 player.
 
-An initial load of SongBuzz will present the user with a handful of songs already loaded into the library. These are just whatever songs I am listening to at the time and will most likely be omitted for a production release.
-
-Users are able to add new songs to their library by supplying either a fully-qualified YouTube URL or via searching. I have imported the ability to suggest songs similiar to that of YouTube to encourage users to build their library solely through SongBuzz without a reliance on the YouTube GUI.
+An initial load of SongBuzz will present the user with a playlist containing a handful of songs. While not fully realized yet, the intention is to be able to pre-populate SongBuzz with hundreds of songs spanning all common genres of music. Users will have the ability to create their own playlists, stream from pre-existing, dynamic playlists, or enable Pandora-esque song finding.
 
 Supported Functionality
 ========
 
-* Add songs via URL or search query.
-* Play, pause and/or skip the current song.
+* A fully functional YouTube search bar with results (roughly) identical to that of YouTube itself.
+* The ability to add songs via this YouTube search bar, or to simply provide a YouTube URL.
+* Play, pause, skip and rewind.
+* Skip to point in time in song by clicking on the elapsed time progress bar.
 * Control the sound output, mute/unmute the current song.
-* Shuffle the playlist.
-* Reorganize the playlist via drag-and-drop.
+* Shuffle playlists / drag-and-drop songs in playlist.
 * Delete songs from playlist
+* Create multiple playlists each storing their own set of songs
+* Rename playlists 
 
 Screenshots & Usage Demo
 ========

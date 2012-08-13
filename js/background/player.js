@@ -99,6 +99,9 @@ function YoutubePlayer() {
         getPlaylistTitle: function(){
             return playlist.title;
         },
+        setPlaylistTitle: function(value){
+            playlist.setTitle(value);
+        },
         getPlaylists: function(){
             return playlists.getPlaylists();
         },

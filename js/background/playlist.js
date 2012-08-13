@@ -60,6 +60,10 @@ function Playlist(id, name) {
         id: id,
         title: name ? name : "New Playlist",
         selected: false,
+        setTitle: function(value){
+            this.title = value;
+            save();
+        },
         clear: function(){
             songs = [];
             save();

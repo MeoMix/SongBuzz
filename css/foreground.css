@@ -245,6 +245,7 @@
   width:40px;
   height:40px;
   border-left:1px solid #ccc; 
+  border-right:1px solid #fff;
   border-bottom: 1px solid #fff;
   cursor:pointer;
 }
@@ -481,7 +482,7 @@
   right: 0px;
   top: 40px;
   border-left:1px solid #ccc; 
-  overflow-y:scroll !important;
+  overflow-y:auto !important;
   z-index:1;
 }
 
@@ -533,30 +534,6 @@
   text-overflow: ellipsis;
   font: 12px/24px sans-serif;
 } 
-
-.remove {
-  right:10px;
-  width:20px; 
-  height:22px; 
-  cursor:pointer
-}
-
-.copy {
-  right:30px; 
-  width:20px; 
-  height:22px; 
-  cursor:pointer
-}
-
-.remove svg, 
-.copy svg {
-  position:absolute; 
-  top:50%; 
-  left:50%; 
-  margin:-6px 0 0 -6px;
-  width: 12px;
-  height: 12px;
-}
 
 .current a {
   left:5px !important;
@@ -622,4 +599,28 @@
 
 #YTQANo {
   text-decoration: underline; /* default choice */  
+}
+
+#ContextMenu {
+    display: none;        
+    position: absolute;
+    background: #fff;
+    border-radius: 5px;
+    padding: 5px 0;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.3);
+    z-index: 100;
+}
+#ContextMenu a {
+    display: block;
+    padding: 4px 8px;
+    font: 12px/1 sans-serif;
+    color: #000;
+    text-decoration: none;
+}
+#ContextMenu a:hover {
+    background: #efefef;
+}
+#ContextMenu a:active {
+    background: rgb(36,109,149);
+    color: #fff;
 }

@@ -1,6 +1,5 @@
 function Playlists() {
 	"use strict";
-
 	var playlists = [];
 	var currentPlaylist = null;
 

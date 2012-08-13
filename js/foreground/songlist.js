@@ -18,34 +18,6 @@ function SongList() {
         }
     });
 
-    //Allows the user to right click on a song and delete or copy its URL
-    //by abusing the fact that I can filter out just link clicks and then get the URL of the link clicked.
-    //so I make the URL the ID of the song I want to delete or the URL I want to copy.
-    var contextMenuOptions = function(){
-       //Wrap inside of a closure because functions only make sense in this scope.
-        function deleteSong(info) {
-            //Info is store in the linkURL.
-            var link = info.linkUrl;
-            var start = link.lastIndexOf("#") + 1;
-            var id = link.substr(start);
-            Player.removeSongById(id);
-        }
-
-        function copySong(info){
-            var link = info.linkUrl;
-            var start = link.lastIndexOf("#") + 1;
-            var id = link.substr(start);
-            var song = Player.getSongById(id);
-            chrome.extension.sendRequest({ text: song.url });
-        }
-
-        // Create one test item for each context type.
-        //TODO: Not sure if people are actually going to use these context menus. If not, should remove this code.
-        chrome.contextMenus.removeAll();
-        chrome.contextMenus.create({"title": "Delete song", "contexts":["link"], "onclick": deleteSong});
-        chrome.contextMenus.create({"title": "Copy song", "contexts":["link"], "onclick": copySong});
-    }(); //Call to setup context menu options.
-
     return {
         //Refresh all the songs displayed to ensure they GUI matches background's data.
         reload: function (songs, currentSong) {
@@ -56,42 +28,21 @@ function SongList() {
             for (var i = 0; i < songs.length; i++){
                 var listItem = $('<li/>').appendTo(songList);
 
+                var song = songs[i];
+
                 var link = $('<a/>', {
-                    id: songs[i].id,
-                    href: '#' + songs[i].id,
-                    text: songs[i].name
+                    id: song.id,
+                    href: '#' + song.id,
+                    text: song.name,
+                    contextmenu: function(e){
+                        var contextMenu = new ContextMenu(song);
+                        contextMenu.show(e.pageY, e.pageX);
+
+                        //Prevent default context menu display.
+                        return false;
+                    }
                 }).appendTo(listItem);
-
-                var removeIcon = $('<div/>', {
-                    'class': "remove",
-                    title: "Remove " + songs[i].name,
-                    songid: songs[i].id
-                }).appendTo(listItem);
-
-                //jQuery does not support appending paths to SVG elements. You MUST declare element inside of svg's HTML mark-up.
-                removeIcon.append('<svg><path d="M0,2 L2,0 L12,10 L10,12z"/> <path d="M12,2 L10,0 L0,10 L2,12z"/></svg>');
-
-                var copyIcon = $('<div/>', {
-                    'class': "copy",
-                    title: "Copy " + songs[i].url,
-                    songurl: songs[i].url
-                }).appendTo(listItem);
-
-                //jQuery does not support appending paths to SVG elements. You MUST declare element inside of svg's HTML mark-up.
-                copyIcon.append('<svg><rect x="4.625" y="0" width="2.75" height="12"/><rect x="0" y="4.625" width="12" height="2.75"/></svg>');
             }
-
-            //Add 'delete' to the 'X'
-            songList.find('li .remove').click(function(){
-                Player.removeSongById($(this).attr('songid'));
-                return false;
-            });
-
-            //Add 'copy' to the '+'
-            songList.find('li .copy').click(function(){
-                chrome.extension.sendRequest({ text: $(this).attr('songurl') });
-                return false;
-            });
                 
             //Removes the old 'current' marking and move it to the newly selected row.
             var selectRow = function(id){
