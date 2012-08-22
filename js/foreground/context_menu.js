@@ -34,6 +34,17 @@ var ContextMenu = (function(clickedObject){
 
 	return {
 		show: function(top, left){
+			//Don't allow the context menu to display off the document viewport.
+			var needsVerticalFlip = top + selector.height() > $(document).height();
+			if(needsVerticalFlip){
+				top = top - selector.height();
+			}
+
+			var needsHorizontalFlip = left + selector.width() > $(document).width();
+			if(needsHorizontalFlip){
+				left = left - selector.width();
+			}
+
 			selector.offset({
 				top: top,
 				left: left
