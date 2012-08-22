@@ -213,14 +213,13 @@ function YoutubePlayer() {
                 currentSong = null;
                 player.pauseVideo();
 
-                if(nextSong){
+                //nextSong will equal id when deleting the last song because getNextSong loops around to front of list.
+                if(nextSong.id !== id){
                     cueSongById(nextSong.id);
                 }
             }
 
             playlist.removeSongById(id);
-
-
             sendUpdate();
         },
         //Adds a song to the playlist. If it is the first song in the playlist, that song is loaded as the current song.

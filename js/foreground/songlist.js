@@ -26,22 +26,27 @@ function SongList() {
             //I create the entries as <a> to leverage Google Chrome's context menus. 
             //One of the filter options is 'by link' which allows right click -> song options.
             for (var i = 0; i < songs.length; i++){
-                var listItem = $('<li/>').appendTo(songList);
+                //Wrap in a closure to preserve song index for each iteration.
+                //If you don't do this the contextmenu method will always have the last song.
+                (function(i){
+                    var listItem = $('<li/>').appendTo(songList);
 
-                var song = songs[i];
+                    var song = songs[i];
 
-                var link = $('<a/>', {
-                    id: song.id,
-                    href: '#' + song.id,
-                    text: song.name,
-                    contextmenu: function(e){
-                        var contextMenu = new ContextMenu(song);
-                        contextMenu.show(e.pageY, e.pageX);
+                    var link = $('<a/>', {
+                        song: song,
+                        id: song.id,
+                        href: '#' + song.id,
+                        text: song.name,
+                        contextmenu: function(e){
+                            var contextMenu = new ContextMenu(song);
+                            contextMenu.show(e.pageY, e.pageX);
 
-                        //Prevent default context menu display.
-                        return false;
-                    }
-                }).appendTo(listItem);
+                            //Prevent default context menu display.
+                            return false;
+                        }
+                    }).appendTo(listItem);
+                }(i));
             }
                 
             //Removes the old 'current' marking and move it to the newly selected row.
