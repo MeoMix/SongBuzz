@@ -1,5 +1,4 @@
 //Responsible for showing options when interacting with a song list or play list
-
 //TODO: This needs to be extended such that there is a generic contextmenu object, and then various different context menus based on what is being clicked.
 var ContextMenu = (function(clickedObject){
 	"use strict";
@@ -9,7 +8,6 @@ var ContextMenu = (function(clickedObject){
 		href: '#',
 		text: 'Copy song URL',
 		click: function(){
-			console.log(clickedObject);
 			if(clickedObject != null ){
         		chrome.extension.sendRequest({ text: clickedObject.url });
 			}

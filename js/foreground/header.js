@@ -8,8 +8,11 @@ function Header() {
     //Scroll the song in the title if its too long to read.
     title.mouseover(function (e) {
         var distanceToMove = $(this).width() - header.width();
-        var timeToTakeMoving = 30 * distanceToMove; //Just a feel good value, scales as the text gets longer so takes the same time.
-        $(this).animate({ marginLeft: "-" + distanceToMove + "px" }, timeToTakeMoving);
+        var duration = 15 * distanceToMove; //Just a feel good value; scales as the text gets longer.
+        $(this).animate({ 
+            marginLeft: "-" + distanceToMove + "px" }, {
+            duration: duration,
+            easing: 'linear'} );
     }).mouseout(function (e) {
         $(this).stop(true).animate({ marginLeft: "0px" });
     });

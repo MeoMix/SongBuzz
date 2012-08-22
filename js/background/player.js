@@ -212,13 +212,14 @@ function YoutubePlayer() {
             if(currentSong && id === currentSong.id){
                 currentSong = null;
                 player.pauseVideo();
+
+                if(nextSong){
+                    cueSongById(nextSong.id);
+                }
             }
 
             playlist.removeSongById(id);
 
-            if(nextSong){
-                cueSongById(nextSong.id);
-            }
 
             sendUpdate();
         },
