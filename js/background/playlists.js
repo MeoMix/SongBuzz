@@ -1,99 +1,79 @@
+//Maintains an associative array consisting of Playlist IDs and Playlist objects.
 function Playlists() {
 	"use strict";
-	var playlists = [];
-	var currentPlaylist = null;
+	var playlists = {};
+	var selectedPlaylist = null;
 
 	var save = function () {
 		localStorage.setItem('playlists', JSON.stringify(playlists));
 	};
 
 	var loadPlaylists = function(){
-		//Any objects returned from localStorage will only have properties and not their methods.
-		var playlistsWithoutMethods = localStorage.getItem('playlists');
-
+		var playlistsJson = localStorage.getItem('playlists');
+		playlistsJson = null;
 		try {
-			if (playlistsWithoutMethods){
-				playlistsWithoutMethods = JSON.parse(playlistsWithoutMethods);
+			if (playlistsJson){
+				var playlistIds = JSON.parse(playlistsJson);
+
+				for(var id in playlistIds){
+					var playlist = new Playlist(id);
+					playlists[id] = playlist;
+				}
+			}
+			else{
+				//No saved playlists found - create a default playlist.
+				var defaultPlaylist = new Playlist();
+				defaultPlaylist.setSelected(true);
+				playlists[defaultPlaylist.getId()] = defaultPlaylist;
+				save();
 			}
 		}
 		catch(exception){
 			console.error(exception);
 		}
-
-		//Playlists were loaded. Need to reconstruct them as serialization strips off methods.
-		if(playlistsWithoutMethods && playlistsWithoutMethods.length > 0){
-			$(playlistsWithoutMethods).each(function(){
-				var playlist = new Playlist(this.id, this.title);
-				playlists.push(playlist);
-			});
-		}
-		else{
-			var defaultPlaylist = new Playlist(null, null);
-			playlists.push(defaultPlaylist);
-		}
-		
-		save();
-	};
-
-	//Takes a playlist's UID and returns the index of that playlist in playlists if found.
-	var getPlaylistIndexById = function (id) {
-		var playlistIndex = -1;
-		for (var i = 0; i < playlists.length; i++) {
-			if (playlists[i].id === id) {
-				playlistIndex = i;
-				break;
-			}
-		}
-
-		if (playlistIndex === -1){
-			throw "Couldn't find playlist with UID: " + id;
-		}
-
-		return playlistIndex;
-	};
+	}();
 
 	return {
-		count: function(){
-			return playlists.length;
-		},
-
 		getPlaylists: function(){
 			return playlists;
 		},
 
 		getPlaylistById: function(playlistId){
-			var playlistIndex = getPlaylistIndexById(playlistId);
-			return playlists[playlistIndex];
+			return playlists[playlistId];
 		},
 
-		getCurrentPlaylist: function(){
-			currentPlaylist = currentPlaylist;
+		setSelectedPlaylist: function(playlist){
+			console.log("setSelectedPlaylist");
+			console.log(playlist);	
+			this.getSelectedPlaylist().setSelected(false);
+			playlist.setSelected(true);
+			selectedPlaylist = playlist;
+		},	
 
-			if(!currentPlaylist){
-				loadPlaylists();
-				if(playlists.length > 0){
-					currentPlaylist = playlists[0];
-					currentPlaylist.selected = true;
+		getSelectedPlaylist: function(){
+			if(!selectedPlaylist){
+				for(var key in playlists){
+					if(playlists[key].getSelected()){
+						selectedPlaylist = playlists[key];
+						break;
+					}
 				}
 			}
 
-			return currentPlaylist;
+			return selectedPlaylist;
 		},
 
 		addPlaylist: function(playlistName){
 			var playlist = new Playlist(null, playlistName);
+			//TODO: Remove this clear. I want to ship default songs, but this isn't right.
 			playlist.clear();
-			playlists.push(playlist);
+			playlists[playlist.getId()] = playlist;
 			save();
 		},
 
 		removePlaylistById: function(playlistId){
-			var index = getPlaylistIndexById(playlistId);
-
-			if( index !== -1 ){
-				playlists.splice(index, 1);
-				save();
-			}
+			delete playlists[playlistId];
+			save();
 		}
 	};
 }

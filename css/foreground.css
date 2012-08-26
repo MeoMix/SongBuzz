@@ -132,6 +132,12 @@
   margin:0;
 }
 
+.headerInput {
+  font: normal 16px/40px sans-serif;
+  margin: 0;
+  display: none;
+}
+
 .addButton {
   right: 6px; 
   top:6px; 

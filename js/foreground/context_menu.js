@@ -1,28 +1,8 @@
 //Responsible for showing options when interacting with a song list or play list
 //TODO: This needs to be extended such that there is a generic contextmenu object, and then various different context menus based on what is being clicked.
-var ContextMenu = (function(clickedObject){
+var ContextMenu = (function(){
 	"use strict";
 	var selector = $('#ContextMenu').empty();
-
-	$('<a/>', {
-		href: '#',
-		text: 'Copy song URL',
-		click: function(){
-			if(clickedObject != null ){
-        		chrome.extension.sendRequest({ text: clickedObject.url });
-			}
-		}
-	}).appendTo(selector);
-
-	$('<a/>', {
-		href: '#',
-		text: 'Delete song',
-		click: function(){
-			if(clickedObject != null ){
-        		Player.removeSongById(clickedObject.id);
-			}
-		}
-	}).appendTo(selector);
 
 	//Hide the context menu whenever any click occurs not just when selecting an item.
 	$(document).click(function(){
@@ -33,6 +13,13 @@ var ContextMenu = (function(clickedObject){
 	});
 
 	return {
+		addContextMenuItem: function(text, onClick){
+			$('<a/>', {
+				href: '#',
+				text: text,
+				click: onClick
+			}).appendTo(selector);
+		},
 		show: function(top, left){
 			//Don't allow the context menu to display off the document viewport.
 			var needsVerticalFlip = top + selector.height() > $(document).height();

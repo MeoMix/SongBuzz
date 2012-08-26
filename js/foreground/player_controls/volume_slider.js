@@ -19,6 +19,17 @@ var VolumeSlider = (function(){
 		updateWithVolume(this.value); 
 	});
 
+	volumeSlider.mousewheel(function(event, delta){
+		//TODO: Implement mousewheel scrolling.
+		console.log(delta);
+		if( delta > 0){
+
+		}
+		else {
+
+		}
+	});
+
 	//Show the volume slider control by expanding its parent whenever any of the volume controls are hovered.
 	var volumeControls = $('.volumeControl').hover(function(){
 		volumeSlider.parent().css("top","70px");

@@ -4,7 +4,7 @@ function UiElements() {
     var header = new Header();
 
     var songsTab = new SongsTab();
-    var playlistsTab = new PlaylistsTab();    
+    var playlistsTab = new PlaylistsTab();   
 
     //No public methods so no object returned.  
     new TimeDisplay();
@@ -25,9 +25,9 @@ function UiElements() {
                 break;
         }
 
-        playerControls.setEnableToggleMusicButton(songs.length > 0);
-        playerControls.setEnableSkipButton(songs.length > 1);
-        playerControls.setEnableShuffleButton(songs.length > 1);
+        playerControls.setEnableToggleMusicButton(currentSong && songs.length > 0);
+        playerControls.setEnableSkipButton(currentSong && songs.length > 1);
+        playerControls.setEnableShuffleButton(currentSong && songs.length > 1);
 
         songsTab.reloadSongList(songs, currentSong);
         header.updateTitle(currentSong);

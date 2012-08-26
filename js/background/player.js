@@ -16,7 +16,7 @@ function YoutubePlayer() {
     
     if (!player) {
         playlists = new Playlists();
-        playlist = playlists.getCurrentPlaylist();
+        playlist = playlists.getSelectedPlaylist();
 
         //Create YT player iframe.
         //Listen for firstPlay to call pause on the video. This is necessary to keep the player out of VIDCUED because VIDCUED does not work well with seekTo.
@@ -75,8 +75,9 @@ function YoutubePlayer() {
 
     //errorMessage is optional, used to pass error messages to the UI.
     var sendUpdate = function (errorMessage) {
+        var playerState = (player && player.getPlayerState) ? player.getPlayerState() : PlayerStates.UNSTARTED;
         port.postMessage({
-            playerState: player.getPlayerState(),
+            playerState: playerState,
             songs: playlist.getSongs(),
             currentSong: currentSong,
             errorMessage: errorMessage
@@ -84,33 +85,38 @@ function YoutubePlayer() {
     };
 
     var cueSongById = function(id) {
-        currentSong = playlist.getSongById(id);
-        player.cueVideoById(currentSong.videoId);
+        if(player){
+            currentSong = playlist.getSongById(id);
+            player.cueVideoById(currentSong.videoId);
+        }
     };
 
     var loadSongById = function(id){
-        currentSong = playlist.getSongById(id);
-        player.loadVideoById(currentSong.videoId);
+        if(player){
+            currentSong = playlist.getSongById(id);
+            player.loadVideoById(currentSong.videoId);
+        }
     };
 
     return {
         isSeeking: false,
         wasPlayingBeforeSeek: false,
         getPlaylistTitle: function(){
-            return playlist.title;
+            return playlist.getTitle();
         },
         setPlaylistTitle: function(value){
             playlist.setTitle(value);
+            sendUpdate();
         },
         getPlaylists: function(){
             return playlists.getPlaylists();
         },
         selectPlaylist: function(playlistId){
-            if(playlist.id !== playlistId){
+            if(playlist.getId() !== playlistId){
                 this.pause();
-                playlist.deselect();
+                console.log("playlistId: " + playlistId);
                 playlist = playlists.getPlaylistById(playlistId);
-                playlist.select();
+                playlists.setSelectedPlaylist(playlist);
 
                 //If the newly loaded playlist has a song to play cue it to replace the currently loaded song.
                 var firstSongInPlaylist = playlist.getFirstSong();
@@ -127,12 +133,12 @@ function YoutubePlayer() {
         },
         addPlaylist: function(playlistName){
             playlists.addPlaylist(playlistName);
-             sendUpdate();
+            sendUpdate();
         },
         removePlaylistById: function(playlistId){
             //Don't allow removing of active playlist.
             //TODO: Perhaps just don't allow deleting the last playlist? More difficult.
-            if(playlist.id !== playlistId){
+            if(playlist.getId() !== playlistId){
                 playlists.removePlaylistById(playlistId);
                 sendUpdate();
             }
@@ -140,7 +146,7 @@ function YoutubePlayer() {
         getPlayerState: function(){
             var playerState = PlayerStates.UNSTARTED;
             //When the UI first loads it may request the player state before the API is ready to give it up.
-            if(player.getPlayerState)
+            if(player && player.getPlayerState)
                 playerState = player.getPlayerState();
             return playerState;
         },
@@ -171,11 +177,13 @@ function YoutubePlayer() {
             return previousSong;
         },
         setVolume: function (volume) {
-            if(volume){
-                player.setVolume(volume);
-            }
-            else{
-                player.mute();
+            if(player){
+                if(volume){
+                    player.setVolume(volume);
+                }
+                else{
+                    player.mute();
+                }
             }
         },
         //Will return undefined until PlayerStates.VIDCUED
@@ -187,23 +195,27 @@ function YoutubePlayer() {
         },
         //Called when the user clicks mousedown on the progress bar dragger.
         seekStart: function(){
-            this.isSeeking = true;
-            this.wasPlayingBeforeSeek = player.getPlayerState() === PlayerStates.PLAYING;
-            this.pause();
-        },
-        seekTo: function(timeInSeconds){        
-            //Once the user has seeked to the new value let our update function run again.
-            //Wrapped in a set timeout because there is some delay before the seekTo finishes executing and I want to prevent flickering.
-            var self = this;
-            setTimeout(function(){
-                self.isSeeking = false;
-            }, 1500);
-
-            //allowSeekAhead determines whether the player will make a new request to the server if the time specified is outside of the currently buffered video data.
-            player.seekTo(timeInSeconds, true);
-            if(this.wasPlayingBeforeSeek){
-                this.play();
+            if(player && player.getPlayerState){
+                this.isSeeking = true;
+                this.wasPlayingBeforeSeek = player.getPlayerState() === PlayerStates.PLAYING;
+                this.pause();
             }
+        },
+        seekTo: function(timeInSeconds){
+            if(player && player.getPlayerState){
+                //Once the user has seeked to the new value let our update function run again.
+                //Wrapped in a set timeout because there is some delay before the seekTo finishes executing and I want to prevent flickering.
+                var self = this;
+                setTimeout(function(){
+                    self.isSeeking = false;
+                }, 1500);
+
+                //allowSeekAhead determines whether the player will make a new request to the server if the time specified is outside of the currently buffered video data.
+                player.seekTo(timeInSeconds, true);
+                if(this.wasPlayingBeforeSeek){
+                    this.play();
+                }
+            }   
         },
         removeSongById: function (id) {
             //Get nextSong before removing currentSong because the position of currentSong is important.
@@ -259,10 +271,14 @@ function YoutubePlayer() {
             return totalTime;
         },
         play: function () {
-            player.playVideo();
+            if(player){
+                player.playVideo();
+            }
         },
         pause: function () {
-            player.pauseVideo();
+            if(player){
+                player.pauseVideo();
+            }
         },
         loadSongById: function(id){
             loadSongById(id);

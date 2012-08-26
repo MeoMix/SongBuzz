@@ -7,14 +7,41 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   }).appendTo(contentHeader);
 
   var headerLabel = $('<label/>', {
+    'class': 'headerLabel',
     'data-type': 'editable',
     'data-for': '.headerInput',
-    text: Player.getPlaylistTitle()
+    text: Player.getPlaylistTitle(),
+    mouseover: function(){
+      $(this).hide();
+      headerInput.val($(this).text());
+      headerInput.show();
+    }
   }).appendTo(headerTitle);
 
-  $('<input/>', {
+  var processTitle = function(playlistTitle){
+      if(playlistTitle != ''){
+        Player.setPlaylistTitle(playlistTitle);
+        headerLabel.text(playlistTitle);
+      }
+  }
+
+  var headerInput = $('<input/>', {
     'class': 'headerInput',
     type: 'text',
+    mouseout: function(){
+      $(this).hide();
+      processTitle($(this).val());
+      headerLabel.show();
+    },
+    keyup: function (e) {
+        var code = e.which;
+        //ENTER: 13
+        if (code === 13){
+          $(this).hide();
+          processTitle($(this).val());
+          headerLabel.show();
+        }
+    }
   }).appendTo(headerTitle);
 
   var addButton = $('<div/>', {
@@ -54,23 +81,6 @@ function ContentHeader(selector, addText, addInputPlaceholder){
       //Prevent click event from bubbling up so button does not expand on click.
       return false; 
   };
-
-  $('body').editables({
-    editOn: 'mouseenter',
-    freezeOn: 'mouseleave',
-    beforeEdit: function(){
-      console.log(headerLabel.text());
-      $(this).val(headerLabel.text());
-      console.log(this);
-    },
-    onFreeze: function(e, i){
-      var inputValue = $(this).val();
-      if(inputValue != ''){
-        Player.setPlaylistTitle(inputValue);
-        headerLabel.text(inputValue);
-      }
-    }
-  });
 
   return {
     setTitle: function(title){

@@ -1,5 +1,6 @@
 //This is the list of playlists on the playlists tab.
 function PlaylistList(playlistHeader){
+    //TODO: Make this sortable and should inherit from a common List object.
     "use strict";
     var playlistList = $('#PlaylistList ul');
     var addInput = $('#PlaylistDisplay .addInput').attr('placeholder', 'Enter a playlist name');
@@ -24,22 +25,10 @@ function PlaylistList(playlistHeader){
         }
     };
 
-    var removePlaylist = function(){
-        Player.removePlaylistById($(this).attr('playlistid'));
-        //Don't want the click event to bubble up after removing a playlist row.
-        return false;
-    };
-
-    //Paint all the rows back to unselected state and then select the clicked row.
-    //Don't allow the currently selected playlist to be removed.
+    //Removes the old 'current' marking and move it to the newly selected row.
     var selectRow = function(id){
-        var listItems = playlistList.find('li').removeClass('current');
-        var removeIcons = listItems.find('.remove').css('cursor', 'pointer').off('click').click(removePlaylist);
-        removeIcons.find('svg path').attr('fill', '#000');
-
-        var selectedListItem = $('#' + id).addClass('current');
-        var selectedRemoveIcon = selectedListItem.find('.remove').css('cursor', 'default');
-        selectedRemoveIcon.find('svg path').attr('fill', '#808080').off('click');
+        playlistList.find('li').removeClass('current');
+        $('#' + id).parent().addClass('current');
 
         Player.selectPlaylist(id);
     };
@@ -48,39 +37,36 @@ function PlaylistList(playlistHeader){
         //Refreshes the playlist display with the current playlist information.
         reload: function(){
             playlistList.empty();
-
             var playlists = Player.getPlaylists();
 
             //Build up each row.
-            $(playlists).each(function(){
-                var listItem = $('<li/>', {
-                    id: this.id
-                }).appendTo(playlistList);
+            for(var key in playlists){
+                var listItem = $('<li/>').appendTo(playlistList);
+
+                var playlist = playlists[key];
 
                 var link = $('<a/>', {
-                    href: '#' + this.id,
-                    text: this.title
+                    id: playlist.getId(),
+                    href: '#' + playlist.getId(),
+                    text: playlist.getTitle(),
+                    contextmenu: function(e){
+                        var contextMenu = new PlaylistsContextMenu(playlist);
+                        contextMenu.show(e.pageY, e.pageX);
+
+                        //Prevent default context menu display.
+                        return false;
+                    }
                 }).appendTo(listItem);
 
-                var removeIcon = $('<div/>', {
-                    'class': "remove",
-                    playlistid: this.id
-                }).appendTo(listItem);
-
-                //jQuery does not support appending paths to SVG elements. You MUST declare element inside of svg's HTML mark-up.
-                removeIcon.append('<svg><path d="M0,2 L2,0 L12,10 L10,12z"/> <path d="M12,2 L10,0 L0,10 L2,12z"/></svg>');
-
-                if(this.selected){
-                    selectRow(this.id); 
+                if(playlist.getSelected()){
+                    selectRow(playlist.getId()); 
                 }
-            });
-
-            //Add 'delete' to the 'X'
-            playlistList.find('li .remove').click(removePlaylist);
+            }
 
             //Clicking on a playlist will select that playlist.
             playlistList.children().click(function(){
-                selectRow(this.id);
+                var clickedId = $(this).children()[0].id;
+                selectRow(clickedId);
                 return false;
             });
         }

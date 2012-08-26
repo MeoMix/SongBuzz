@@ -18,6 +18,12 @@ function SongList() {
         }
     });
 
+    //Removes the old 'current' marking and move it to the newly selected row.
+    var selectRow = function(id){
+        songList.find('li').removeClass('current');
+        $('#' + id).parent().addClass('current');
+    };
+
     return {
         //Refresh all the songs displayed to ensure they GUI matches background's data.
         reload: function (songs, currentSong) {
@@ -34,12 +40,11 @@ function SongList() {
                     var song = songs[i];
 
                     var link = $('<a/>', {
-                        song: song,
                         id: song.id,
                         href: '#' + song.id,
                         text: song.name,
                         contextmenu: function(e){
-                            var contextMenu = new ContextMenu(song);
+                            var contextMenu = new SongListContextMenu(song);
                             contextMenu.show(e.pageY, e.pageX);
 
                             //Prevent default context menu display.
@@ -48,12 +53,6 @@ function SongList() {
                     }).appendTo(listItem);
                 }(i));
             }
-                
-            //Removes the old 'current' marking and move it to the newly selected row.
-            var selectRow = function(id){
-                songList.find('li').removeClass('current');
-                $('#' + id).parent().addClass('current');
-            };
 
             //Load and start playing a song if it is clicked.
             songList.children().click(function(){
