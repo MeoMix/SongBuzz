@@ -22,6 +22,11 @@ function Progressbar(currentTime, totalTime) {
         repaint();
     }
 
+    selector.mousewheel(function(event, delta){
+        //TODO: If I want to implement mousewheel for the progressbar I need to wait for a smart amount of time after mousewheels stop.
+        //Can't just call mousewheel because the value doesn't change until seekTo finishes -- but users scroll faster than that.
+    });
+
     selector.mousedown(function(){
         Player.seekStart();
     });
