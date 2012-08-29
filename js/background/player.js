@@ -195,7 +195,7 @@ function YoutubePlayer() {
         },
         //Called when the user clicks mousedown on the progress bar dragger.
         seekStart: function(){
-            if(player && player.getPlayerState){
+            if(player && player.getPlayerState && !this.isSeeking){
                 this.isSeeking = true;
                 this.wasPlayingBeforeSeek = player.getPlayerState() === PlayerStates.PLAYING;
                 this.pause();

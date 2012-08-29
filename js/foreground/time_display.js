@@ -28,7 +28,8 @@ function TimeDisplay(){
         }
     };
 
-    var progressbar = new Progressbar(currentTime, totalTime);
+    //TODO: Restructure this so that timeDisplay isn't being passed in.
+    var progressbar = new Progressbar(timeDisplay, currentTime, totalTime);
 
     $('#' + progressbar.id).change(function(){
         timeDisplay.update(progressbar.getValue());

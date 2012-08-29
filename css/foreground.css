@@ -135,7 +135,11 @@
 .headerInput {
   font: normal 16px/40px sans-serif;
   margin: 0;
-  display: none;
+  border: 1px solid transparent;
+  padding-left: 3px;
+  padding-right: 3px;
+  outline: none;
+  -webkit-transition: border-color .2s;
 }
 
 .addButton {

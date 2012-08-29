@@ -6,32 +6,36 @@ function ContentHeader(selector, addText, addInputPlaceholder){
     'class': 'headerTitle'
   }).appendTo(contentHeader);
 
-  var headerLabel = $('<label/>', {
-    'class': 'headerLabel',
-    'data-type': 'editable',
-    'data-for': '.headerInput',
-    text: Player.getPlaylistTitle(),
-    mouseover: function(){
-      $(this).hide();
-      headerInput.val($(this).text());
-      headerInput.show();
-    }
-  }).appendTo(headerTitle);
+  // var headerLabel = $('<label/>', {
+  //   'class': 'headerLabel',
+  //   'data-type': 'editable',
+  //   'data-for': '.headerInput',
+  //   text: Player.getPlaylistTitle(),
+  //   mouseover: function(){
+  //     $(this).hide();
+  //     headerInput.val($(this).text());
+  //     headerInput.show();
+  //   }
+  // }).appendTo(headerTitle);
 
   var processTitle = function(playlistTitle){
       if(playlistTitle != ''){
         Player.setPlaylistTitle(playlistTitle);
-        headerLabel.text(playlistTitle);
+        //headerLabel.text(playlistTitle);
       }
   }
 
   var headerInput = $('<input/>', {
     'class': 'headerInput',
     type: 'text',
+    text: Player.getPlaylistTitle(),
+    mouseover: function(){
+      $(this).css('border-color', '#EEE');
+    },
     mouseout: function(){
-      $(this).hide();
       processTitle($(this).val());
-      headerLabel.show();
+      $(this).blur();
+      $(this).css('border-color', 'transparent');
     },
     keyup: function (e) {
         var code = e.which;
@@ -84,7 +88,7 @@ function ContentHeader(selector, addText, addInputPlaceholder){
 
   return {
     setTitle: function(title){
-      headerLabel.text(title);
+      headerInput.val(title);
     },
     
     //Display a message for X milliseconds inside of the input. 

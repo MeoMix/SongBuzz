@@ -1,6 +1,6 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
-function Progressbar(currentTime, totalTime) {
+function Progressbar(timeDisplay, currentTime, totalTime) {
     "use strict";
     var selector = $('#SongTimeProgressBar');
 
@@ -22,9 +22,24 @@ function Progressbar(currentTime, totalTime) {
         repaint();
     }
 
+    var mousewheelTimeout = null;
+    var mousewheelValue = -1;
     selector.mousewheel(function(event, delta){
-        //TODO: If I want to implement mousewheel for the progressbar I need to wait for a smart amount of time after mousewheels stop.
-        //Can't just call mousewheel because the value doesn't change until seekTo finishes -- but users scroll faster than that.
+        clearTimeout(mousewheelTimeout);
+        Player.seekStart();
+
+        if(mousewheelValue === -1){
+            mousewheelValue = parseInt(selector.val(), 10);
+        }
+
+        mousewheelValue += delta;
+        setElapsedTime(mousewheelValue);
+        timeDisplay.update(mousewheelValue);
+
+        mousewheelTimeout = setTimeout(function(){
+            Player.seekTo(mousewheelValue);
+            mousewheelValue = -1;
+        }, 250);
     });
 
     selector.mousedown(function(){
