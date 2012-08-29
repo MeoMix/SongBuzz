@@ -551,7 +551,7 @@
 }
 
 .current a:before {
-  content:'► ';
+  content:'♫ ';
 }
 
 #ConfirmSearchDialog{
