@@ -10,7 +10,7 @@ function Playlists() {
 
 	var loadPlaylists = function(){
 		var playlistsJson = localStorage.getItem('playlists');
-		playlistsJson = null;
+
 		try {
 			if (playlistsJson){
 				var playlistIds = JSON.parse(playlistsJson);

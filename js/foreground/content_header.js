@@ -6,22 +6,9 @@ function ContentHeader(selector, addText, addInputPlaceholder){
     'class': 'headerTitle'
   }).appendTo(contentHeader);
 
-  // var headerLabel = $('<label/>', {
-  //   'class': 'headerLabel',
-  //   'data-type': 'editable',
-  //   'data-for': '.headerInput',
-  //   text: Player.getPlaylistTitle(),
-  //   mouseover: function(){
-  //     $(this).hide();
-  //     headerInput.val($(this).text());
-  //     headerInput.show();
-  //   }
-  // }).appendTo(headerTitle);
-
   var processTitle = function(playlistTitle){
       if(playlistTitle != ''){
         Player.setPlaylistTitle(playlistTitle);
-        //headerLabel.text(playlistTitle);
       }
   }
 
@@ -72,11 +59,10 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   addCancelIcon.append('<svg id="addCancelIconSvg"><path d="M0,2 L2,0 L12,10 L10,12z"/><path d="M12,2 L10,0 L0,10 L2,12z"/></svg>');
 
   var expand = function(){
-      addInput.css('opacity', 1).css('cursor', "auto").focus();
       addCancelIcon.css('right', '0px').one('click', contract);
       addButton.width('350px');
+      addInput.css('opacity', 1).css('cursor', "auto").focus();
   };
-  addButton.one('click', expand);
 
   var contract = function(){
       addInput.css('opacity', 0).css('cursor', "pointer").val('').blur();
@@ -87,6 +73,7 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   };
 
   return {
+    expand: expand,
     setTitle: function(title){
       headerInput.val(title);
     },

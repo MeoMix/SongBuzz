@@ -4,6 +4,8 @@ function SongsTab(){
     var songList = new SongList();
     new UrlInput(contentHeader);
 
+    contentHeader.expand();
+
     //Serves to initialize the song list;
     var songs = Player ? Player.getSongs() : [];
     var currentSong = Player ? Player.getCurrentSong() : null;

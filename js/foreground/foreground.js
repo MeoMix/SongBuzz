@@ -2,6 +2,13 @@
 //I thought a full-on message system was a bit overkill, so I just expose a global Player object to the foreground and use it sparingly.
 var Player = null;
 
+//Remove when Google Chrome 22 goes live. http://code.google.com/p/chromium/issues/detail?id=111660#c7
+if(location.search !== "?foo") {
+  location.search = "?foo";
+  throw new Error;  // load everything on the next page;
+                    // stop execution on this page
+}
+
 //This fires everytime the UI opens or is re-opened. 
 $(function () {
     "use strict";
@@ -25,6 +32,11 @@ $(function () {
                     uiElements.update(message.playerState, message.songs, message.currentSong);
                 });
             });
+
+            chrome.experimental.keybinding.onCommand.addListener(function(command) {
+                console.log('Command:', command);
+            });
+
         } (); //Start listening for YT player events.
     })();
 });

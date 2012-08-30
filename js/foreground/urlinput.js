@@ -62,7 +62,7 @@ function UrlInput(songListHeader) {
                 clickEvent = addButton.click;
                 addButton.off('click');
                 addSongsFromOpenTabs();
-            }, 3000);
+            }, 2000);
         }).bind('mouseup mouseleave', function() {
             clearTimeout(timeoutId);
             addButton.on(clickEvent);
