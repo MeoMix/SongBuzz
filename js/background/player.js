@@ -4,6 +4,7 @@ var currentSong = null;
 var port = null;
 var playlists = null;
 var playlist = null;
+var isReady = false;
 
 //Handles communications between the GUI and the YT Player API.
 function YoutubePlayer() {
@@ -13,6 +14,10 @@ function YoutubePlayer() {
     port.onDisconnect.addListener( function () {
         port = null; 
     });
+
+    if(player){
+        isReady = true;
+    }
     
     if (!player) {
         playlists = new Playlists();
@@ -35,6 +40,7 @@ function YoutubePlayer() {
                             if (playlist.songCount() > 0){
                                 loadSongById(playlist.getSongs()[0].id);
                             }
+                            isReady = true;
                         },
                         "onStateChange": function (playerState) {
                             if (firstPlay && playerState.data === PlayerStates.PLAYING){
@@ -101,6 +107,7 @@ function YoutubePlayer() {
     return {
         isSeeking: false,
         wasPlayingBeforeSeek: false,
+        isReady: isReady,
         getPlaylistTitle: function(){
             return playlist.getTitle();
         },

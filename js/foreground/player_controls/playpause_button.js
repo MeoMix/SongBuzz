@@ -13,6 +13,8 @@ var PlayPauseButton = (function(){
 
 			playPauseButton.off('click').on('click', function () {
 				Player.play(); 
+				pauseIcon.show();
+				playIcon.hide();
 			});
 		},
 		//Change the music button to the 'Pause' image and cause a song to pause upon click.
@@ -22,6 +24,8 @@ var PlayPauseButton = (function(){
 
 			playPauseButton.off('click').on('click', function () {
 				Player.pause(); 
+				pauseIcon.hide();
+				playIcon.show();
 			});
 		},
 		//Paint playPauseButton's path black and allow it to be clicked.

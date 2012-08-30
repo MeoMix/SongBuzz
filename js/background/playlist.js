@@ -113,7 +113,7 @@ function Playlist(id, name) {
             var nextSongIndex = getSongIndexById(currentId) + 1;
 
             //Loop back to the front if at end. Should make this togglable in the future.
-            if (songs.length <= nextSongIndex){
+            if (playlist.songs.length <= nextSongIndex){
                 nextSongIndex = 0;
             }
 
