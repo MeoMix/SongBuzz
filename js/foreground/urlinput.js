@@ -131,7 +131,8 @@ function UrlInput(songListHeader) {
             //If the user hits submit then search with what has been entered.
             if (code === 13) {
                 e.preventDefault();
-                parseUrlInput();
+                showSongSuggestions($(this).val());
+                //parseUrlInput();
             }
         }
     }).bind('paste drop', function () { return parseUrlInput(); });

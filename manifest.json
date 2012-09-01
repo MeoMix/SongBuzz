@@ -17,10 +17,10 @@
     "notifications",
     "tabs",
     "bookmarks",
-    "experimental",
-    "keybinding",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "clipboardRead",
+    "clipboardWrite"
 	],
   "commands":{
     "toggle-feature-foo": {

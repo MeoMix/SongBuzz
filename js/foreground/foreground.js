@@ -12,6 +12,7 @@ if(location.search !== "?foo") {
 //This fires everytime the UI opens or is re-opened. 
 $(function () {
     "use strict";
+
     var Foreground = (function() {
         Player = chrome.extension.getBackgroundPage().YoutubePlayer();
 
@@ -32,11 +33,6 @@ $(function () {
                     uiElements.update(message.playerState, message.songs, message.currentSong);
                 });
             });
-
-            chrome.experimental.keybinding.onCommand.addListener(function(command) {
-                console.log('Command:', command);
-            });
-
         } (); //Start listening for YT player events.
     })();
 });

@@ -74,6 +74,7 @@ function ContentHeader(selector, addText, addInputPlaceholder){
 
   return {
     expand: expand,
+    contract: contract,
     setTitle: function(title){
       headerInput.val(title);
     },
