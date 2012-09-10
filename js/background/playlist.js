@@ -8,13 +8,9 @@ function Playlist(id, name) {
         id: id ? id : Helpers.generateGuid(),
         title: name ? name : "New Playlist",
         selected: false,
+        shuffledSongs: [],
+        songHistory: [],
         songs: !isDefaultPlaylist ? [] : [{ 
-                "id": "ec5367e5-0026-4abf-8202-6a6b8fd10878", 
-                "videoId": "_U4KUmr36Q0", 
-                "url": "http://youtu.be/_U4KUmr36Q0", 
-                "name": "Dj Alias and Benson - San Francisco Bay", 
-                "totalTime": "274" 
-            }, { 
                 "id": "3bc1b5e6-0055-4d55-bca0-ee472c8474ed", 
                 "videoId": "bU639WhxTIs", 
                 "url": "http://youtu.be/bU639WhxTIs", 
@@ -37,6 +33,7 @@ function Playlist(id, name) {
         //Methods are unable to be serized to localStorage.
         var playlistJson = localStorage.getItem(playlist.id)
 
+        var backupPlaylist = playlist;
         try {
             if (playlistJson){
                 playlist = JSON.parse(playlistJson);
@@ -44,27 +41,62 @@ function Playlist(id, name) {
         }
         catch(exception){
             console.error(exception);
+            playlist = backupPlaylist;
         }
     }();
 
+    var legacySupport = function(){
+        if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
+        if(!playlist.songHistory) playlist.songHistory = [];
+        if(!playlist.songs) playlist.songs = [];
+    }();
+
+    var shuffle = function (songs) {
+        var i, j, t;
+        for (i = 1; i < songs.length; i++) {
+            j = Math.floor(Math.random() * (1 + i));  // choose j in [0..i]
+            if (j !== i) {
+                t = songs[i];                        // swap songs[i] and songs[j]
+                songs[i] = songs[j];
+                songs[j] = t;
+            }
+        }
+    }
+
+    var loadShuffledSongs = function(){
+        $.extend(playlist.shuffledSongs, playlist.songs);
+
+        console.log("loadShuffledSongs called, shuffledSongs is now", playlist.shuffledSongs);
+
+        shuffle(playlist.shuffledSongs);
+    }
+
     //Takes a song's UID and returns the index of that song in the playlist if found.
-    var getSongIndexById = function (id) {
+    var getSongIndexById = function (songs, id) {
         var songIndex = -1;
-        for (var i = 0; i < playlist.songs.length; i++) {
-            if (playlist.songs[i].id === id) {
+        for (var i = 0; i < songs.length; i++) {
+            if (songs[i] && songs[i].id === id) {
                 songIndex = i;
                 break;
             }
         }
-
-        if (songIndex === -1){
-            throw "Couldn't find song with UID: " + id;
-        }
-
+        
         return songIndex;
     };
 
     return {
+        syncShuffledSongs: function(id){
+            var index = getSongIndexById(playlist.shuffledSongs, id);
+
+            if (index !== -1) {
+                playlist.shuffledSongs.splice(index, 1);
+                console.log("removed song from shuffledSongs", playlist.shuffledSongs);
+            }
+
+            if(playlist.shuffledSongs.length == 0){
+                loadShuffledSongs();
+            }
+        },
         //TODO: Is there any way to have this be a property instead of a method, but not expose the setter?
         getId: function(){
             return playlist.id;
@@ -108,26 +140,48 @@ function Playlist(id, name) {
             var firstSong = playlist.songs[0];
             return firstSong;
         },
+        addSongToHistory: function(song){
+            console.log("Add song to history");
+            playlist.songHistory.unshift(song);
+        },
         //Takes a song and returns the next song object by index.
         getNextSong: function (currentId) {
-            var nextSongIndex = getSongIndexById(currentId) + 1;
+            console.log("currentId:", currentId);
+
+            var currentSongIndex = getSongIndexById(playlist.songs, currentId);
+            var nextSongIndex = currentSongIndex + 1;
 
             //Loop back to the front if at end. Should make this togglable in the future.
             if (playlist.songs.length <= nextSongIndex){
-                nextSongIndex = 0;
+                // var pandoraModeActivated = true;
+                nextSongIndex = 0;        
             }
 
             return playlist.songs[nextSongIndex];
         },
+        getRandomSong: function(){
+            console.log("returning random song from", playlist.shuffledSongs, playlist.shuffledSongs[0]);
+            return playlist.shuffledSongs[0];
+        },
         getPreviousSong: function (currentId) {
-            var previousSongIndex = getSongIndexById(currentId) - 1;
+            var currentSong = playlist.songHistory.shift();
+            console.log("Current song should not be null", currentSong);
+            playlist.shuffledSongs.unshift(currentSong);
 
-            // Goes to the end of the current playlist.
-            if (previousSongIndex < 0){
-                previousSongIndex = songs.length - 1;
+            var previousSong = playlist.songHistory.shift();
+            console.log("Did previous song exist?", previousSong);
+            if(!previousSong){
+                var previousSongIndex = getSongIndexById(playlist.songs, currentId) - 1;
+
+                // Goes to the end of the current playlist.
+                if (previousSongIndex < 0){
+                    previousSongIndex = playlist.songs.length - 1;
+                }
+
+                previousSong = playlist.songs[previousSongIndex];
             }
-            
-            return playlist.songs[previousSongIndex];
+
+            return previousSong;
         },
         songCount: function () {
             return playlist.songs.length;
@@ -139,12 +193,18 @@ function Playlist(id, name) {
             YTHelper.getVideoInformation(videoId, function(videoInformation){
                 var song = new Song(videoInformation);
                 playlist.songs.push(song);
+
+                console.log("Pushing song onto shuffledSongs", song);
+                playlist.shuffledSongs.push(song);
+                shuffle(playlist.shuffledSongs);
                 save();
                 callback(song);
             })
         },
         removeSongById: function (id) {
-            var index = getSongIndexById(id);
+            var index = getSongIndexById(playlist.songs, id);
+
+            this.syncShuffledSongs(id);
 
             if (index !== -1) {
                 playlist.songs.splice(index, 1);
@@ -165,17 +225,8 @@ function Playlist(id, name) {
             save();
         },
         //Randomizes the playlist and then saves it.
-        shuffle: function () {
-            var i, j, t;
-            for (i = 1; i < playlist.songs.length; i++) {
-                j = Math.floor(Math.random() * (1 + i));  // choose j in [0..i]
-                if (j !== i) {
-                    t = playlist.songs[i];                        // swap songs[i] and songs[j]
-                    playlist.songs[i] = playlist.songs[j];
-                    playlist.songs[j] = t;
-                }
-            }
-
+        shuffle: function(){
+            shuffle(playlist.songs)
             save();
         }
     };

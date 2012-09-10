@@ -16,22 +16,27 @@ function ContentHeader(selector, addText, addInputPlaceholder){
     'class': 'headerInput',
     type: 'text',
     text: Player.getPlaylistTitle(),
+    originalValue: '',
     mouseover: function(){
+      this.originalValue = $(this).val();
       $(this).css('border-color', '#EEE');
     },
     mouseout: function(){
-      processTitle($(this).val());
+      if(this.originalValue != $(this).val()){
+        processTitle($(this).val());
+      }
       $(this).blur();
       $(this).css('border-color', 'transparent');
     },
     keyup: function (e) {
         var code = e.which;
-        //ENTER: 13
-        if (code === 13){
-          $(this).hide();
-          processTitle($(this).val());
-          headerLabel.show();
+
+        if (code === $.ui.keyCode.ENTER){
+          processTitle($(this).val()); 
+          $(this).blur();
+          $(this).css('border-color', 'transparent');
         }
+
     }
   }).appendTo(headerTitle);
 
@@ -82,7 +87,7 @@ function ContentHeader(selector, addText, addInputPlaceholder){
     //Display a message for X milliseconds inside of the input. 
     flashMessage: function(message, durationInMilliseconds){
         var placeholder = addInput.attr('placeholder');
-        addInput.val('').blur().attr('placeholder', message);
+        addInput.val('').attr('placeholder', message);
         window.setTimeout(function () {
             addInput.attr('placeholder', placeholder);
         }, durationInMilliseconds);

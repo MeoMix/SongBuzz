@@ -87,5 +87,7 @@ var YTPlayerApiHelper = (function(){
 //Needs to be exposed globally.
 function onYouTubePlayerAPIReady() {
     "use strict";
+    //TODO: Firing two events is lame, but I have two players currently. How do I make this arbitrary?
+    new YTPlayerApiHelper.ready(true);
     new YTPlayerApiHelper.ready(true);
 }

@@ -2,7 +2,7 @@
 YTHelper = (function(){
     "use strict";
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
-    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?orderBy=relevance&time=all_time&max-results=30&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
+    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=30&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
     var suggestUrl = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
         
     //This is necessary because not all songs will play embedded, but YouTube does not expose all the criterion for a song not playing.
@@ -68,7 +68,7 @@ YTHelper = (function(){
                 var playableVideos = [];
 
                 //Add all playable songs to a list and return.
-                $(response.feed.entry).each(function(){
+                $(response.feed.entry).each(function(i){
                     var video = buildYouTubeVideo(this);
 
                     if(video.isPlayable()){
@@ -79,39 +79,47 @@ YTHelper = (function(){
                 callback(playableVideos);
             });
         },
-        
-        //Returns a list of suggested search-queries for YouTube searches based on the given text.
-        suggest: function (text, callback) {
-            $.getJSON(suggestUrl + text, function (response) {
-                var suggestions = [];
 
-                $(response[1]).each(function(){
-                    suggestions.push(this[0]);
-                });
+        findPlayableByText: function(text, callback){
+            console.log("calling search", text);
+            YTHelper.search(text, function (videos) {
+                var playableSong = null;
 
-                callback(suggestions);
+                var wait = false;
+                var processInterval = setInterval(function(){
+                    if(!wait){
+                        var currentVideo = videos.shift();
+
+                        //TODO: Remove 'live' songs.
+
+                        if(currentVideo){
+                            console.log("inspecting song:, ", currentVideo);
+
+                            wait = true;
+                            if(currentVideo.isPlayable()){
+                                chrome.extension.getBackgroundPage().SongValidator.validateSongById(currentVideo.videoId, function(result){
+                                    wait = false;
+                                    if(result){
+                                        console.log("song is playable", currentVideo);
+                                        clearInterval(processInterval);
+                                        callback(currentVideo);
+                                        return;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }, 200)
             });
         },
 
         //Takes a videoId which is presumed to have content restrictions and looks through YouTube
         //for a song with a similiar name that might be the right song to play.
-        findPlayable: function(videoId, callback){
+        findPlayableByVideoId: function(videoId, callback){
             this.getVideoInformation(videoId, function(videoInformation){
                 if (videoInformation != null) {
                     var songName = videoInformation.title.$t;
-
-                    YTHelper.search(songName, function (videos) {
-                        var playableSong = null;
-
-                        $(videos).each(function(){
-                            if(this.isPlayable()){
-                                playableSong = this;
-                                return;
-                            }
-                        });
-
-                        callback(playableSong);
-                    });
+                    this.findPlayableByText(songName, callback);
                 }
             });
         },

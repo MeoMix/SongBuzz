@@ -1,9 +1,8 @@
 {
   "name": "SongBuzz",
-  "version": "0.12",
+  "version": "0.21",
   "manifest_version": 2,
   "description": "Converts YouTube into an MP3 player for your browser.",
-  "update_url": "http://www.meomixes.com/updates/updates.xml",
   "background":{
     "page": "background.htm"
   },
@@ -22,23 +21,6 @@
     "clipboardRead",
     "clipboardWrite"
 	],
-  "commands":{
-    "toggle-feature-foo": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Y",
-        "mac": "Command+Shift+Y"
-      },
-      "description": "Toggle feature foo"
-    },
-    "_execute_browser_action": {
-      "suggested_key": {
-        "windows": "Ctrl+Z",
-        "mac": "Command+Z",
-        "chromeos": "Ctrl+Z",
-        "linux": "Ctrl+Z"
-      }
-    }
-  },
   "content_security_policy": 
     "script-src 'self' https://ssl.google-analytics.com/ga.js https://gdata.youtube.com/ https://suggestqueries.google.com/ https://www.youtube.com/player_api https://s.ytimg.com/yt/jsbin/www-widgetapi-vfl9Ni0ki.js; object-src 'self'"
 }

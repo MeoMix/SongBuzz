@@ -7,7 +7,7 @@ var PlaylistsContextMenu = (function(playlist){
 		//TODO: I need to gray out the option to delete, but still show it.
 		//Should I gray out when clicking on last playlist or current playlist?
 		if(playlist != null && !playlist.getSelected() ){
-    		Player.removePlaylistById(playlist.id);
+    		Player.removePlaylistById(playlist.getId());
 		}
 	})
 

@@ -14,7 +14,8 @@ $(function () {
     "use strict";
 
     var Foreground = (function() {
-        Player = chrome.extension.getBackgroundPage().YoutubePlayer();
+        Player = chrome.extension.getBackgroundPage().YoutubePlayer;
+        Player.connect();
 
         var listen = function () {
             //Initialize foreground UI and maintain a handle to be able to update UI.
@@ -22,14 +23,12 @@ $(function () {
             //Background's player object will notify the foreground whenever its state changes.
             chrome.extension.onConnect.addListener(function (port) {
                 port.onMessage.addListener(function (message) {
-                    if($('#overlay').is(':visible'))
-                        $('#overlay').fadeOut();
-
                     //Background communicates error messages to the foreground to be displayed to the UI.
                     if (message.errorMessage){
                         alert(message.errorMessage);
                     }
 
+                    console.log("received message calling update", new Date().getTime());
                     uiElements.update(message.playerState, message.songs, message.currentSong);
                 });
             });

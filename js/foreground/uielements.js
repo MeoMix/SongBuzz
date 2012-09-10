@@ -11,6 +11,7 @@ function UiElements() {
     new ContentButtons();
 
     var update = function (playerState, songs, currentSong) {
+        console.log("playerstate: ", playerState, currentSong);
         switch (playerState) {
             case PlayerStates.ENDED:
             case PlayerStates.VIDCUED:
@@ -38,24 +39,8 @@ function UiElements() {
         playlistsTab.reloadList();
     };
 
-    if(!Player.isReady){
-        $('#overlay').css({
-            opacity: 0.5,
-            top: $('#SongList').offset().top,
-            left: $('#SongList').offset().left,
-            width: $('#SongList').outerWidth(),
-            height: $('#SongList').outerHeight()
-        });
-
-        $('#floatingCirclesG').css({
-            top: ($('#SongList').height() / 2) - $('#floatingCirclesG').height()/2,
-            left: ($('#SongList').width() /2) - $('#floatingCirclesG').width()/2
-        });
-
-        $('#overlay').fadeIn();
-    }
-
     if(Player){
+        console.log("calling update");
         update(Player.getPlayerState(), Player.getSongs(), Player.getCurrentSong());
     }
     return {

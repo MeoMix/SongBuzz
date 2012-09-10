@@ -5,7 +5,7 @@ var SongListContextMenu = (function(song){
 
 	contextMenu.addContextMenuItem('Copy song URL', function(){
 		if(song != null ){
-        	chrome.extension.sendRequest({ text: song.url });
+        	chrome.extension.sendMessage({ text: song.url });
 		}
 	});
 

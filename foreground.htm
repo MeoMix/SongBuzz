@@ -33,6 +33,7 @@
     <script src="js/foreground/time_display.js"></script>
     <script src="js/foreground/urlinput.js"></script>
     <script src="js/foreground/uielements.js"></script>
+    <script src="js/foreground/dialogs.js"></script>
 
     <script src="js/foreground/player_controls/player_controls.js"></script>
     <script src="js/foreground/player_controls/shuffle_button.js"></script>
@@ -40,7 +41,7 @@
     <script src="js/foreground/player_controls/previous_button.js"></script>
     <script src="js/foreground/player_controls/playpause_button.js"></script>
     <script src="js/foreground/player_controls/volume_slider.js"></script>
-
+        
     <script src="js/playerstates.js"></script>
     <script src="js/yt_helper.js"></script>
     <script src="js/song.js"></script>
@@ -156,27 +157,6 @@
         </div>
       </div>
 
-      <div id="overlay">
-        <div id="floatingCirclesG">
-          <div class="f_circleG" id="frotateG_01">
-          </div>
-          <div class="f_circleG" id="frotateG_02">
-          </div>
-          <div class="f_circleG" id="frotateG_03">
-          </div>
-          <div class="f_circleG" id="frotateG_04">
-          </div>
-          <div class="f_circleG" id="frotateG_05">
-          </div>
-          <div class="f_circleG" id="frotateG_06">
-          </div>
-          <div class="f_circleG" id="frotateG_07">
-          </div>
-          <div class="f_circleG" id="frotateG_08">
-          </div>
-        </div>
-      </div>
-
       <div id="ConfirmSearchDialog" title="Confirm Search?">
           <p>The song you provided was not playable due to content restrictions imposed by YouTube. OK to search for replacement?</p>
       </div>
@@ -191,6 +171,12 @@
       </div>
       <div id="BannedSongDialog">
         <div class="dialogHeader">Unable to use song because it was banned on copyright grounds.</div>
+      </div>
+
+      <div id="ReplacedSongDialog">
+        <div class="dialogHeader">The song you wanted couldn't be played due to content restrictions, but a replacement was found!</div>
+        <label for"ShowReplacedSongDialogCheckbox">Got it. Don't show this message again.</label>
+        <input id="ShowReplacedSongDialogCheckbox" name="ShowReplacedSongDialogCheckbox" value="false" type="checkbox">
       </div>
 
       <div id="ContextMenu">

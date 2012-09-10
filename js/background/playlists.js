@@ -11,6 +11,8 @@ function Playlists() {
 	var loadPlaylists = function(){
 		var playlistsJson = localStorage.getItem('playlists');
 
+		console.log("loadPlaylists", playlistsJson);
+
 		try {
 			if (playlistsJson){
 				var playlistIds = JSON.parse(playlistsJson);
@@ -30,6 +32,11 @@ function Playlists() {
 		}
 		catch(exception){
 			console.error(exception);
+			//No saved playlists found - create a default playlist.
+			var defaultPlaylist = new Playlist();
+			defaultPlaylist.setSelected(true);
+			playlists[defaultPlaylist.getId()] = defaultPlaylist;
+			save();
 		}
 	}();
 

@@ -4,12 +4,21 @@ var ShuffleButton = (function(){
 	"use strict";
 	var shuffleButton = $('#ShuffleButton');
 
+    var shuffleEnabled = localStorage.getItem("ShuffleEnabled");
+
+    if(shuffleEnabled === "true"){
+    	shuffleButton.addClass('pressed');
+    }
+
 	function shuffleSong(){
-        Player.shuffle();
-        //Prevent spamming by only allowing a shuffle click once a second.
-        setTimeout(function () {
-            shuffleButton.off('click').one('click', shuffleSong);
-        }, 1000);
+		if(shuffleButton.hasClass('pressed')){
+			shuffleButton.removeClass('pressed');
+			localStorage.setItem('ShuffleEnabled', false);
+		}
+		else{
+			shuffleButton.addClass('pressed');
+			localStorage.setItem('ShuffleEnabled', true);
+		}
 	}
 
 	return {
@@ -19,7 +28,7 @@ var ShuffleButton = (function(){
 		},
 
 		enable: function(){
-            shuffleButton.prop('src', "images/shuffle.png").removeClass('disabled').off('click').one('click', shuffleSong);
+            shuffleButton.prop('src', "images/shuffle.png").removeClass('disabled').off('click').click(shuffleSong);
             shuffleButton.find('path').css('fill', 'white');
 		}
 	};
