@@ -3,7 +3,7 @@ var SongListContextMenu = (function(song){
 	"use strict";
 	var contextMenu = new ContextMenu();
 
-	contextMenu.addContextMenuItem('Copy song URL', function(){
+	contextMenu.addContextMenuItem('Copy song', function(){
 		if(song != null ){
         	chrome.extension.sendMessage({ text: song.url });
 		}

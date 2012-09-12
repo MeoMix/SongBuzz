@@ -50,8 +50,6 @@ function Playlists() {
 		},
 
 		setSelectedPlaylist: function(playlist){
-			console.log("setSelectedPlaylist");
-			console.log(playlist);	
 			this.getSelectedPlaylist().setSelected(false);
 			playlist.setSelected(true);
 			selectedPlaylist = playlist;

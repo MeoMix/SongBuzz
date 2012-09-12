@@ -21,18 +21,17 @@ function UrlInput(songListHeader) {
             return false;
         },
         select: function (event, ui) {
-            var usersText = $(this).val();
             event.preventDefault(); //Don't change the text when user clicks their song selection.
             songListHeader.flashMessage('Thanks!', 2000);
 
             chrome.extension.getBackgroundPage().SongValidator.validateSongById(ui.item.value.videoId, function(isPlayable){
                 if(isPlayable){
-                    Player.addSongById(ui.item.value.videoId);
+                    Player.addSongByVideoId(ui.item.value.videoId);
                 }
                 else{
                     Dialogs.showReplacedSongNotification();
-                    YTHelper.findPlayableByText(usersText, function(playableSong){
-                        Player.addSongById(playableSong.videoId);
+                    YTHelper.findPlayableByVideoId(ui.item.value.videoId, function(playableSong){
+                        Player.addSongByVideoId(playableSong.videoId);
                     });
                 }
             });
@@ -56,7 +55,6 @@ function UrlInput(songListHeader) {
                     addInput.autocomplete("option", "source", []);
                 }
                 else{
-                    userInputHasChanged = false;
                     showSongSuggestions(usersText);
                 }
             }
@@ -65,25 +63,35 @@ function UrlInput(songListHeader) {
         });
 
         //Searches youtube for song results based on the given text.
-        //Places 11 song objects in the auto-complete source and displaying the songs name as label.
         var showSongSuggestions = function (text) {
-            YTHelper.search(text, function (videos) {
-                if(!userInputHasChanged){
-                    var songTitles = [];
+            var elapsedTime = 0;
+            var timeInterval = 200;
+            var timeout = 1000;
 
-                    //Only show up to 11 song suggestions as that is what fits on the display.
-                    for (var videoIndex = 0; videoIndex < videos.length && videoIndex < 11; videoIndex++) {
-                        var video = videos[videoIndex];
-                        //I wanted the label to be duration | title to help delinate between typing suggestions and actual songs.
-                        var label = Helpers.prettyPrintTime(video.duration) + " | " + video.title;
-                        songTitles.push({ label: label, value: video});
-                    }
+            var addSongInterval = setInterval(function(){
+                var songTitles = [];
+                elapsedTime += timeInterval;
 
-                    //Show songs found instead of suggestions.
-                    addInput.autocomplete("option", "source", songTitles);
-                    addInput.autocomplete("search", '');
+                if(elapsedTime < timeout){
+                    YTHelper.search(text, function (videos) {
+                        if(!userInputHasChanged){
+                            $(videos).each(function(){
+                                //I wanted the label to be duration | title to help delinate between typing suggestions and actual songs.
+                                var label = Helpers.prettyPrintTime(this.duration) + " | " + this.title;
+                                songTitles.push({ label: label, value: this});
+                            })
+
+                            //Show songs found instead of suggestions.
+                            addInput.autocomplete("option", "source", songTitles);
+                            addInput.autocomplete("search", '');
+                        }
+                        userInputHasChanged = false;
+                    });
                 }
-            });
+                else{
+                    clearInterval(addSongInterval);
+                }
+            }, timeInterval);
         };
     }();
 
@@ -96,43 +104,30 @@ function UrlInput(songListHeader) {
             if (videoId) {
                 songListHeader.flashMessage('Thanks!', 2000);
 
-                var playable = YTHelper.isPlayable(videoId, function (isPlayable) {
-                    if (!isPlayable) {
-                        //Notify the user that the song they attempted to add had content restrictions, ask if it is OK to find a replacement.
-                        YTHelper.getVideoInformation(videoId, function(videoInformation){
-                            if (videoInformation != null){
+                var onResponse = function(videoInformation){
+                    if(videoInformation == null){
+                        Dialogs.showBannedSongDialog();
+                    }
+                    else{
+                        YTHelper.isPlayable(videoId, function (isPlayable) {
+                            if(isPlayable){
                                 chrome.extension.getBackgroundPage().SongValidator.validateSongById(videoId, function(playedSuccessfully){
                                     if(playedSuccessfully){
-                                        Player.addSongById(videoId);
+                                        Player.addSongByVideoId(videoId);
                                     }
                                     else{
                                        Dialogs.showReplacedSongNotification();
                                         YTHelper.findPlayableByVideoId(videoId, function(playableSong){
-                                            Player.addSongById(playableSong.videoId);
+                                            Player.addSongByVideoId(playableSong.videoId);
                                         });
                                     }
                                 });
                             }
-                            else{
-                                Dialogs.showBannedSongDialog();
-                            }
                         });
                     }
-                    else {
-                        chrome.extension.getBackgroundPage().SongValidator.validateSongById(videoId, function(isPlayable){
-                            console.log("isPlayable?", isPlayable);
-                            if(isPlayable){
-                                Player.addSongById(videoId);
-                            }
-                            else{
-                                Dialogs.showReplacedSongNotification();
-                                YTHelper.findPlayableByVideoId(videoId, function(playableSong){
-                                    Player.addSongById(playableSong.videoId);
-                                });
-                            }
-                        });
-                    }
-                });
+                }
+
+                YTHelper.getVideoInformation(videoId, onResponse);
             }
         });
     };

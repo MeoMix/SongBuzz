@@ -2,7 +2,8 @@
 YTHelper = (function(){
     "use strict";
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
-    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=30&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
+    var startIndex = 1;
+    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&start-index=" + startIndex + "&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
     var suggestUrl = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
         
     //This is necessary because not all songs will play embedded, but YouTube does not expose all the criterion for a song not playing.
@@ -67,49 +68,37 @@ YTHelper = (function(){
             $.getJSON(searchUrl + text, function (response) {
                 var playableVideos = [];
 
+                //TODO: Dictionary. Just lazy.
+                var banLiveResults = text.toLowerCase().indexOf("live") == -1;
+                var banCovers = text.toLowerCase().indexOf("cover") == -1;
+                var banRemixes = text.toLowerCase().indexOf("remix") == -1;
+                var banKaraoke = text.toLowerCase().indexOf("karaoke") == -1;
+
                 //Add all playable songs to a list and return.
                 $(response.feed.entry).each(function(i){
                     var video = buildYouTubeVideo(this);
+                    console.log("processing", video);
+
+                    //Filter out live results when the user hasn't specified live in search results.
+                    if(banLiveResults && video.title.toLowerCase().indexOf("live") != -1)
+                        return;
+
+                    if(banCovers && video.title.toLowerCase().indexOf("cover") != -1)
+                        return;
+
+                    if(banRemixes && video.title.toLowerCase().indexOf("remix") != -1)
+                        return;
+
+                    if(banKaraoke && video.title.toLowerCase().indexOf("karaoke") != -1)
+                        return;
 
                     if(video.isPlayable()){
+                        console.log("found playable");
                         playableVideos.push(video);
                     }
                 });
 
                 callback(playableVideos);
-            });
-        },
-
-        findPlayableByText: function(text, callback){
-            console.log("calling search", text);
-            YTHelper.search(text, function (videos) {
-                var playableSong = null;
-
-                var wait = false;
-                var processInterval = setInterval(function(){
-                    if(!wait){
-                        var currentVideo = videos.shift();
-
-                        //TODO: Remove 'live' songs.
-
-                        if(currentVideo){
-                            console.log("inspecting song:, ", currentVideo);
-
-                            wait = true;
-                            if(currentVideo.isPlayable()){
-                                chrome.extension.getBackgroundPage().SongValidator.validateSongById(currentVideo.videoId, function(result){
-                                    wait = false;
-                                    if(result){
-                                        console.log("song is playable", currentVideo);
-                                        clearInterval(processInterval);
-                                        callback(currentVideo);
-                                        return;
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }, 200)
             });
         },
 
@@ -119,7 +108,38 @@ YTHelper = (function(){
             this.getVideoInformation(videoId, function(videoInformation){
                 if (videoInformation != null) {
                     var songName = videoInformation.title.$t;
-                    this.findPlayableByText(songName, callback);
+                    YTHelper.search(songName, function (videos) {
+                        var playableSong = null;
+
+                        videos.sort(function(a,b){
+                            //TODO: I might also want to consider the distance between users input text and a/b title
+                            return levDist(a.title, songName) - levDist(b.title, songName);
+                        });
+
+                        var wait = false;
+                        var processInterval = setInterval(function(){
+                            if(!wait){
+                                var currentVideo = videos.shift();
+
+                                if(currentVideo){
+                                    wait = true;
+                                    if(currentVideo.isPlayable()){
+                                        chrome.extension.getBackgroundPage().SongValidator.validateSongById(currentVideo.videoId, function(result){
+                                            wait = false;
+                                            if(result){
+                                                clearInterval(processInterval);
+                                                callback(currentVideo);
+                                                return;
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        wait = false;
+                                    }
+                                }
+                            }
+                        }, 200)
+                    });
                 }
             });
         },

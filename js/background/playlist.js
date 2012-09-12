@@ -7,7 +7,7 @@ function Playlist(id, name) {
     var playlist = {
         id: id ? id : Helpers.generateGuid(),
         title: name ? name : "New Playlist",
-        selected: false,
+        selected: true,
         shuffledSongs: [],
         songHistory: [],
         songs: !isDefaultPlaylist ? [] : [{ 
@@ -26,29 +26,40 @@ function Playlist(id, name) {
     };
 
     var save = function () {
-        localStorage.setItem(playlist.id, JSON.stringify(playlist));
+        console.log("saving");
+        var key = playlist.id.toString();
+        chrome.storage.sync.set({key: playlist});
     };
 
     var loadPlaylist = function(){
-        //Methods are unable to be serized to localStorage.
-        var playlistJson = localStorage.getItem(playlist.id)
+        //Methods are unable to be serialized.
+        var key = playlist.id;
+        chrome.storage.sync.get(key, function(result){
+            var backupPlaylist = playlist;
 
-        var backupPlaylist = playlist;
-        try {
-            if (playlistJson){
-                playlist = JSON.parse(playlistJson);
+            try{
+                console.log("Result", result);
+                if(result[key]){
+                    console.log("it always exists");
+                    playlist = result[key];
+                } 
             }
-        }
-        catch(exception){
-            console.error(exception);
-            playlist = backupPlaylist;
-        }
-    }();
+            catch(exception){
+                console.error(exception);
+                playlist = backupPlaylist;
+            }
 
-    var legacySupport = function(){
-        if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
-        if(!playlist.songHistory) playlist.songHistory = [];
-        if(!playlist.songs) playlist.songs = [];
+            console.log("playlist", playlist);
+            console.log("loaded at", new Date().getTime());
+
+            legacySupport();
+        });
+
+        var legacySupport = function(){
+            if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
+            if(!playlist.songHistory) playlist.songHistory = [];
+            if(!playlist.songs) playlist.songs = [];
+        };
     }();
 
     var shuffle = function (songs) {
@@ -173,7 +184,7 @@ function Playlist(id, name) {
             if(!previousSong){
                 var previousSongIndex = getSongIndexById(playlist.songs, currentId) - 1;
 
-                // Goes to the end of the current playlist.
+                   // Goes to the end of the current playlist.
                 if (previousSongIndex < 0){
                     previousSongIndex = playlist.songs.length - 1;
                 }
@@ -189,7 +200,7 @@ function Playlist(id, name) {
         getSongs: function () {
             return playlist.songs;
         },
-        addSongById: function (videoId, callback) {
+        addSongByVideoId: function (videoId, callback) {
             YTHelper.getVideoInformation(videoId, function(videoInformation){
                 var song = new Song(videoInformation);
                 playlist.songs.push(song);

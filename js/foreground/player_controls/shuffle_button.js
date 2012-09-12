@@ -4,20 +4,21 @@ var ShuffleButton = (function(){
 	"use strict";
 	var shuffleButton = $('#ShuffleButton');
 
-    var shuffleEnabled = localStorage.getItem("ShuffleEnabled");
+    chrome.storage.sync.get("isShuffleEnabled", function(result){
+	    if(result.isShuffleEnabled){
+	    	shuffleButton.addClass('pressed');
+	    }
+    });
 
-    if(shuffleEnabled === "true"){
-    	shuffleButton.addClass('pressed');
-    }
 
 	function shuffleSong(){
 		if(shuffleButton.hasClass('pressed')){
 			shuffleButton.removeClass('pressed');
-			localStorage.setItem('ShuffleEnabled', false);
+			chrome.storage.sync.set({'isShuffleEnabled': false});
 		}
 		else{
 			shuffleButton.addClass('pressed');
-			localStorage.setItem('ShuffleEnabled', true);
+			chrome.storage.sync.set({'isShuffleEnabled': true});
 		}
 	}
 

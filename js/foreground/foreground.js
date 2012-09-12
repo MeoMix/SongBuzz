@@ -28,7 +28,6 @@ $(function () {
                         alert(message.errorMessage);
                     }
 
-                    console.log("received message calling update", new Date().getTime());
                     uiElements.update(message.playerState, message.songs, message.currentSong);
                 });
             });

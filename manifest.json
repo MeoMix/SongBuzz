@@ -13,12 +13,7 @@
   },
   "permissions": [
     "contextMenus",
-    "notifications",
-    "tabs",
-    "bookmarks",
-    "http://*/*",
-    "https://*/*",
-    "clipboardRead",
+    "storage",
     "clipboardWrite"
 	],
   "content_security_policy": 

@@ -213,6 +213,13 @@
   height: 12px;
 }
 
+
+.ui-autocomplete {
+  max-height: 260px;
+  max-width: 340px;
+  overflow-y: auto;
+}
+
 .content {
   top:70px;
   left:70px;

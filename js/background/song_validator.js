@@ -27,22 +27,24 @@ $(function(){
 	    });
 
 	    return {
-	    	validateSongById: function(songId, callback){
+	    	validateSongById: function(videoId, callback){
 	    		oldVolume = player.getVolume();
 	    		player.setVolume(0);
 
+
 	    		receivedAnswer = false;
 	    		isPlayable = false;
-	    		console.log("Loading video.", receivedAnswer, isPlayable);
-	    		player.loadVideoById(songId);
+	    		console.log("loading video with ID:", videoId);
+	    		player.loadVideoById(videoId);
 
 	    		var isValidPoller = setInterval(function(){
-	    			console.log("polling", receivedAnswer);
 	    			if(receivedAnswer){
+	    				receivedAnswer = false;
+	    	        	console.log("setting received answer to false2");
+
 	    				player.pauseVideo();
 	    				player.setVolume(oldVolume);
 	    				clearInterval(isValidPoller);
-	    				console.log("callback", isPlayable);
 	    				callback(isPlayable);
 	    			}
 	    		}, 200)
