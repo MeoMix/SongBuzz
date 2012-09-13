@@ -1,6 +1,6 @@
 {
   "name": "SongBuzz",
-  "version": "0.21",
+  "version": "0.22",
   "manifest_version": 2,
   "description": "Converts YouTube into an MP3 player for your browser.",
   "background":{
@@ -14,7 +14,8 @@
   "permissions": [
     "contextMenus",
     "storage",
-    "clipboardWrite"
+    "clipboardWrite",
+    "geolocation"
 	],
   "content_security_policy": 
     "script-src 'self' https://ssl.google-analytics.com/ga.js https://gdata.youtube.com/ https://suggestqueries.google.com/ https://www.youtube.com/player_api https://s.ytimg.com/yt/jsbin/www-widgetapi-vfl9Ni0ki.js; object-src 'self'"

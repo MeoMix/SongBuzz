@@ -3,6 +3,11 @@ YTHelper = (function(){
     "use strict";
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
     var startIndex = 1;
+
+    //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true_or_false
+    // $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=false", function (response) {
+    //     console.log("response", response);
+    // });
     var searchUrl = "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&start-index=" + startIndex + "&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
     var suggestUrl = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
         

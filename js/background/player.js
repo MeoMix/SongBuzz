@@ -12,16 +12,7 @@ $(function () {
         "use strict";                            
         
         if (!player) {
-            console.log("loading new playlist");
             playlists = new Playlists();
-
-            var waitForPlaylist = setInterval(function(){
-                playlist = playlists.getSelectedPlaylist();
-                if(playlist){
-                    console.log("clearing interval");
-                    clearInterval(waitForPlaylist);
-                }
-            }, 200);
 
             //Create YT player iframe.
             //Listen for firstPlay to call pause on the video. This is necessary to keep the player out of VIDCUED because VIDCUED does not work well with seekTo.
@@ -30,8 +21,9 @@ $(function () {
 
             var onReady = function(){
                 var waitForPlaylistAndPort = setInterval(function(){
+                    playlist = playlists.getSelectedPlaylist();
+
                     if(playlist && port){
-                        console.log("gogo");
                         clearInterval(waitForPlaylistAndPort);
 
                         sendUpdate();
@@ -39,7 +31,6 @@ $(function () {
                         //If there is a song to cue might as well have it ready to go.
                         if (playlist.songCount() > 0) {
                             loadSongById(playlist.getSongs()[0].id);
-                            console.log("adding song to history from onready:", playlist.getSongs()[0]);
                             playlist.addSongToHistory(playlist.getSongs()[0]);
                         }
                     }
@@ -68,7 +59,6 @@ $(function () {
 
                         playlist.addSongToHistory(nextSong);
                         loadSongById(nextSong.id);  
-                        console.log("load song by id called ", new Date().getTime());
                     });
                 } 
                 else if (port) {
@@ -213,7 +203,7 @@ $(function () {
             selectPlaylist: function(playlistId){
                 if(playlist.getId() !== playlistId){
                     this.pause();
-                    console.log("playlistId: " + playlistId);
+                    console.log("selecting playlistId: " + playlistId);
                     playlist = playlists.getPlaylistById(playlistId);
                     playlists.setSelectedPlaylist(playlist);
 

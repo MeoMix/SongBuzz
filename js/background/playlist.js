@@ -26,31 +26,28 @@ function Playlist(id, name) {
     };
 
     var save = function () {
-        console.log("saving");
         var key = playlist.id.toString();
-        chrome.storage.sync.set({key: playlist});
+
+        var keyValuePair = {};
+        keyValuePair[playlist.id] = JSON.stringify(playlist)
+
+        chrome.storage.sync.set(keyValuePair);
     };
 
     var loadPlaylist = function(){
         //Methods are unable to be serialized.
-        var key = playlist.id;
-        chrome.storage.sync.get(key, function(result){
+        chrome.storage.sync.get(playlist.id, function(result){
             var backupPlaylist = playlist;
 
             try{
-                console.log("Result", result);
-                if(result[key]){
-                    console.log("it always exists");
-                    playlist = result[key];
+                if(result[playlist.id]){
+                    playlist = JSON.parse(result[playlist.id]);
                 } 
             }
             catch(exception){
                 console.error(exception);
                 playlist = backupPlaylist;
             }
-
-            console.log("playlist", playlist);
-            console.log("loaded at", new Date().getTime());
 
             legacySupport();
         });
@@ -76,9 +73,6 @@ function Playlist(id, name) {
 
     var loadShuffledSongs = function(){
         $.extend(playlist.shuffledSongs, playlist.songs);
-
-        console.log("loadShuffledSongs called, shuffledSongs is now", playlist.shuffledSongs);
-
         shuffle(playlist.shuffledSongs);
     }
 
@@ -124,6 +118,7 @@ function Playlist(id, name) {
             save();
         },
         getSelected: function(){
+            console.log("selected:", playlist.selected);
             return playlist.selected;
         },
         setSelected: function(value){
