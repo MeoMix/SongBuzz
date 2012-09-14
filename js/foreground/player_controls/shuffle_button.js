@@ -3,22 +3,20 @@
 var ShuffleButton = (function(){
 	"use strict";
 	var shuffleButton = $('#ShuffleButton');
-
-    chrome.storage.sync.get("isShuffleEnabled", function(result){
-	    if(result.isShuffleEnabled){
-	    	shuffleButton.addClass('pressed');
-	    }
-    });
-
+	//localStorage serializes bools to strings.
+	if(Boolean(localStorage.getItem('isShuffleEnabled') || false)){
+		shuffleButton.addClass('pressed');
+	}
 
 	function shuffleSong(){
-		if(shuffleButton.hasClass('pressed')){
+		var isShuffleEnabled = shuffleButton.hasClass('pressed');
+		localStorage.setItem('isShuffleEnabled', isShuffleEnabled);
+
+		if(isShuffleEnabled){
 			shuffleButton.removeClass('pressed');
-			chrome.storage.sync.set({'isShuffleEnabled': false});
 		}
 		else{
 			shuffleButton.addClass('pressed');
-			chrome.storage.sync.set({'isShuffleEnabled': true});
 		}
 	}
 

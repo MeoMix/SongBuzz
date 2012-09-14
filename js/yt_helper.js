@@ -4,12 +4,8 @@ YTHelper = (function(){
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
     var startIndex = 1;
 
-    //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true_or_false
-    // $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=false", function (response) {
-    //     console.log("response", response);
-    // });
-    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&start-index=" + startIndex + "&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
-    var suggestUrl = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin_countryCode() + "&q=";
+    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&start-index=" + startIndex + "&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + GeoPlugin.getCountryCode() + "&q=";
+    var suggestUrl = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + GeoPlugin.getCountryCode() + "&q=";
         
     //This is necessary because not all songs will play embedded, but YouTube does not expose all the criterion for a song not playing.
     //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
@@ -150,34 +146,25 @@ YTHelper = (function(){
         },
 
         //Takes a URL and returns a videoId if found inside of the URL.
+        //http://stackoverflow.com/questions/3452546/javascript-regex-how-to-get-youtube-video-id-from-url
         parseUrl: function(url){
-            //First try the really simple match -- ?v=''
-            var videoId = $.url(url).param('v');
-
-            if (!videoId) {
-                //Try more robust matching pattern. I'm using this along with the URL jQuery plug-in because I can't decipher this regex, but it matches a lot.
-                var match = url.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/);
-                if (match && match[7].length === 11){
-                    videoId = match[7];
-                }
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+            var match = url.match(regExp);
+            if (match && match[2].length === 11){
+                return match[2];
             }
-
-            return videoId;
         },
 
         // Returns NULL if the request throws a 403 error if videoId has been banned on copyright grounds.
         getVideoInformation: function(videoId, callback){
-            $.jsonp({
-              "url": 'https://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json-in-script&callback=?',
-              "data": {
-                  "alt": "json-in-script"
-              },
-              "success": function(result) {
-                  callback(result.entry);
-              },
-              "error": function(d,msg) {
-                  callback(null);
-              }
+            $.ajax({
+                url: 'https://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json',
+                success: function(result){
+                    callback(result.entry);
+                },
+                error: function(d, msg){
+                    callback(null);
+                }
             });
         }
     };

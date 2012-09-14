@@ -26,37 +26,29 @@ function Playlist(id, name) {
     };
 
     var save = function () {
-        var key = playlist.id.toString();
-
-        var keyValuePair = {};
-        keyValuePair[playlist.id] = JSON.stringify(playlist)
-
-        chrome.storage.sync.set(keyValuePair);
+        localStorage.setItem(playlist.id, JSON.stringify(playlist));
     };
 
     var loadPlaylist = function(){
-        //Methods are unable to be serialized.
-        chrome.storage.sync.get(playlist.id, function(result){
-            var backupPlaylist = playlist;
+        //Methods are unable to be serized to localStorage.
+        var playlistJson = localStorage.getItem(playlist.id)
 
-            try{
-                if(result[playlist.id]){
-                    playlist = JSON.parse(result[playlist.id]);
-                } 
+        var backupPlaylist = playlist;
+        try {
+            if (playlistJson){
+                playlist = JSON.parse(playlistJson);
             }
-            catch(exception){
-                console.error(exception);
-                playlist = backupPlaylist;
-            }
+        }
+        catch(exception){
+            console.error(exception);
+            playlist = backupPlaylist;
+        }
+    }();
 
-            legacySupport();
-        });
-
-        var legacySupport = function(){
-            if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
-            if(!playlist.songHistory) playlist.songHistory = [];
-            if(!playlist.songs) playlist.songs = [];
-        };
+    var legacySupport = function(){
+        if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
+        if(!playlist.songHistory) playlist.songHistory = [];
+        if(!playlist.songs) playlist.songs = [];
     }();
 
     var shuffle = function (songs) {
@@ -95,7 +87,6 @@ function Playlist(id, name) {
 
             if (index !== -1) {
                 playlist.shuffledSongs.splice(index, 1);
-                console.log("removed song from shuffledSongs", playlist.shuffledSongs);
             }
 
             if(playlist.shuffledSongs.length == 0){
@@ -118,7 +109,6 @@ function Playlist(id, name) {
             save();
         },
         getSelected: function(){
-            console.log("selected:", playlist.selected);
             return playlist.selected;
         },
         setSelected: function(value){
@@ -147,13 +137,10 @@ function Playlist(id, name) {
             return firstSong;
         },
         addSongToHistory: function(song){
-            console.log("Add song to history");
             playlist.songHistory.unshift(song);
         },
         //Takes a song and returns the next song object by index.
         getNextSong: function (currentId) {
-            console.log("currentId:", currentId);
-
             var currentSongIndex = getSongIndexById(playlist.songs, currentId);
             var nextSongIndex = currentSongIndex + 1;
 
@@ -166,16 +153,13 @@ function Playlist(id, name) {
             return playlist.songs[nextSongIndex];
         },
         getRandomSong: function(){
-            console.log("returning random song from", playlist.shuffledSongs, playlist.shuffledSongs[0]);
             return playlist.shuffledSongs[0];
         },
         getPreviousSong: function (currentId) {
             var currentSong = playlist.songHistory.shift();
-            console.log("Current song should not be null", currentSong);
             playlist.shuffledSongs.unshift(currentSong);
 
             var previousSong = playlist.songHistory.shift();
-            console.log("Did previous song exist?", previousSong);
             if(!previousSong){
                 var previousSongIndex = getSongIndexById(playlist.songs, currentId) - 1;
 
@@ -200,7 +184,6 @@ function Playlist(id, name) {
                 var song = new Song(videoInformation);
                 playlist.songs.push(song);
 
-                console.log("Pushing song onto shuffledSongs", song);
                 playlist.shuffledSongs.push(song);
                 shuffle(playlist.shuffledSongs);
                 save();

@@ -29,8 +29,6 @@ function SongList() {
         reload: function (songs, currentSong) {
             songList.empty();
 
-            //I create the entries as <a> to leverage Google Chrome's context menus. 
-            //One of the filter options is 'by link' which allows right click -> song options.
             for (var i = 0; i < songs.length; i++){
                 //Wrap in a closure to preserve song index for each iteration.
                 //If you don't do this the contextmenu method will always have the last song.

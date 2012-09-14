@@ -11,7 +11,6 @@ function UiElements() {
     new ContentButtons();
 
     var update = function (playerState, songs, currentSong) {
-        console.log("playerstate: ", playerState, currentSong);
         switch (playerState) {
             case PlayerStates.ENDED:
             case PlayerStates.VIDCUED:
@@ -40,7 +39,6 @@ function UiElements() {
     };
 
     if(Player){
-        console.log("calling update");
         update(Player.getPlayerState(), Player.getSongs(), Player.getCurrentSong());
     }
     return {

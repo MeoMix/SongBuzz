@@ -4,36 +4,38 @@ function Playlists() {
 	var playlists = {};
 	var selectedPlaylist = null;
 
-    var save = function () {
-        chrome.storage.sync.set({'playlists': JSON.stringify(playlists)});
-    };
+	var save = function () {
+		localStorage.setItem('playlists', JSON.stringify(playlists));
+	};
 
 	var loadPlaylists = function(){
-		chrome.storage.sync.get('playlists', function(result){
-			try {
-				if (result.playlists){
-					var playlistIds = JSON.parse(result.playlists);
+		var playlistsJson = localStorage.getItem('playlists');
 
-					for(var id in playlistIds){
-						var playlist = new Playlist(id);
-						playlists[id] = playlist;
-					}
-				}
-				else{
-					//No saved playlists found - create a default playlist.	
-					var defaultPlaylist = new Playlist();
-					playlists[defaultPlaylist.getId()] = defaultPlaylist;
-					save();
+		try {
+			if (playlistsJson){
+				var playlistIds = JSON.parse(playlistsJson);
+
+				for(var id in playlistIds){
+					var playlist = new Playlist(id);
+					playlists[id] = playlist;
 				}
 			}
-			catch(exception){
-				console.error(exception);
+			else{
 				//No saved playlists found - create a default playlist.
 				var defaultPlaylist = new Playlist();
+				defaultPlaylist.setSelected(true);
 				playlists[defaultPlaylist.getId()] = defaultPlaylist;
 				save();
 			}
-		});
+		}
+		catch(exception){
+			console.error(exception);
+			//No saved playlists found - create a default playlist.
+			var defaultPlaylist = new Playlist();
+			defaultPlaylist.setSelected(true);
+			playlists[defaultPlaylist.getId()] = defaultPlaylist;
+			save();
+		}
 	}();
 
 	return {
@@ -47,11 +49,11 @@ function Playlists() {
 
 		setSelectedPlaylist: function(playlist){
 			var selectedPlaylist = this.getSelectedPlaylist();
-			console.log("setting selected playlist to false", selectedPlaylist);
+			console.log("setting selected playlist to false", selectedPlaylist.getTitle());
 
 			selectedPlaylist.setSelected(false);
 			playlist.setSelected(true);
-			console.log("playlist selected:", playlist);
+			console.log("playlist selected:", playlist.getTitle());
 			selectedPlaylist = playlist;
 		},	
 

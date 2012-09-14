@@ -43,24 +43,24 @@ function PlaylistList(playlistHeader){
             for(var key in playlists){
                 var listItem = $('<li/>').appendTo(playlistList);
 
-                var playlist = playlists[key];
+                (function(playlist){
+                    var link = $('<a/>', {
+                        id: playlist.getId(),
+                        href: '#' + playlist.getId(),
+                        text: playlist.getTitle(),
+                        contextmenu: function(e){
+                            var contextMenu = new PlaylistsContextMenu(playlist);
+                            contextMenu.show(e.pageY, e.pageX);
 
-                var link = $('<a/>', {
-                    id: playlist.getId(),
-                    href: '#' + playlist.getId(),
-                    text: playlist.getTitle(),
-                    contextmenu: function(e){
-                        var contextMenu = new PlaylistsContextMenu(playlist);
-                        contextMenu.show(e.pageY, e.pageX);
+                            //Prevent default context menu display.
+                            return false;
+                        }
+                    }).appendTo(listItem);
 
-                        //Prevent default context menu display.
-                        return false;
+                    if(playlist.getSelected()){
+                        selectRow(playlist.getId()); 
                     }
-                }).appendTo(listItem);
-
-                if(playlist.getSelected()){
-                    selectRow(playlist.getId()); 
-                }
+                })(playlists[key]);
             }
 
             //Clicking on a playlist will select that playlist.

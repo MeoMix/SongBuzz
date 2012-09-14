@@ -35,7 +35,6 @@ function UrlInput(songListHeader) {
                     });
                 }
             });
-
         }
     });
 

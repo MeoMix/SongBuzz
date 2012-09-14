@@ -6,13 +6,16 @@ var playlists = null;
 var playlist = null;
 var YoutubePlayer = null;
 
-$(function () {
+//Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
+//This will prevent an error message 'Unable to post message to http://www.youtube.com'
+$(window).load( function(){
     //Handles communications between the GUI and the YT Player API.
     YoutubePlayer = (function() {
         "use strict";                            
         
         if (!player) {
             playlists = new Playlists();
+            playlist = playlists.getSelectedPlaylist();
 
             //Create YT player iframe.
             //Listen for firstPlay to call pause on the video. This is necessary to keep the player out of VIDCUED because VIDCUED does not work well with seekTo.
@@ -20,21 +23,11 @@ $(function () {
             var firstPlay = true;
 
             var onReady = function(){
-                var waitForPlaylistAndPort = setInterval(function(){
-                    playlist = playlists.getSelectedPlaylist();
-
-                    if(playlist && port){
-                        clearInterval(waitForPlaylistAndPort);
-
-                        sendUpdate();
-
-                        //If there is a song to cue might as well have it ready to go.
-                        if (playlist.songCount() > 0) {
-                            loadSongById(playlist.getSongs()[0].id);
-                            playlist.addSongToHistory(playlist.getSongs()[0]);
-                        }
-                    }
-                }, 200);
+                //If there is a song to cue might as well have it ready to go.
+                if (playlist.songCount() > 0) {
+                    loadSongById(playlist.getSongs()[0].id);
+                    playlist.addSongToHistory(playlist.getSongs()[0]);
+                }
             };
 
             var onStateChange = function (playerState) {
@@ -47,19 +40,19 @@ $(function () {
                 else if (playerState.data === PlayerStates.ENDED && playlist.songCount() > 1) {
                     //Don't pass message to UI if it is closed. Handle sock change in the background.
                     //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
-                    chrome.storage.sync.get("isShuffleEnabled", function(result){
-                        var nextSong = null;
+                    var isShuffleEnabled = Boolean(localStorage.getItem('isShuffleEnabled') || false);
 
-                        if(result.isShuffleEnabled){
-                            nextSong = playlist.getRandomSong();
-                        }
-                        else{
-                            nextSong = playlist.getNextSong(currentSong.id);
-                        }
+                    var nextSong = null;
 
-                        playlist.addSongToHistory(nextSong);
-                        loadSongById(nextSong.id);  
-                    });
+                    if(isShuffleEnabled){
+                        nextSong = playlist.getRandomSong();
+                    }
+                    else{
+                        nextSong = playlist.getNextSong(currentSong.id);
+                    }
+
+                    playlist.addSongToHistory(nextSong);
+                    loadSongById(nextSong.id);  
                 } 
                 else if (port) {
                     sendUpdate();
@@ -67,15 +60,12 @@ $(function () {
             };
 
             var onPlayerError = function (error) {
-                console.log('inside onPlayerError', error);
-
                 var unplayableSong = currentSong;
                 YTHelper.findPlayableByVideoId(unplayableSong.videoId, function(playableSong){
                     addSongByVideoId(playableSong.videoId, function(song){
                         loadSongById(song.id);
                         removeSongById(unplayableSong.id);
                         player.playVideo();
-                        console.log("loading song and playing video", new Date().getTime());
                     });
                 });
 
@@ -100,7 +90,6 @@ $(function () {
 
         //errorMessage is optional, used to pass error messages to the UI.
         var sendUpdate = function (errorMessage) {
-            console.log("sending update");
             if(port && port.postMessage){
                 var playerState = (player && player.getPlayerState) ? player.getPlayerState() : PlayerStates.UNSTARTED;
                 port.postMessage({
@@ -203,7 +192,6 @@ $(function () {
             selectPlaylist: function(playlistId){
                 if(playlist.getId() !== playlistId){
                     this.pause();
-                    console.log("selecting playlistId: " + playlistId);
                     playlist = playlists.getPlaylistById(playlistId);
                     playlists.setSelectedPlaylist(playlist);
 
@@ -357,8 +345,6 @@ $(function () {
                 else if(where == "previous"){
                     nextSong = getPreviousSong();
                 }
-
-                console.log("next song is:", nextSong);
 
                 playlist.addSongToHistory(nextSong);
                 if (player.getPlayerState() === PlayerStates.PLAYING){

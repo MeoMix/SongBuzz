@@ -5,7 +5,7 @@ var YTPlayerApiHelper = (function(){
 
     //Load YouTube Frame API
     var s = document.createElement("script");
-    s.src = "https://www.youtube.com/player_api"; /* Load Player API*/
+    s.src =  "https://www.youtube.com/iframe_api"; /* Load Player API*/
     var before = document.getElementsByTagName("script")[0];
     before.parentNode.insertBefore(s, before);
 
