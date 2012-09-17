@@ -10,6 +10,5 @@ var Song = function(videoInformation) {
         url: 'http://youtu.be/' + videoId,
         name: videoInformation.title.$t,
         totalTime: videoInformation.media$group.yt$duration.seconds
-    }
-}
-
+    };
+};

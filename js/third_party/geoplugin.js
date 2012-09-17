@@ -8,8 +8,7 @@ var GeoPlugin = (function(){
 		success: function(result){
 		    var geoplugin = JSON.parse(result.replace(/^[^\{]+/, '').replace(/\);?$/, ''));
 		    countryCode = geoplugin.geoplugin_countryCode;
-		},
-		async: false
+		}
 	});
 
 	return {

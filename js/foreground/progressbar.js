@@ -67,7 +67,9 @@ function Progressbar(timeDisplay, currentTime, totalTime) {
     };
 
     //A nieve way of keeping the progress bar up to date. 
-    var timeMonitorInterval = setInterval(function () { return update(); }, 500);
+    setInterval(function () {
+        return update(); 
+    }, 500);
 
     //Pause the GUI's refreshes for updating the timers while the user is dragging the song time slider around.
     var update = function(){

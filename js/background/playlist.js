@@ -32,7 +32,7 @@ function Playlist(id, name) {
     var loadPlaylist = function(){
         //Methods are unable to be serized to localStorage.
         var playlistJson = localStorage.getItem(playlist.id)
-
+        
         var backupPlaylist = playlist;
         try {
             if (playlistJson){
@@ -82,6 +82,10 @@ function Playlist(id, name) {
     };
 
     return {
+        loadData: function(data){
+            playlist = data;
+            save();
+        },
         syncShuffledSongs: function(id){
             var index = getSongIndexById(playlist.shuffledSongs, id);
 
@@ -178,6 +182,13 @@ function Playlist(id, name) {
         },
         getSongs: function () {
             return playlist.songs;
+        },
+        addSongBySong: function(song){
+            var newSong = new Song(song);
+            playlist.songs.push(newSong);
+            playlist.shuffledSongs.push(newSong);
+            shuffle(playlist.shuffledSongs);
+            save();
         },
         addSongByVideoId: function (videoId, callback) {
             YTHelper.getVideoInformation(videoId, function(videoInformation){

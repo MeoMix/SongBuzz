@@ -9,7 +9,7 @@ function TimeDisplay(){
     var totalTimeLabel = $('#TotalTimeLabel').text(Helpers.prettyPrintTime(totalTime));
 
     //A nieve way of keeping the time up to date. 
-    var timeMonitorInterval = setInterval(function () {
+    setInterval(function () {
         return timeDisplay.update(); 
     }, 500);
 

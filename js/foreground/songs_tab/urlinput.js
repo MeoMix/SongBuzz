@@ -5,7 +5,6 @@
 function UrlInput(songListHeader) {
     "use strict";
     var addInput = $('#CurrentSongDisplay .addInput').attr('placeholder', 'Search or Enter YouTube URL');
-    var addButton = $('#CurrentSongDisplay .addButton');
 
     //Provides the drop-down suggestions and song suggestions.
     addInput.autocomplete({
@@ -16,7 +15,7 @@ function UrlInput(songListHeader) {
             at: "left bottom"
         } ,
         minLength: 0, //minLength: 0 allows empty search triggers for updating source display.
-        focus: function(event, ui){
+        focus: function(){
             //Don't change the input as the user changes selections.
             return false;
         },
@@ -39,24 +38,32 @@ function UrlInput(songListHeader) {
     });
 
     var handleInputEvents = function(){
-        var userInputHasChanged = false;
+        var userIsTyping = false;
+        var typingTimeout = null;
         //Validate URL input on enter key.
         //Otherwise show suggestions. Use keyup event because input's val is updated at that point.
         addInput.keyup(function (e) {
-            userInputHasChanged = true;
+            userIsTyping = true;
             var code = e.which;
+            clearTimeout(typingTimeout);
+            var usersText = $(this).val();
 
-            //User can navigate suggestions with up/down. 
-            if (code !== $.ui.keyCode.UP && code !== $.ui.keyCode.DOWN) {
-                var usersText = $(this).val();
+            typingTimeout = setTimeout(function(){
+                userIsTyping = false;
+                //User can navigate suggestions with up/down. 
+                if (code !== $.ui.keyCode.UP && code !== $.ui.keyCode.DOWN) {
+                    if(usersText === ''){
+                        addInput.autocomplete("option", "source", []);
+                    }
+                    else{
+                        showSongSuggestions(usersText);
+                    }
+                }
+            }, 100);
 
-                if(usersText == ''){
-                    addInput.autocomplete("option", "source", []);
-                }
-                else{
-                    showSongSuggestions(usersText);
-                }
-            }
+        }).keydown(function(){
+            userIsTyping = true;
+            clearTimeout(typingTimeout);
         }).bind('paste drop', function () {
             parseUrlInput();
         });
@@ -73,18 +80,17 @@ function UrlInput(songListHeader) {
 
                 if(elapsedTime < timeout){
                     YTHelper.search(text, function (videos) {
-                        if(!userInputHasChanged){
+                        if(!userIsTyping){
                             $(videos).each(function(){
                                 //I wanted the label to be duration | title to help delinate between typing suggestions and actual songs.
                                 var label = Helpers.prettyPrintTime(this.duration) + " | " + this.title;
                                 songTitles.push({ label: label, value: this});
-                            })
+                            });
 
                             //Show songs found instead of suggestions.
                             addInput.autocomplete("option", "source", songTitles);
                             addInput.autocomplete("search", '');
                         }
-                        userInputHasChanged = false;
                     });
                 }
                 else{
@@ -104,7 +110,7 @@ function UrlInput(songListHeader) {
                 songListHeader.flashMessage('Thanks!', 2000);
 
                 var onResponse = function(videoInformation){
-                    if(videoInformation == null){
+                    if(videoInformation === null){
                         Dialogs.showBannedSongDialog();
                     }
                     else{
@@ -124,7 +130,7 @@ function UrlInput(songListHeader) {
                             }
                         });
                     }
-                }
+                };
 
                 YTHelper.getVideoInformation(videoId, onResponse);
             }

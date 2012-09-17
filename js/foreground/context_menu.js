@@ -37,5 +37,5 @@ var ContextMenu = (function(){
 				left: left
 			}).show();
 		}
-	}
+	};
 });

@@ -3,24 +3,42 @@ function PlaylistList(playlistHeader){
     //TODO: Make this sortable and should inherit from a common List object.
     "use strict";
     var playlistList = $('#PlaylistList ul');
-    var addInput = $('#PlaylistDisplay .addInput').attr('placeholder', 'Enter a playlist name');
-    var addButton = $('.addButton');
-    var addCancelIcon = $('.addCancelIcon');
+    var addInput = $('#PlaylistDisplay .addInput').attr('placeholder', 'Enter a playlist name or YouTube playlist URL');
 
     //Whenever the user submits a name for a new playlist create a new playlist with that name.
     addInput.keyup(function (e) {
         var code = e.which;
         //ENTER: 13
         if (code === 13){
-            addPlaylist();
+            processInput();
         }
-    }).bind('paste drop', function () { return addPlaylist(); });
+    }).bind('paste drop', function () {
+        processInput(); 
+    });
 
-    var addPlaylist = function(){
-        var playlistName = addInput.val();
+    var processInput = function(){
+        setTimeout(function () {
+            var userInput = addInput.val();
+            var possiblePlaylistId = YTHelper.parseUrlForPlaylistId(userInput);
+            
+            if(possiblePlaylistId !== null){                        
+                playlistHeader.flashMessage('Thanks!', 2000);
+                YTHelper.buildPlaylistFromId(possiblePlaylistId, function(playlist){
+                    if(playlist){
+                        Player.addPlaylistByPlaylist(playlist);
+                    }
+                });
+            }
+            else{
+                addPlaylistByName(userInput);
+            }
+        });
+    };
+
+    var addPlaylistByName = function(playlistName){
         //Only add the playlist if a name was provided.
-        if( playlistName.trim() !== ''){
-            Player.addPlaylist(playlistName);
+        if(playlistName.trim() !== ''){
+            Player.addPlaylistByName(playlistName);
             playlistHeader.flashMessage('Thanks!', 2000);
         }
     };
@@ -44,7 +62,7 @@ function PlaylistList(playlistHeader){
                 var listItem = $('<li/>').appendTo(playlistList);
 
                 (function(playlist){
-                    var link = $('<a/>', {
+                    $('<a/>', {
                         id: playlist.getId(),
                         href: '#' + playlist.getId(),
                         text: playlist.getTitle(),

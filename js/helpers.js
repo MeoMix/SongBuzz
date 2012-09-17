@@ -21,14 +21,28 @@ var Helpers = (function(){
 
 		//Takes a time in seconds and converts it to a displayable format of H:mm:ss or mm:ss.
 		prettyPrintTime: function(seconds){
-			var timeString = '';
+			var date = new Date(seconds * 1000);
 
-			if (seconds >= 3600) {
-				//An hour will need to be displayed.
-				timeString = (new Date()).clearTime().addSeconds(seconds).toString('H:mm:ss');
+			var hours = date.getHours();
+			var minutes = date.getMinutes();
+			var seconds = date.getSeconds();
+			// This line gives you 12-hour (not 24) time
+			if (hours > 12){
+				hours = hours - 12;
 			}
-			else {
-				timeString = (new Date()).clearTime().addSeconds(seconds).toString('mm:ss');
+			// These lines ensure you have two-digits
+			if (minutes < 10) {
+				minutes = "0" + minutes;
+			}
+
+			if (seconds < 10) {
+				seconds = "0" + seconds;
+			}
+
+			var timeString = minutes + ':' + seconds;
+
+			if(seconds >= 3600){
+				timeString = hours + timeString;
 			}
 
 			return timeString;

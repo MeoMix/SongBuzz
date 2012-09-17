@@ -15,7 +15,9 @@ function UiElements() {
             case PlayerStates.ENDED:
             case PlayerStates.VIDCUED:
             case PlayerStates.PAUSED:
-                playerControls.setPlayPauseButtonToPlay();
+                if(Player && !Player.isSeeking){
+                    playerControls.setPlayPauseButtonToPlay();
+                }
                 break;
             case PlayerStates.PLAYING:
                 //Volume only becomes available once a video has become cued or when popup reopens.

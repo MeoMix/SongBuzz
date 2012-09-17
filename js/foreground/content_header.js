@@ -7,10 +7,10 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   }).appendTo(contentHeader);
 
   var processTitle = function(playlistTitle){
-      if(playlistTitle != ''){
+      if(playlistTitle !== ''){
         Player.setPlaylistTitle(playlistTitle);
       }
-  }
+  };
 
   var headerInput = $('<input/>', {
     'class': 'headerInput',
@@ -22,7 +22,7 @@ function ContentHeader(selector, addText, addInputPlaceholder){
       $(this).css('border-color', '#EEE');
     },
     mouseout: function(){
-      if(this.originalValue != $(this).val()){
+      if(this.originalValue !== $(this).val()){
         processTitle($(this).val());
       }
       $(this).blur();
@@ -54,7 +54,7 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   var addInput = $('<input/>', {
     'class': 'addInput',
     type: 'text',
-    placeholder: addInputPlaceholder,
+    placeholder: addInputPlaceholder
   }).appendTo(addButton);
 
   var addCancelIcon = $('<div/>', {

@@ -5,7 +5,7 @@ var VolumeSlider = (function(){
 	var VOLUME_KEY = 'musicVolume';  
 
 	//Whenever the mute button is clicked toggle the muted state.
-	var muteButton = $('#MuteButton').on('click', function(){
+	$('#MuteButton').on('click', function(){
 		if(isMuted){
 			setVolume(musicVolume);
 		}
@@ -24,17 +24,19 @@ var VolumeSlider = (function(){
 		//TODO: How to access without using [0]? Need more elegant solution.
 		var newVolume = parseInt(volumeSlider[0].value,10) + (delta * 3);
 
-		if(newVolume > volumeSlider[0].max)
+		if(newVolume > volumeSlider[0].max){
 			newVolume = volumeSlider[0].max;
-		else if(newVolume < volumeSlider[0].min)
+		}
+		else if(newVolume < volumeSlider[0].min){
 			newVolume = volumeSlider[0].min;
+		}
 
 		volumeSlider.val(newVolume);
 		updateWithVolume(newVolume);
 	});
 
 	//Show the volume slider control by expanding its parent whenever any of the volume controls are hovered.
-	var volumeControls = $('.volumeControl').mouseover(function(){
+	$('.volumeControl').mouseover(function(){
 		volumeSlider.parent().css("top","70px");
 	}).mouseout(function(){
 		volumeSlider.parent().css("top","-35px");

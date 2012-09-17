@@ -192,6 +192,7 @@ $(window).load( function(){
             selectPlaylist: function(playlistId){
                 if(playlist.getId() !== playlistId){
                     this.pause();
+                    playlist.setSelected(false);
                     playlist = playlists.getPlaylistById(playlistId);
                     playlists.setSelectedPlaylist(playlist);
 
@@ -208,8 +209,12 @@ $(window).load( function(){
                     sendUpdate();
                 }
             },
-            addPlaylist: function(playlistName){
-                playlists.addPlaylist(playlistName);
+            addPlaylistByName: function(playlistName){
+                playlists.addPlaylistByName(playlistName);
+                sendUpdate();
+            },
+            addPlaylistByPlaylist: function(playlist){
+                playlists.addPlaylistByPlaylist(playlist);
                 sendUpdate();
             },
             removePlaylistById: function(playlistId){
@@ -316,7 +321,6 @@ $(window).load( function(){
             },
             pause: function () {
                 if(player){
-                    console.trace();
                     player.pauseVideo();
                 }
             },

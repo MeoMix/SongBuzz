@@ -2,14 +2,9 @@
 YTHelper = (function(){
     "use strict";
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
-    var startIndex = 1;
-
-    var searchUrl = "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&start-index=" + startIndex + "&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + GeoPlugin.getCountryCode() + "&q=";
-    var suggestUrl = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&format=5&v=2&alt=json&callback=?&restriction=" + GeoPlugin.getCountryCode() + "&q=";
-        
-    //This is necessary because not all songs will play embedded, but YouTube does not expose all the criterion for a song not playing.
-    //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
-    var blacklist = ['7AW9C3-qWug'];
+    var buildSearchUrl = function(){
+        return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + GeoPlugin.getCountryCode() + "&q=";
+    };
 
     //Convert JSON response into object.
     var buildYouTubeVideo = function(entry){
@@ -21,8 +16,15 @@ YTHelper = (function(){
             accessControls: entry.yt$accessControls,
             appControl: entry.app$control,
             //Returns whether the video was found to have any content restrictions which would restrict playback.
-            isPlayable: function(){
-                var isPlayable = $.inArray(this.videoId, blacklist) !== 0;
+            isPlayable: function(bannedKeywords){
+                var isPlayable = true;
+
+                //Look for banned keywords in the title.
+                for(var index = 0; index < bannedKeywords.length; index++){
+                    if(this.title.toLowerCase().indexOf(bannedKeywords[index]) !== -1){
+                        isPlayable = false;
+                    }
+                }
 
                 //A video may have access controls which limit its playability. IE: embedding disabled, syndication disabled.
                 $(this.accessControls).each(function(){
@@ -47,6 +49,17 @@ YTHelper = (function(){
         return youtubeVideo;
     };
 
+    var buildYouTubePlaylist = function(entry){
+        var youTubePlaylist = {
+            //Strip out the videoid. An example of $t's contents: tag:youtube.com,2008:playlist:B16354B8069E4E4D
+            playlistId: entry.id.$t.substring(entry.id.$t.length - 16),
+            title: entry.title.$t,
+            videos: entry.entry
+        };
+
+        return youTubePlaylist;
+    };
+
     return {
         //Determine whether a given youtube video will play properly inside of the Google Chrome Extension.
         //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
@@ -54,7 +67,7 @@ YTHelper = (function(){
         //This statement has been proven quite true. As such, this method will only state whether a video is playable based on information exposed via the YouTube API.
         isPlayable: function (youtubeVideoId, callback) {
             this.getVideoInformation(youtubeVideoId, function(videoInformation){
-                if (videoInformation != null){
+                if (videoInformation !== null){
                     var video = buildYouTubeVideo(videoInformation);
                     callback(video.isPlayable());   
                 }
@@ -66,35 +79,25 @@ YTHelper = (function(){
 
         //Performs a search of YouTube with the provided text and returns a list of playable videos (<= max-results)
         search: function (text, callback) {
-            $.getJSON(searchUrl + text, function (response) {
+            $.getJSON(buildSearchUrl() + text, function (response) {
                 var playableVideos = [];
 
-                //TODO: Dictionary. Just lazy.
-                var banLiveResults = text.toLowerCase().indexOf("live") == -1;
-                var banCovers = text.toLowerCase().indexOf("cover") == -1;
-                var banRemixes = text.toLowerCase().indexOf("remix") == -1;
-                var banKaraoke = text.toLowerCase().indexOf("karaoke") == -1;
+                //Keywords which skew results if user was not intending to find.
+                //Associated with whether they were found in users provided text. Banned if not 
+                var keywords = ['live', 'cover', 'remix', 'karaoke'];
+                var bannedKeywords = [];
+
+                $(keywords).each(function(){
+                    if(text.toLowerCase().indexOf(this) === -1){
+                        bannedKeywords.push(this);
+                    }
+                });
 
                 //Add all playable songs to a list and return.
-                $(response.feed.entry).each(function(i){
+                $(response.feed.entry).each(function(){
                     var video = buildYouTubeVideo(this);
-                    console.log("processing", video);
 
-                    //Filter out live results when the user hasn't specified live in search results.
-                    if(banLiveResults && video.title.toLowerCase().indexOf("live") != -1)
-                        return;
-
-                    if(banCovers && video.title.toLowerCase().indexOf("cover") != -1)
-                        return;
-
-                    if(banRemixes && video.title.toLowerCase().indexOf("remix") != -1)
-                        return;
-
-                    if(banKaraoke && video.title.toLowerCase().indexOf("karaoke") != -1)
-                        return;
-
-                    if(video.isPlayable()){
-                        console.log("found playable");
+                    if(video.isPlayable(bannedKeywords)){
                         playableVideos.push(video);
                     }
                 });
@@ -107,11 +110,9 @@ YTHelper = (function(){
         //for a song with a similiar name that might be the right song to play.
         findPlayableByVideoId: function(videoId, callback){
             this.getVideoInformation(videoId, function(videoInformation){
-                if (videoInformation != null) {
+                if (videoInformation !== null) {
                     var songName = videoInformation.title.$t;
                     YTHelper.search(songName, function (videos) {
-                        var playableSong = null;
-
                         videos.sort(function(a,b){
                             //TODO: I might also want to consider the distance between users input text and a/b title
                             return levDist(a.title, songName) - levDist(b.title, songName);
@@ -139,7 +140,7 @@ YTHelper = (function(){
                                     }
                                 }
                             }
-                        }, 200)
+                        }, 200);
                     });
                 }
             });
@@ -155,6 +156,34 @@ YTHelper = (function(){
             }
         },
 
+        parseUrlForPlaylistId: function(url){
+            var urlTokens = url.split('list=PL');
+            var videoId = null;
+
+            if(urlTokens.length > 1){
+                videoId = url.split('list=PL')[1];
+                var ampersandPosition = videoId.indexOf('&');
+                if(ampersandPosition !== -1) {
+                  videoId = videoId.substring(0, ampersandPosition);
+                }
+            }
+
+            return videoId;
+        },
+
+        buildPlaylistFromId: function(playlistId, callback){
+            $.ajax({
+                url:  "https://gdata.youtube.com/feeds/api/playlists/" + playlistId + "?v=2&alt=json",
+                success: function(result){
+                    var playlist = buildYouTubePlaylist(result.feed);
+                    callback(playlist);
+                },
+                error: function(){
+                    callback();
+                }
+            });
+        },
+
         // Returns NULL if the request throws a 403 error if videoId has been banned on copyright grounds.
         getVideoInformation: function(videoId, callback){
             $.ajax({
@@ -162,8 +191,8 @@ YTHelper = (function(){
                 success: function(result){
                     callback(result.entry);
                 },
-                error: function(d, msg){
-                    callback(null);
+                error: function(){
+                    callback();
                 }
             });
         }

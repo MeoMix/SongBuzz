@@ -6,14 +6,14 @@ function Header() {
     var defaultCaption = 'Welcome to SongBuzz!';
 
     //Scroll the song in the title if its too long to read.
-    title.mouseover(function (e) {
+    title.mouseover(function () {
         var distanceToMove = $(this).width() - header.width();
         var duration = 15 * distanceToMove; //Just a feel good value; scales as the text gets longer.
         $(this).animate({ 
             marginLeft: "-" + distanceToMove + "px" }, {
             duration: duration,
             easing: 'linear'} );
-    }).mouseout(function (e) {
+    }).mouseout(function () {
         $(this).stop(true).animate({ marginLeft: "0px" });
     });
 

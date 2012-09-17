@@ -1,13 +1,14 @@
 ﻿//TODO: This isn't really implemented yet. Don't worry about it.
 function Settings() {
+    "use strict";
     var exploreCheckBox = $('#ExploreCheckBox');
     var settingsDialogSelector = $('#SettingsDialog');
 
     var save = function () {
         Player.setExploreEnabled(exploreCheckBox.prop('checked'));
-    }
+    };
 
-    var buildDialog = function (selector) {
+    var buildDialog = function () {
         var dialog = settingsDialogSelector.dialog({
             autoOpen: false,
             buttons: [
@@ -22,9 +23,9 @@ function Settings() {
                     text: "Cancel",
                     click: function () { $(this).dialog("close"); }
                 }],
-            open: function (event, ui) {
+            open: function () {
                 exploreCheckBox.prop('checked', Player.getExploreEnabled());
-            },
+            }
         });
 
         return dialog;
