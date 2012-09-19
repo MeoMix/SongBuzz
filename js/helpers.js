@@ -20,8 +20,8 @@ var Helpers = (function(){
 		},
 
 		//Takes a time in seconds and converts it to a displayable format of H:mm:ss or mm:ss.
-		prettyPrintTime: function(seconds){
-			var date = new Date(seconds * 1000);
+		prettyPrintTime: function(timeInSeconds){
+			var date = new Date(timeInSeconds * 1000);
 
 			var hours = date.getHours();
 			var minutes = date.getMinutes();
@@ -30,6 +30,8 @@ var Helpers = (function(){
 			if (hours > 12){
 				hours = hours - 12;
 			}
+			console.log("hours:", hours);
+
 			// These lines ensure you have two-digits
 			if (minutes < 10) {
 				minutes = "0" + minutes;
@@ -41,8 +43,10 @@ var Helpers = (function(){
 
 			var timeString = minutes + ':' + seconds;
 
-			if(seconds >= 3600){
-				timeString = hours + timeString;
+			console.log("seconds:", seconds);
+			if(timeInSeconds >= 3600){
+				console.log("adding hours to timestring", hours);
+				timeString = hours + ':' + timeString;
 			}
 
 			return timeString;

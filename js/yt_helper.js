@@ -19,10 +19,12 @@ YTHelper = (function(){
             isPlayable: function(bannedKeywords){
                 var isPlayable = true;
 
-                //Look for banned keywords in the title.
-                for(var index = 0; index < bannedKeywords.length; index++){
-                    if(this.title.toLowerCase().indexOf(bannedKeywords[index]) !== -1){
-                        isPlayable = false;
+                if(bannedKeywords){
+                    //Look for banned keywords in the title.
+                    for(var index = 0; index < bannedKeywords.length; index++){
+                        if(this.title.toLowerCase().indexOf(bannedKeywords[index]) !== -1){
+                            isPlayable = false;
+                        }
                     }
                 }
 
