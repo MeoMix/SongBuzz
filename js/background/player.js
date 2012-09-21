@@ -90,6 +90,8 @@ $(window).load( function(){
 
         //errorMessage is optional, used to pass error messages to the UI.
         var sendUpdate = function (errorMessage) {
+            var sentUpdate = false;
+
             if(port && port.postMessage){
                 var playerState = (player && player.getPlayerState) ? player.getPlayerState() : PlayerStates.UNSTARTED;
                 port.postMessage({
@@ -98,7 +100,10 @@ $(window).load( function(){
                     currentSong: currentSong,
                     errorMessage: errorMessage
                 });  
+                sentUpdate = false;
             }
+
+            return sentUpdate;
         };
 
         var cueSongById = function(id) {

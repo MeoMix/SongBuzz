@@ -1,6 +1,6 @@
 {
   "name": "SongBuzz",
-  "version": "0.24",
+  "version": "0.25",
   "manifest_version": 2,
   "description": "Converts YouTube into an MP3 player for your browser.",
   "background":{
