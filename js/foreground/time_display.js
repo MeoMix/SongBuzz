@@ -1,12 +1,8 @@
 //Holds onto the currentTime and totalTime song labels as well as the elapsed time progress bar.
 function TimeDisplay(){
     "use strict";
-    //Player will exist if UI is opened after the first time. If player exists initialize with current data to prevent flickering. 
-    var currentTime = Player ? Player.getCurrentTime() : 0;
-    var totalTime = Player ? Player.getTotalTime() : 0;
-
-    var currentTimeLabel = $('#CurrentTimeLabel').text(Helpers.prettyPrintTime(currentTime));
-    var totalTimeLabel = $('#TotalTimeLabel').text(Helpers.prettyPrintTime(totalTime));
+    var currentTimeLabel = $('#CurrentTimeLabel').text(Helpers.prettyPrintTime(Player.currentTime));
+    var totalTimeLabel = $('#TotalTimeLabel').text(Helpers.prettyPrintTime(Player.totalTime));
 
     //A nieve way of keeping the time up to date. 
     setInterval(function () {
@@ -19,19 +15,18 @@ function TimeDisplay(){
             //Do not update from automatic updates if the progress bar is being dragged.
             if(currentTimeInSeconds || !Player.isSeeking) {
                 //If told to update to a specific time (by user interaction) then use that time, otherwise get the players current time (automatic update)
-                var currentTime = currentTimeInSeconds ? currentTimeInSeconds : Player.getCurrentTime();
+                var currentTime = currentTimeInSeconds ? currentTimeInSeconds : Player.currentTime;
                 currentTimeLabel.text(Helpers.prettyPrintTime(currentTime));
 
-                var totalTime = Player.getTotalTime();
-                totalTimeLabel.text(Helpers.prettyPrintTime(totalTime));
+                totalTimeLabel.text(Helpers.prettyPrintTime(Player.totalTime));
             }
         }
     };
 
     //TODO: Restructure this so that timeDisplay isn't being passed in.
-    var progressbar = new Progressbar(timeDisplay, currentTime, totalTime);
+    var progressbar = new Progressbar(timeDisplay, Player.currentTime, Player.totalTime);
 
     $('#' + progressbar.id).change(function(){
-        timeDisplay.update(progressbar.getValue());
+        timeDisplay.update(progressbar.value);
     });
 }

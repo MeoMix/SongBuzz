@@ -74,17 +74,14 @@ function Progressbar(timeDisplay, currentTime, totalTime) {
     //Pause the GUI's refreshes for updating the timers while the user is dragging the song time slider around.
     var update = function(){
         if(!Player.isSeeking) {
-            var currentTime = Player.getCurrentTime();
-            setElapsedTime(currentTime);
-
-            var totalTime = Player.getTotalTime();
-            setTotalTime(totalTime);
+            setElapsedTime(Player.currentTime);
+            setTotalTime(Player.totalTime);
         }
     };
 
     return {
         id: selector.prop('id'),
-        getValue: function(){
+        get value(){
             return selector.val();
         }
     };

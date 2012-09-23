@@ -3,7 +3,7 @@ YTHelper = (function(){
     "use strict";
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
     var buildSearchUrl = function(){
-        return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + GeoPlugin.getCountryCode() + "&q=";
+        return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + GeoPlugin.countryCode + "&q=";
     };
 
     //Convert JSON response into object.

@@ -7,13 +7,11 @@ function SongsTab(){
     contentHeader.expand();
 
     //Serves to initialize the song list;
-    var songs = Player ? Player.getSongs() : [];
-    var currentSong = Player ? Player.getCurrentSong() : null;
-    songList.reload(songs, currentSong);
+    songList.reload(Player.songs, Player.currentSong);
     
 	return {
-		setContentHeaderTitle: function(title){
-			contentHeader.setTitle(title);
+		set contentHeaderTitle(value){
+			contentHeader.title = value;
 		},
 		reloadSongList: function(songs, currentSong){
 			songList.reload(songs, currentSong);

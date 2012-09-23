@@ -20,7 +20,6 @@ var VolumeSlider = (function(){
 	});
 
 	$('.volumeControl').mousewheel(function(event, delta){
-		//TODO: Smart scrolling?
 		//TODO: How to access without using [0]? Need more elegant solution.
 		var newVolume = parseInt(volumeSlider[0].value,10) + (delta * 3);
 
@@ -105,7 +104,7 @@ var VolumeSlider = (function(){
 		}
 
 		updateSoundIcon(volume);
-		Player.setVolume(volume);
+		Player.volume = volume;
 	};
 	
 	var setVolume = function(volume){
@@ -114,6 +113,8 @@ var VolumeSlider = (function(){
 	};
 
 	return {
-		setVolume: setVolume
+		set volume(value){
+			setVolume(value);
+		}
 	};
 });

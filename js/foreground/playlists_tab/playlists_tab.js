@@ -5,14 +5,10 @@ function PlaylistsTab(){
 
     contentHeader.contract();
 
-    //Serves to initialize the playlist list even if there are no songs in the first playlist (so no messages ever come through to initialize)
-    playlistList.reload();
-
 	return {
-		setContentHeaderTitle: function(title){
-			contentHeader.setTitle(title);
+		set contentHeaderTitle(value){
+			contentHeader.title = value;
 		},
-
 		reloadList: function(){
 			playlistList.reload();
 		}

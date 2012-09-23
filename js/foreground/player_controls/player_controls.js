@@ -8,10 +8,9 @@ var PlayerControls = (function() {
     var shuffleButton = new ShuffleButton();
 
     return {
-        setVolume: function (volume) {
-            volumeSlider.setVolume(volume);
+        set volume(value){
+            volumeSlider.volume = value;
         },
-
         setEnableShuffleButton: function (enable) {
             if(enable){
                 shuffleButton.enable();

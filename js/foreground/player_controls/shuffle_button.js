@@ -2,7 +2,7 @@
 //Can't be clicked with 2 or fewer songs.
 var ShuffleButton = (function(){
 	"use strict";
-	var shuffleButton = $('#ShuffleButton');
+	var shuffleButton = $('#ShuffleButton').click(shuffleSong);
 	//localStorage serializes bools to strings.
 	if(Boolean(localStorage.getItem('isShuffleEnabled') || false)){
 		shuffleButton.addClass('pressed');
@@ -21,14 +21,5 @@ var ShuffleButton = (function(){
 	}
 
 	return {
-		disable: function(){
-            shuffleButton.find('path').css('fill', 'gray');
-            shuffleButton.prop('src', "images/shuffle-disabled.png").addClass('disabled').off('click');
-		},
-
-		enable: function(){
-            shuffleButton.prop('src', "images/shuffle.png").removeClass('disabled').off('click').click(shuffleSong);
-            shuffleButton.find('path').css('fill', 'white');
-		}
 	};
 });

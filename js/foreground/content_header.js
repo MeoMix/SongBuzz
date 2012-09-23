@@ -8,14 +8,14 @@ function ContentHeader(selector, addText, addInputPlaceholder){
 
   var processTitle = function(playlistTitle){
       if(playlistTitle !== ''){
-        Player.setPlaylistTitle(playlistTitle);
+        Player.playlistTitle = playlistTitle;
       }
   };
 
   var headerInput = $('<input/>', {
     'class': 'headerInput',
     type: 'text',
-    text: Player.getPlaylistTitle(),
+    text: Player.playlistTitle,
     originalValue: '',
     mouseover: function(){
       this.originalValue = $(this).val();
@@ -80,10 +80,9 @@ function ContentHeader(selector, addText, addInputPlaceholder){
   return {
     expand: expand,
     contract: contract,
-    setTitle: function(title){
-      headerInput.val(title);
+    set title(value){
+      headerInput.val(value);
     },
-    
     //Display a message for X milliseconds inside of the input. 
     flashMessage: function(message, durationInMilliseconds){
         var placeholder = addInput.attr('placeholder');

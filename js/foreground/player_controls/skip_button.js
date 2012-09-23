@@ -5,7 +5,7 @@ var SkipButton = (function (){
 	var skipButton = $('#SkipButton');
 
     function skipSong() {
-        Player.skipSong('next', $('#ShuffleButton').hasClass('pressed'));
+        Player.skipSong('next');
         //Prevent spamming by only allowing a next click once a second.
         setTimeout(function () { 
             skipButton.off('click').one('click', skipSong);

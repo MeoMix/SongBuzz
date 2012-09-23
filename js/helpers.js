@@ -23,16 +23,12 @@ var Helpers = (function(){
 		prettyPrintTime: function(timeInSeconds){
 			var date = new Date(timeInSeconds * 1000);
 
-			var hours = date.getHours();
+			//Need to remove 16 hours from hours to represent properly.
+			var hours = date.getHours() - 16;
 			var minutes = date.getMinutes();
 			var seconds = date.getSeconds();
-			// This line gives you 12-hour (not 24) time
-			if (hours > 12){
-				hours = hours - 12;
-			}
-			console.log("hours:", hours);
 
-			// These lines ensure you have two-digits
+			// hese lines ensure two-digits
 			if (minutes < 10) {
 				minutes = "0" + minutes;
 			}
@@ -43,9 +39,7 @@ var Helpers = (function(){
 
 			var timeString = minutes + ':' + seconds;
 
-			console.log("seconds:", seconds);
 			if(timeInSeconds >= 3600){
-				console.log("adding hours to timestring", hours);
 				timeString = hours + ':' + timeString;
 			}
 

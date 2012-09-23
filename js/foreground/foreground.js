@@ -22,13 +22,8 @@ $(function () {
             var uiElements = new UiElements();
             //Background's player object will notify the foreground whenever its state changes.
             chrome.extension.onConnect.addListener(function (port) {
-                port.onMessage.addListener(function (message) {
-                    //Background communicates error messages to the foreground to be displayed to the UI.
-                    if (message.errorMessage){
-                        alert(message.errorMessage);
-                    }
-
-                    uiElements.update(message.playerState, message.songs, message.currentSong);
+                port.onMessage.addListener(function () {
+                    uiElements.update();
                 });
             });
         } (); //Start listening for YT player events.

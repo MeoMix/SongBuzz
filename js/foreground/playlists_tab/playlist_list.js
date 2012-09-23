@@ -47,7 +47,6 @@ function PlaylistList(playlistHeader){
     var selectRow = function(id){
         playlistList.find('li').removeClass('current');
         $('#' + id).parent().addClass('current');
-
         Player.selectPlaylist(id);
     };
 
@@ -55,17 +54,16 @@ function PlaylistList(playlistHeader){
         //Refreshes the playlist display with the current playlist information.
         reload: function(){
             playlistList.empty();
-            var playlists = Player.getPlaylists();
 
             //Build up each row.
-            for(var key in playlists){
+            for(var key in Player.playlists){
                 var listItem = $('<li/>').appendTo(playlistList);
 
-                (function(playlist){
+                (function(playlist){                
                     $('<a/>', {
-                        id: playlist.getId(),
-                        href: '#' + playlist.getId(),
-                        text: playlist.getTitle(),
+                        id: playlist.id,
+                        href: '#' + playlist.id,
+                        text: playlist.title,
                         contextmenu: function(e){
                             var contextMenu = new PlaylistsContextMenu(playlist);
                             contextMenu.show(e.pageY, e.pageX);
@@ -75,10 +73,10 @@ function PlaylistList(playlistHeader){
                         }
                     }).appendTo(listItem);
 
-                    if(playlist.getSelected()){
-                        selectRow(playlist.getId()); 
+                    if(playlist.isSelected){
+                        selectRow(playlist.id); 
                     }
-                })(playlists[key]);
+                })(Player.playlists[key]);
             }
 
             //Clicking on a playlist will select that playlist.

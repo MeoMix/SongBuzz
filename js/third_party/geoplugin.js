@@ -12,7 +12,7 @@ var GeoPlugin = (function(){
 	});
 
 	return {
-		getCountryCode: function(){
+		get countryCode(){
 			return countryCode;
 		}
 	}

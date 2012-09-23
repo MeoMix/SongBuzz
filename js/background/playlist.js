@@ -1,5 +1,4 @@
 //Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
-//TODO: Introduce a new object call Songs which will hold Song objects.
 function Playlist(id, name) {
     "use strict";
     //If no playlistid or name provided assume default playlist and create default song list.
@@ -82,6 +81,29 @@ function Playlist(id, name) {
     };
 
     return {
+        get id(){
+            return playlist.id;
+        },
+        get title(){
+            return playlist.title;
+        },
+        set title(value){
+            playlist.title = value;
+            save();
+        },
+        get isSelected(){
+            return playlist.selected;
+        },
+        set isSelected(value){
+            playlist.selected = value;
+            save();
+        },
+        get songCount() {
+            return playlist.songs.length;
+        },
+        get songs() {
+            return playlist.songs;
+        },
         loadData: function(data){
             playlist = data;
             save();
@@ -97,26 +119,8 @@ function Playlist(id, name) {
                 loadShuffledSongs();
             }
         },
-        //TODO: Is there any way to have this be a property instead of a method, but not expose the setter?
-        getId: function(){
-            return playlist.id;
-        },
-        getTitle: function(){
-            return playlist.title;
-        },
-        setTitle: function(value){
-            playlist.title = value;
-            save();
-        },
         clear: function(){
             playlist.songs = [];
-            save();
-        },
-        getSelected: function(){
-            return playlist.selected;
-        },
-        setSelected: function(value){
-            playlist.selected = value;
             save();
         },
         //Takes a song's UID and returns the full song object if found.
@@ -136,38 +140,50 @@ function Playlist(id, name) {
 
             return song;
         },
-        getFirstSong: function(){
-            var firstSong = playlist.songs[0];
-            return firstSong;
-        },
         addSongToHistory: function(song){
             playlist.songHistory.unshift(song);
         },
         //Takes a song and returns the next song object by index.
-        getNextSong: function (currentId) {
-            var currentSongIndex = getSongIndexById(playlist.songs, currentId);
-            var nextSongIndex = currentSongIndex + 1;
+        getNextSong: function () {
+            var nextSong = null;
 
-            //Loop back to the front if at end. Should make this togglable in the future.
-            if (playlist.songs.length <= nextSongIndex){
-                // var pandoraModeActivated = true;
-                nextSongIndex = 0;        
+            var isShuffleEnabled = Boolean(localStorage.getItem('isShuffleEnabled') || false);
+            if(isShuffleEnabled === true){
+                nextSong = playlist.shuffledSongs[0];
+            }
+            else{
+                var currentSong = playlist.songHistory[0];
+
+                if(currentSong){
+                    var currentSongIndex = getSongIndexById(playlist.songs, currentSong.id);
+                    var nextSongIndex = currentSongIndex + 1;
+
+                    //Loop back to the front if at end. Should make this togglable in the future.
+                    if (playlist.songs.length <= nextSongIndex){
+                        // var pandoraModeActivated = true;
+                        nextSongIndex = 0;        
+                    }
+
+                    nextSong = playlist.songs[nextSongIndex];
+                }
+
             }
 
-            return playlist.songs[nextSongIndex];
+            return nextSong;
         },
-        getRandomSong: function(){
-            return playlist.shuffledSongs[0];
-        },
-        getPreviousSong: function (currentId) {
+        getPreviousSong: function () {
+            //Move the currently playing song out of songHistory and into the front of shuffledSongs so that if
+            //a user clicks 'next' or plays forward the song that was ahead will still be ahead instead of random song.
             var currentSong = playlist.songHistory.shift();
             playlist.shuffledSongs.unshift(currentSong);
 
+            //Get the previous song by history if possible.
             var previousSong = playlist.songHistory.shift();
+            //If no previous song was found in the history, then just go back one song by index.
             if(!previousSong){
-                var previousSongIndex = getSongIndexById(playlist.songs, currentId) - 1;
+                var previousSongIndex = getSongIndexById(playlist.songs, currentSong.id) - 1;
 
-                   // Goes to the end of the current playlist.
+                // Goes to the end of the current playlist.
                 if (previousSongIndex < 0){
                     previousSongIndex = playlist.songs.length - 1;
                 }
@@ -176,12 +192,6 @@ function Playlist(id, name) {
             }
 
             return previousSong;
-        },
-        songCount: function () {
-            return playlist.songs.length;
-        },
-        getSongs: function () {
-            return playlist.songs;
         },
         addSongBySong: function(song){
             var newSong = new Song(song);

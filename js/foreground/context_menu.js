@@ -1,5 +1,4 @@
 //Responsible for showing options when interacting with a song list or play list
-//TODO: This needs to be extended such that there is a generic contextmenu object, and then various different context menus based on what is being clicked.
 var ContextMenu = (function(){
 	"use strict";
 	var selector = $('#ContextMenu').empty();
