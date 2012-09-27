@@ -1,120 +1,125 @@
 //Responsible for controlling the volume indicator of the UI.
-var VolumeSlider = (function(){
-	"use strict";
-	var MUTED_KEY = 'musicMuted';
-	var VOLUME_KEY = 'musicVolume';  
+var VolumeSlider;
 
-	//Whenever the mute button is clicked toggle the muted state.
-	$('#MuteButton').on('click', function(){
-		if(isMuted){
-			setVolume(musicVolume);
-		}
-		else{
-			setVolume(0);
-		}
-	});
+require([], function(){
+	VolumeSlider = (function(){
+		"use strict";
+		var MUTED_KEY = 'musicMuted';
+		var VOLUME_KEY = 'musicVolume';  
 
-	//Whenever the volume slider is interacted with by the user, change the volume to reflect.
-	var volumeSlider = $('#VolumeSlider').change(function(){ 
-		updateWithVolume(this.value); 
-	});
+		//Whenever the mute button is clicked toggle the muted state.
+		$('#MuteButton').on('click', function(){
+			if(isMuted){
+				setVolume(musicVolume);
+			}
+			else{
+				setVolume(0);
+			}
+		});
 
-	$('.volumeControl').mousewheel(function(event, delta){
-		//TODO: How to access without using [0]? Need more elegant solution.
-		var newVolume = parseInt(volumeSlider[0].value,10) + (delta * 3);
+		//Whenever the volume slider is interacted with by the user, change the volume to reflect.
+		var volumeSlider = $('#VolumeSlider').change(function(){ 
+			updateWithVolume(this.value); 
+		});
 
-		if(newVolume > volumeSlider[0].max){
-			newVolume = volumeSlider[0].max;
-		}
-		else if(newVolume < volumeSlider[0].min){
-			newVolume = volumeSlider[0].min;
-		}
+		$('.volumeControl').mousewheel(function(event, delta){
+			//TODO: How to access without using [0]? Need more elegant solution.
+			var newVolume = parseInt(volumeSlider[0].value,10) + (delta * 3);
 
-		volumeSlider.val(newVolume);
-		updateWithVolume(newVolume);
-	});
+			if(newVolume > volumeSlider[0].max){
+				newVolume = volumeSlider[0].max;
+			}
+			else if(newVolume < volumeSlider[0].min){
+				newVolume = volumeSlider[0].min;
+			}
 
-	//Show the volume slider control by expanding its parent whenever any of the volume controls are hovered.
-	$('.volumeControl').mouseover(function(){
-		volumeSlider.parent().css("top","70px");
-	}).mouseout(function(){
-		volumeSlider.parent().css("top","-35px");
-	});
+			volumeSlider.val(newVolume);
+			updateWithVolume(newVolume);
+		});
 
-	var updateSoundIcon = function(volume){
-		//Repaint the amount of white filled in the bar showing the distance the grabber has been dragged.
-		var backgroundImage = '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))';
-		volumeSlider.css('background-image', backgroundImage);
+		//Show the volume slider control by expanding its parent whenever any of the volume controls are hovered.
+		$('.volumeControl').mouseover(function(){
+			volumeSlider.parent().css("top","70px");
+		}).mouseout(function(){
+			volumeSlider.parent().css("top","-35px");
+		});
 
-		var active = '#fff';
-		var inactive = '#555';
+		var updateSoundIcon = function(volume){
+			//Repaint the amount of white filled in the bar showing the distance the grabber has been dragged.
+			var backgroundImage = '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))';
+			volumeSlider.css('background-image', backgroundImage);
 
-		//Paint the various bars indicating the sound level.
-		var fillColor = volume >= 25 ? active : inactive;
-		$('#MuteButtonBar1').css('fill', fillColor);
+			var active = '#fff';
+			var inactive = '#555';
 
-		fillColor = volume >= 50 ? active : inactive;
-		$('#MuteButtonBar2').css('fill', fillColor);
+			//Paint the various bars indicating the sound level.
+			var fillColor = volume >= 25 ? active : inactive;
+			$('#MuteButtonBar1').css('fill', fillColor);
 
-		fillColor = volume >= 75 ? active : inactive;
-		$('#MuteButtonBar3').css('fill', fillColor);
+			fillColor = volume >= 50 ? active : inactive;
+			$('#MuteButtonBar2').css('fill', fillColor);
 
-		//NOTE: Volume is a string here. Careful of type coercion.
-		fillColor = volume == 100 ? active : inactive;
-		$('#MuteButtonBar4').css('fill', fillColor);
-	};
+			fillColor = volume >= 75 ? active : inactive;
+			$('#MuteButtonBar3').css('fill', fillColor);
 
-	//Initialize the muted state;
-	var isMuted = (function(){
-		var muted = false;
+			//NOTE: Volume is a string here. Careful of type coercion.
+			fillColor = volume == 100 ? active : inactive;
+			$('#MuteButtonBar4').css('fill', fillColor);
+		};
 
-		var storedIsMuted = localStorage.getItem(MUTED_KEY);
-		if(storedIsMuted){
-			muted = JSON.parse(storedIsMuted);
-		}
+		//Initialize the muted state;
+		var isMuted = (function(){
+			var muted = false;
 
-		return muted;
-	})();
+			var storedIsMuted = localStorage.getItem(MUTED_KEY);
+			if(storedIsMuted){
+				muted = JSON.parse(storedIsMuted);
+			}
 
-	//Initialize player's volume and muted state to last known information or 100 / unmuted.
-	var musicVolume = (function(){
-		var volume = 100;
+			return muted;
+		})();
 
-		//TODO: Difficult to properly represent state when not already known -- can't get info from YouTube API until a song is playing.
-		var storedMusicVolume = localStorage.getItem(VOLUME_KEY);
-		if(storedMusicVolume){
-			volume = JSON.parse(storedMusicVolume);
-		}
+		//Initialize player's volume and muted state to last known information or 100 / unmuted.
+		var musicVolume = (function(){
+			var volume = 100;
 
-		var volumeForPlayer = isMuted ? 0 : volume;
-		volumeSlider.val(volumeForPlayer);
-		updateSoundIcon(volumeForPlayer);
+			//TODO: Difficult to properly represent state when not already known -- can't get info from YouTube API until a song is playing.
+			var storedMusicVolume = localStorage.getItem(VOLUME_KEY);
+			if(storedMusicVolume){
+				volume = JSON.parse(storedMusicVolume);
+			}
 
-		return volume;
-	})();
+			var volumeForPlayer = isMuted ? 0 : volume;
+			volumeSlider.val(volumeForPlayer);
+			updateSoundIcon(volumeForPlayer);
 
-	var updateWithVolume = function(volume){
-		isMuted = volume === 0;
+			return volume;
+		})();
+
+		var updateWithVolume = function(volume){
+			isMuted = volume === 0;
+			
+			localStorage.setItem(MUTED_KEY, JSON.stringify(isMuted));
+			if (volume) {
+				//Remember old music value if muting so that unmute is possible.
+				musicVolume = volume;
+				localStorage.setItem(VOLUME_KEY, JSON.stringify(musicVolume));
+			}
+
+			updateSoundIcon(volume);
+			Player.volume = volume;
+		};
 		
-		localStorage.setItem(MUTED_KEY, JSON.stringify(isMuted));
-		if (volume) {
-			//Remember old music value if muting so that unmute is possible.
-			musicVolume = volume;
-			localStorage.setItem(VOLUME_KEY, JSON.stringify(musicVolume));
-		}
+		var setVolume = function(volume){
+			volumeSlider.val(volume);
+			updateWithVolume(volume);
+		};
 
-		updateSoundIcon(volume);
-		Player.volume = volume;
-	};
-	
-	var setVolume = function(volume){
-		volumeSlider.val(volume);
-		updateWithVolume(volume);
-	};
-
-	return {
-		set volume(value){
-			setVolume(value);
-		}
-	};
+		return {
+			set volume(value){
+				setVolume(value);
+			}
+		};
+	});
 });
+

@@ -1,68 +1,72 @@
 ﻿//Represents the songs in a given playlist.
-function SongList() {
-    "use strict";
-    var songList = $('#SongList ul');
+var SongList;
 
-    //Allows for drag-and-drop of songs.
-    songList.sortable({
-        axis: 'y',
-        //Whenever a song row is moved inform the Player of the new songlist order.
-        //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
-        update: function () {
-            var ids = [];
-            songList.find('li a').each(function(){
-                ids.push(this.id);
-            });
+require(['songs_tab/songlist_context_menu'], function(){
+    SongList = function() {
+        "use strict";
+        var songList = $('#SongList ul');
 
-            Player.sync(ids);
-        }
-    });
+        //Allows for drag-and-drop of songs.
+        songList.sortable({
+            axis: 'y',
+            //Whenever a song row is moved inform the Player of the new songlist order.
+            //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
+            update: function () {
+                var ids = [];
+                songList.find('li a').each(function(){
+                    ids.push(this.id);
+                });
 
-    //Removes the old 'current' marking and move it to the newly selected row.
-    var selectRow = function(id){
-        songList.find('li').removeClass('current');
-        $('#' + id).parent().addClass('current');
-    };
-
-    return {
-        //Refresh all the songs displayed to ensure they GUI matches background's data.
-        reload: function (songs, currentSong) {
-            songList.empty();
-
-            for (var i = 0; i < songs.length; i++){
-                //Wrap in a closure to preserve song index for each iteration.
-                //If you don't do this the contextmenu method will always have the last song.
-                (function(i){
-                    var listItem = $('<li/>').appendTo(songList);
-
-                    var song = songs[i];
-
-                    var link = $('<a/>', {
-                        id: song.id,
-                        href: '#' + song.id,
-                        text: song.name,
-                        contextmenu: function(e){
-                            var contextMenu = new SongListContextMenu(song);
-                            contextMenu.show(e.pageY, e.pageX);
-
-                            //Prevent default context menu display.
-                            return false;
-                        }
-                    }).appendTo(listItem);
-                }(i));
+                Player.sync(ids);
             }
+        });
 
-            //Load and start playing a song if it is clicked.
-            songList.children().click(function(){
-                var clickedId = $(this).children()[0].id;
-                Player.loadSongById(clickedId);
-                return false;
-            });
+        //Removes the old 'current' marking and move it to the newly selected row.
+        var selectRow = function(id){
+            songList.find('li').removeClass('current');
+            $('#' + id).parent().addClass('current');
+        };
 
-            //Since we emptied our list we lost the selection, reselect.
-            if (currentSong){
-                selectRow(currentSong.id);
+        return {
+            //Refresh all the songs displayed to ensure they GUI matches background's data.
+            reload: function (songs, currentSong) {
+                songList.empty();
+
+                for (var i = 0; i < songs.length; i++){
+                    //Wrap in a closure to preserve song index for each iteration.
+                    //If you don't do this the contextmenu method will always have the last song.
+                    (function(i){
+                        var listItem = $('<li/>').appendTo(songList);
+
+                        var song = songs[i];
+
+                        var link = $('<a/>', {
+                            id: song.id,
+                            href: '#' + song.id,
+                            text: song.name,
+                            contextmenu: function(e){
+                                var contextMenu = new SongListContextMenu(song);
+                                contextMenu.show(e.pageY, e.pageX);
+
+                                //Prevent default context menu display.
+                                return false;
+                            }
+                        }).appendTo(listItem);
+                    }(i));
+                }
+
+                //Load and start playing a song if it is clicked.
+                songList.children().click(function(){
+                    var clickedId = $(this).children()[0].id;
+                    Player.loadSongById(clickedId);
+                    return false;
+                });
+
+                //Since we emptied our list we lost the selection, reselect.
+                if (currentSong){
+                    selectRow(currentSong.id);
+                }
             }
-        }
-    };
-}
+        };
+    }
+});
