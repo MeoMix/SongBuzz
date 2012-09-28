@@ -1,11 +1,9 @@
 //Responsible for showing options when interacting with a Song in SongList.
 var SongListContextMenu;
 
-require([], function(){
+define(['context_menu'], function(contextMenu){
 	SongListContextMenu = (function(song){
 		"use strict";
-		var contextMenu = new ContextMenu();
-
 		contextMenu.addContextMenuItem('Copy song', function(){
 			if(song != null ){
 	        	chrome.extension.sendMessage({ text: song.url });

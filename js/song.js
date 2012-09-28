@@ -1,7 +1,6 @@
 ﻿var Song;
 
-require([], function(){
-    console.log("song loaded");
+define(function(){
     //Holds all the relevant data for a song.
     Song = function(videoInformation) {
         "use strict";

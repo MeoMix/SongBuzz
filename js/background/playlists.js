@@ -1,7 +1,6 @@
 var Playlists;
 
-require(['playlist'], function(){
-	console.log("Playlists loaded");
+define(['playlist'], function(){
 	//Maintains an associative array consisting of Playlist IDs and Playlist objects.
 	Playlists = (function() {
 		"use strict";
@@ -19,7 +18,6 @@ require(['playlist'], function(){
 					var playlistIds = JSON.parse(playlistsJson);
 
 					for(var id in playlistIds){
-						console.log("Playlist:", Playlist);
 						var playlist = new Playlist(id);
 						playlists[id] = playlist;
 					}

@@ -1,6 +1,6 @@
 ﻿var YoutubePlayer = null;
 
-require(['../playerstates', 'playlists', 'player_builder'], function(){
+define(['../playerstates', 'playlists', 'player_builder'], function(){
     //Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
     //This will prevent an error message 'Unable to post message to http://www.youtube.com'
     $(window).load( function(){

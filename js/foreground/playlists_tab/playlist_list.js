@@ -1,7 +1,7 @@
 //This is the list of playlists on the playlists tab.
 var PlaylistList;
 
-require([], function(){
+require(['playlists_tab/playlists_context_menu'], function(){
     PlaylistList = function (playlistHeader){
         //TODO: Make this sortable and should inherit from a common List object.
         "use strict";

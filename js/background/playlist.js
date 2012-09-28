@@ -1,7 +1,6 @@
 var Playlist;
 
-require(['../song'], function(){
-    console.log("Playlist loaded");
+define(['../song'], function(){
     //Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
     Playlist = function(id, name) {
         "use strict";
@@ -48,6 +47,7 @@ require(['../song'], function(){
             }
         }();
 
+        //TODO: Can I replace this with an extend call?
         var legacySupport = function(){
             if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
             if(!playlist.songHistory) playlist.songHistory = [];
