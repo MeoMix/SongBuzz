@@ -157,6 +157,8 @@ define(['../playerstates', 'playlists', 'player_builder'], function(){
                     }
                 },
                 connect: function(){
+                    console.log("connect is being called");
+
                     //Open a connection between the background and foreground. The connection will become invalid every time the foreground closes.
                     port = chrome.extension.connect({ name: "statusPoller" });
                     port.onDisconnect.addListener( function () {

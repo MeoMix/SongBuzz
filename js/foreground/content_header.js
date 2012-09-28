@@ -1,8 +1,12 @@
-var ContentHeader;
+define(['player'],function(player){
+    'use strict';
+    //TODO: Fix this scoping issue.
+    var addInput;
+    var addButton;
+    var headerInput;
+    var addCancelIcon;
 
-require([], function(){
-    ContentHeader = function (selector, addText, addInputPlaceholder){
-        "use strict";
+    function initialize(selector, addText, addInputPlaceholder){
         var contentHeader = $(selector);
 
         var headerTitle = $('<span/>', {
@@ -11,14 +15,14 @@ require([], function(){
 
         var processTitle = function(playlistTitle){
             if(playlistTitle !== ''){
-                Player.playlistTitle = playlistTitle;
+                player.playlistTitle = playlistTitle;
             }
         };
 
-        var headerInput = $('<input/>', {
+        headerInput = $('<input/>', {
             'class': 'headerInput',
             type: 'text',
-            text: Player.playlistTitle,
+            text: player.playlistTitle,
             originalValue: '',
             mouseover: function(){
                 this.originalValue = $(this).val();
@@ -43,7 +47,7 @@ require([], function(){
           }
         }).appendTo(headerTitle);
 
-        var addButton = $('<div/>', {
+        addButton = $('<div/>', {
             'class': 'addButton'
         }).appendTo(contentHeader);
         //jQuery does not support appending paths to SVG elements. You MUST declare element inside of svg's HTML mark-up.
@@ -54,46 +58,47 @@ require([], function(){
             text: addText
         }).appendTo(addButton);
 
-        var addInput = $('<input/>', {
+        addInput = $('<input/>', {
             'class': 'addInput',
             type: 'text',
             placeholder: addInputPlaceholder
         }).appendTo(addButton);
 
-        var addCancelIcon = $('<div/>', {
+        addCancelIcon = $('<div/>', {
             'class': 'addCancelIcon'
         }).appendTo(addButton);  
         //jQuery does not support appending paths to SVG elements. You MUST declare element inside of svg's HTML mark-up.
         addCancelIcon.append('<svg id="addCancelIconSvg"><path d="M0,2 L2,0 L12,10 L10,12z"/><path d="M12,2 L10,0 L0,10 L2,12z"/></svg>');
+    }
 
-        var expand = function(){
-            addCancelIcon.css('right', '0px').one('click', contract);
-            addButton.width('350px');
-            addInput.css('opacity', 1).css('cursor', "auto").focus();
-        };
+    var expand = function(){
+        addCancelIcon.css('right', '0px').one('click', contract);
+        addButton.width('350px');
+        addInput.css('opacity', 1).css('cursor', "auto").focus();
+    };
 
-        var contract = function(){
-            addInput.css('opacity', 0).css('cursor', "pointer").val('').blur();
-            addCancelIcon.css('right', '-30px');
-            addButton.width('120px').one('click', expand);
-            //Prevent click event from bubbling up so button does not expand on click.
-            return false; 
-        };
+    var contract = function(){
+        addInput.css('opacity', 0).css('cursor', "pointer").val('').blur();
+        addCancelIcon.css('right', '-30px');
+        addButton.width('120px').one('click', expand);
+        //Prevent click event from bubbling up so button does not expand on click.
+        return false; 
+    };
 
-        return {
-            expand: expand,
-            contract: contract,
-            set title(value){
-                headerInput.val(value);
-            },
-            //Display a message for X milliseconds inside of the input. 
-            flashMessage: function(message, durationInMilliseconds){
-                var placeholder = addInput.attr('placeholder');
-                addInput.val('').attr('placeholder', message);
-                window.setTimeout(function () {
-                    addInput.attr('placeholder', placeholder);
-                }, durationInMilliseconds);
-            }
-        };
-      }
+    return {
+        expand: expand,
+        contract: contract,
+        set title(value){
+            headerInput.val(value);
+        },
+        initialize: initialize,
+        //Display a message for X milliseconds inside of the input. 
+        flashMessage: function(message, durationInMilliseconds){
+            var placeholder = addInput.attr('placeholder');
+            addInput.val('').attr('placeholder', message);
+            window.setTimeout(function () {
+                addInput.attr('placeholder', placeholder);
+            }, durationInMilliseconds);
+        }
+    };
 });

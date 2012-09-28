@@ -1,53 +1,49 @@
 /*jshint bitwise:false*/
 //Provides helper methods for non-specific functionality.
-var Helpers;
+define(function(){
+	'use strict';
+	//Creates a unique identifier.
+	//Based off of: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+	return {
+		generateGuid: function(){
+			var startStringFormat = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 
-require([], function(){
-	Helpers = (function(){
-		"use strict";
-		//Creates a unique identifier.
-		//Based off of: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-		return {
-			generateGuid: function(){
-				var startStringFormat = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+			var guid = startStringFormat.replace(/[xy]/g, function (c) {
+				var r = Math.floor(Math.random() * 16);
 
-				var guid = startStringFormat.replace(/[xy]/g, function (c) {
-					var r = Math.floor(Math.random() * 16);
+				var v = c === 'x' ? r : (r & 0x3 | 0x8);
 
-					var v = c === 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
 
-					return v.toString(16);
-				});
+			return guid;
+		},
 
-				return guid;
-			},
+		//Takes a time in seconds and converts it to a displayable format of H:mm:ss or mm:ss.
+		prettyPrintTime: function(timeInSeconds){
+			var date = new Date(timeInSeconds * 1000);
 
-			//Takes a time in seconds and converts it to a displayable format of H:mm:ss or mm:ss.
-			prettyPrintTime: function(timeInSeconds){
-				var date = new Date(timeInSeconds * 1000);
+			//Need to remove 16 hours from hours to represent properly.
+			var hours = date.getHours() - 16;
+			var minutes = date.getMinutes();
+			var seconds = date.getSeconds();
 
-				//Need to remove 16 hours from hours to represent properly.
-				var hours = date.getHours() - 16;
-				var minutes = date.getMinutes();
-				var seconds = date.getSeconds();
-
-				// hese lines ensure two-digits
-				if (minutes < 10) {
-					minutes = "0" + minutes;
-				}
-
-				if (seconds < 10) {
-					seconds = "0" + seconds;
-				}
-
-				var timeString = minutes + ':' + seconds;
-
-				if(timeInSeconds >= 3600){
-					timeString = hours + ':' + timeString;
-				}
-
-				return timeString;
+			// hese lines ensure two-digits
+			if (minutes < 10) {
+				minutes = "0" + minutes;
 			}
-		};
-	})();
+
+			if (seconds < 10) {
+				seconds = "0" + seconds;
+			}
+
+			var timeString = minutes + ':' + seconds;
+
+			if(timeInSeconds >= 3600){
+				timeString = hours + ':' + timeString;
+			}
+
+			return timeString;
+		}
+	};
 });

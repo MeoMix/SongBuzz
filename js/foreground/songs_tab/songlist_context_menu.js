@@ -1,21 +1,26 @@
 //Responsible for showing options when interacting with a Song in SongList.
-var SongListContextMenu;
-
 define(['context_menu'], function(contextMenu){
-	SongListContextMenu = (function(song){
-		"use strict";
-		contextMenu.addContextMenuItem('Copy song', function(){
-			if(song != null ){
-	        	chrome.extension.sendMessage({ text: song.url });
-			}
-		});
+	'use strict';
+	var songlistContextMenu = {};
 
-		contextMenu.addContextMenuItem('Delete song', function(){
-			if(song != null ){
-	    		Player.removeSongById(song.id);
-			}
-		})
+	$.extend(songlistContextMenu, contextMenu, {
+		initialize: function(song){
+			this.empty();
 
-		return contextMenu;
+			this.addContextMenuItem('Copy song', function(){
+				console.log("song:")
+				if(song != null ){
+		        	chrome.extension.sendMessage({ text: song.url });
+				}
+			});
+
+			this.addContextMenuItem('Delete song', function(){
+				if(song != null ){
+		    		Player.removeSongById(song.id);
+				}
+			})
+		}
 	});
+
+	return songlistContextMenu;
 });
