@@ -2,9 +2,9 @@
 //Provides helper methods for non-specific functionality.
 define(function(){
 	'use strict';
-	//Creates a unique identifier.
-	//Based off of: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-	return {
+
+	return {	
+		//Based off of: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
 		generateGuid: function(){
 			var startStringFormat = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 

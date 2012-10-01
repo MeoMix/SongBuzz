@@ -1,11 +1,12 @@
-define(['content_header', 'playlists_tab/playlist_list'], function(contentHeader, playlistList){
+define(['content_header', 'playlists_tab/playlist_list'], function(contentHeaderFunc, playlistList){
 	'use strict';
-	contentHeader.initialize('#PlaylistDisplay', 'Add Playlist', 'Enter a playlist name');
-	//TODO: Clearly need to split playlistList off into another object.
-	playlistList.onValidInput = function(){
-		contentHeader.flashMessage('Thanks!', 2000);
-	};
+	var contentHeader = new contentHeaderFunc('#PlaylistDisplay', 'Add Playlist', 'Enter a playlist name');
     contentHeader.contract();
+
+	//TODO: Clearly need to split playlistList off into another object.
+    playlistList.initialize(function(){
+		contentHeader.flashMessage('Thanks!', 2000);
+	});
 
 	return {
 		set contentHeaderTitle(value){

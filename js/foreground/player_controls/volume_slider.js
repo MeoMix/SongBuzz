@@ -1,11 +1,11 @@
 //Responsible for controlling the volume indicator of the UI.
 define(['player', '../../third_party/jquery.mousewheel'], function(player){
+	var muteButton = $('#MuteButton');
 	'use strict';
-	var MUTED_KEY = 'musicMuted';
-	var VOLUME_KEY = 'musicVolume';  
+	var MUTED_KEY = 'musicMuted', VOLUME_KEY = 'musicVolume';  
 
 	//Whenever the mute button is clicked toggle the muted state.
-	$('#MuteButton').on('click', function(){
+	muteButton.click(function(){
 		if(isMuted){
 			setVolume(musicVolume);
 		}
@@ -46,22 +46,14 @@ define(['player', '../../third_party/jquery.mousewheel'], function(player){
 		var backgroundImage = '-webkit-gradient(linear,left top, right top, from(#ccc), color-stop('+ volume/100 +',#ccc), color-stop('+ volume/100+',rgba(0,0,0,0)), to(rgba(0,0,0,0)))';
 		volumeSlider.css('background-image', backgroundImage);
 
-		var active = '#fff';
-		var inactive = '#555';
+		var activeBars = parseInt(volume/25);					 
+		muteButton.find('.MuteButtonBar:lt(' + activeBars +')').css('fill', '#fff');
+		muteButton.find('.MuteButtonBar:gt(' + activeBars+')').css('fill', '#555');
 
-		//Paint the various bars indicating the sound level.
-		var fillColor = volume >= 25 ? active : inactive;
-		$('#MuteButtonBar1').css('fill', fillColor);
+		if(activeBars === 0){
+			muteButton.find('.MuteButtonBar').css('fill', '#555');
+		}
 
-		fillColor = volume >= 50 ? active : inactive;
-		$('#MuteButtonBar2').css('fill', fillColor);
-
-		fillColor = volume >= 75 ? active : inactive;
-		$('#MuteButtonBar3').css('fill', fillColor);
-
-		//NOTE: Volume is a string here. Careful of type coercion.
-		fillColor = volume == 100 ? active : inactive;
-		$('#MuteButtonBar4').css('fill', fillColor);
 	};
 
 	//Initialize the muted state;
@@ -117,5 +109,4 @@ define(['player', '../../third_party/jquery.mousewheel'], function(player){
 			setVolume(value);
 		}
 	};
-});
-
+})

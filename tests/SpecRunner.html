@@ -1,65 +1,50 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Jasmine Spec Runner</title>
+  <title>SongBuzz Unit Tests</title>
 
+  <!-- Include the Jasmine assets for running in an HTML page. -->
   <link rel="stylesheet" type="text/css" href="lib/jasmine-1.2.0/jasmine.css">
-  <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine.js"></script>
-  <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine-html.js"></script>
+  <script src="lib/jasmine-1.2.0/jasmine.js"></script>
+  <script src="lib/jasmine-1.2.0/jasmine-html.js"></script>
 
-  <script type="text/javascript" src="spec/PlayerSpec.js"></script>
-
-  <!-- include spec files here... -->
-  <script src="../js/third_party/jquery-1.7.2.min.js"></script>
-  <script src="../js/background/player.js"></script>
-        
-  <script src="../js/third_party/youtube-player-api-helper.js"></script>
-
-  <script src="../js/third_party/google_analytics.js"></script>
-
-  <!-- How can I test this one? <script src="../js/background/background.js"></script> -->
-  <script src="../js/background/player_builder.js"></script>
-  <script src="../js/background/song_validator.js"></script>
-  <script src="../js/background/player.js"></script>
-  <script src="../js/background/playlist.js"></script>
-  <script src="../js/background/playlists.js"></script>
-
-  <script src="../js/song.js"></script>
-  <script src="../js/playerstates.js"></script>
-  <script src="../js/helpers.js"></script>
-  <script src="../js/yt_helper.js"></script>
+  <script src="../js/third_party/tests_require_paths.js"></script>
+  <script src="../js/third_party/require.min.js"></script>
 
   <script type="text/javascript">
     (function() {
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 1000;
+      require(['jquery'], function(){
+        require(["spec/PlayerSpec"], function(){
+          var jasmineEnv = jasmine.getEnv();
+          jasmineEnv.updateInterval = 1000;
 
-      var htmlReporter = new jasmine.HtmlReporter();
+          var htmlReporter = new jasmine.HtmlReporter();
 
-      jasmineEnv.addReporter(htmlReporter);
+          jasmineEnv.addReporter(htmlReporter);
 
-      jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
+          jasmineEnv.specFilter = function(spec) {
+            return htmlReporter.specFilter(spec);
+          };
 
-      var currentWindowOnload = window.onload;
+          var currentWindowOnload = window.onload;
 
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        execJasmine();
-      };
+          window.onload = function() {
+            if (currentWindowOnload) {
+              currentWindowOnload();
+            }
+            execJasmine();
+          };
 
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-
+          function execJasmine() {
+            jasmineEnv.execute();
+          }
+        });
+      });
     })();
   </script>
 
 </head>
-
 <body>
+  <!-- Left intentionally blank. -->
 </body>
 </html>

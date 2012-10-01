@@ -1,44 +1,29 @@
 ﻿//The buttons, sliders, etc. which serve as the middle-men between user interactions and player responses.
 define(['player_controls/volume_slider', 'player_controls/playpause_button', 'player_controls/skip_button', 'player_controls/previous_button', 'player_controls/shuffle_button'],
-    function(volumeSlider, playPauseButton, skipButton, previousButton, shuffleButton){
+    function(volumeSlider, playPauseButton, skipButton, previousButton){
     'use strict';
 
     return {
-        set volume(value){
-            volumeSlider.volume = value;
-        },
-        setEnableShuffleButton: function (enable) {
-            if(enable){
-                shuffleButton.enable();
+        refreshControls: function(playerState, currentSong, songCount, playerIsSeeking, playerVolume){
+            if(playerState === PlayerStates.PLAYING){
+                //Volume only becomes available once a video has become cued or when popup reopens.
+                volumeSlider.volume = playerVolume;
+                playPauseButton.setToPause();
             }
-            else{
-                shuffleButton.disable();
+            else if(!playerIsSeeking){
+                playPauseButton.setToPlay();
             }
-        },
 
-        setPlayPauseButtonToPlay: function () {
-            playPauseButton.setToPlay();
-        },
-
-        setPlayPauseButtonToPause: function () {
-            playPauseButton.setToPause();
-        },
-
-        setEnableToggleMusicButton: function (enable) {
-            if(enable){
+            if(currentSong){
                 playPauseButton.enable();
-            }
-            else {
-                playPauseButton.disable();
-            }
-        },
 
-        setEnableSkipButton: function (enable) {
-            if(enable){
-                skipButton.enable();
-                previousButton.enable();
+                if(songCount > 1){
+                    skipButton.enable();
+                    previousButton.enable();
+                }
             }
             else{
+                playPauseButton.disable();
                 skipButton.disable();
                 previousButton.disable();
             }

@@ -1,67 +1,70 @@
 //This is the list of playlists on the playlists tab.
 define(['playlists_tab/playlists_context_menu', 'player'], function(contextMenu, player){
-    //TODO: Make this sortable and should inherit from a common List object.
+    //TODO: Make this sortable and should inherit from a common List object. And fix it.
     'use strict';
-    var playlistList = $('#PlaylistList ul');
-    var addInput = $('#PlaylistDisplay .addInput').attr('placeholder', 'Enter a playlist name or YouTube playlist URL');
+    var playlistList;
 
-    //Whenever the user submits a name for a new playlist create a new playlist with that name.
-    addInput.keyup(function (e) {
-        var code = e.which;
-        //ENTER: 13
-        if (code === 13){
-            processInput();
-        }
-    }).bind('paste drop', function () {
-        processInput(); 
-    });
+    var initialize = function(onValidInputEvent){
+        playlistList = $('#PlaylistList ul');
+        var addInput = $('#PlaylistDisplay .addInput').attr('placeholder', 'Enter a playlist name or YouTube playlist URL');
 
-    var processInput = function(){
-        setTimeout(function () {
-            var userInput = addInput.val();
-            var possiblePlaylistId = YTHelper.parseUrlForPlaylistId(userInput);
-            
-            if(possiblePlaylistId !== null){     
-                if(onValidInput){
-                    onValidInput();
-                }
 
-                YTHelper.buildPlaylistFromId(possiblePlaylistId, function(playlist){
-                    if(playlist){
-                        player.addPlaylistByPlaylist(playlist);
-                    }
-                });
+        //Whenever the user submits a name for a new playlist create a new playlist with that name.
+        addInput.keyup(function (e) {
+            var code = e.which;
+            //ENTER: 13
+            if (code === 13){
+                processInput();
             }
-            else{
-                addPlaylistByName(userInput);
-            }
+        }).bind('paste drop', function () {
+            processInput(); 
         });
-    };
 
-    var addPlaylistByName = function(playlistName){
-        //Only add the playlist if a name was provided.
-        if(playlistName.trim() !== ''){
-            player.addPlaylistByName(playlistName);
-            if(onValidInput){
-                onValidInput();
+        var processInput = function(){
+            setTimeout(function () {
+                var userInput = addInput.val();
+                var possiblePlaylistId = YTHelper.parseUrlForPlaylistId(userInput);
+                
+                if(possiblePlaylistId !== null){     
+                    if(onValidInputEvent){
+                        onValidInputEvent();
+                    }
+
+                    YTHelper.buildPlaylistFromId(possiblePlaylistId, function(playlist){
+                        if(playlist){
+                            player.addPlaylistByPlaylist(playlist);
+                        }
+                    });
+                }
+                else{
+                    addPlaylistByName(userInput);
+                }
+            });
+        };
+
+        var addPlaylistByName = function(playlistName){
+            //Only add the playlist if a name was provided.
+            if(playlistName.trim() !== ''){
+                player.addPlaylistByName(playlistName);
+                if(onValidInputEvent){
+                    onValidInputEvent();
+                }
             }
-        }
+        };
     };
 
-    //Removes the old 'current' marking and move it to the newly selected row.
-    var selectRow = function(id){
-        playlistList.find('li').removeClass('current');
-        $('#' + id).parent().addClass('current');
-        player.selectPlaylist(id);
-    };
-
-    //Publically settable event.
-    var onValidInput = null;
     return {
-        onValidInput: onValidInput,
+        initialize: initialize,
         //Refreshes the playlist display with the current playlist information.
         reload: function(){
             playlistList.empty();
+
+            //Removes the old 'current' marking and move it to the newly selected row.
+            var selectRow = function(id){
+                playlistList.find('li').removeClass('current');
+                $('#' + id).parent().addClass('current');
+                player.selectPlaylist(id);
+            };
 
             //Build up each row.
             for(var key in player.playlists){

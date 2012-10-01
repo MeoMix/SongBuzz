@@ -1,16 +1,16 @@
 ﻿var YoutubePlayer = null;
 
-define(['../playerstates', 'playlists', 'player_builder'], function(){
+define(['playlists', 'player_builder'], function(playlists, playerBuilder){
+    'use strict'; 
     //Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
     //This will prevent an error message 'Unable to post message to http://www.youtube.com'
     $(window).load( function(){
         //Handles communications between the GUI and the YT Player API.
-        YoutubePlayer = (function() {
-            "use strict";   
+        YoutubePlayer = (function() {  
             var player = null;
             var currentSong = null;
             var port = null;
-            var playlist = Playlists.selectedPlaylist;      
+            var playlist = playlists.selectedPlaylist;      
         
             (function initialize(){
                 var onReady = function(){
@@ -57,7 +57,7 @@ define(['../playerstates', 'playlists', 'player_builder'], function(){
                 };
 
                 //Create YT player iframe.
-                PlayerBuilder.buildPlayer('MusicHolder', onReady, onStateChange, onPlayerError, function(builtPlayer){
+                playerBuilder.buildPlayer('MusicHolder', onReady, onStateChange, onPlayerError, function(builtPlayer){
                     player = builtPlayer;
                 });
             })();
@@ -125,7 +125,7 @@ define(['../playerstates', 'playlists', 'player_builder'], function(){
                     refreshUI();
                 },
                 get playlists(){
-                    return Playlists.playlists;
+                    return playlists.playlists;
                 },
                 get playerState(){
                     return player.getPlayerState ? player.getPlayerState() : PlayerStates.UNSTARTED;
@@ -157,8 +157,6 @@ define(['../playerstates', 'playlists', 'player_builder'], function(){
                     }
                 },
                 connect: function(){
-                    console.log("connect is being called");
-
                     //Open a connection between the background and foreground. The connection will become invalid every time the foreground closes.
                     port = chrome.extension.connect({ name: "statusPoller" });
                     port.onDisconnect.addListener( function () {
@@ -169,8 +167,8 @@ define(['../playerstates', 'playlists', 'player_builder'], function(){
                     if(playlist.id !== playlistId){
                         this.pause();
                         currentSong = null;
-                        playlist = Playlists.getPlaylistById(playlistId);
-                        Playlists.selectedPlaylist = playlist;
+                        playlist = playlists.getPlaylistById(playlistId);
+                        playlists.selectedPlaylist = playlist;
 
                         //If the newly loaded playlist has a song to play cue it to replace the currently loaded song.
                         if(playlist.songCount > 0){
@@ -181,18 +179,18 @@ define(['../playerstates', 'playlists', 'player_builder'], function(){
                     }
                 },
                 addPlaylistByName: function(playlistName){
-                    Playlists.addPlaylistByName(playlistName);
+                    playlists.addPlaylistByName(playlistName);
                     refreshUI();
                 },
                 addPlaylistByPlaylist: function(playlist){
-                    Playlists.addPlaylistByPlaylist(playlist);
+                    playlists.addPlaylistByPlaylist(playlist);
                     refreshUI();
                 },
                 removePlaylistById: function(playlistId){
                     //Don't allow removing of active playlist.
                     //TODO: Perhaps just don't allow deleting the last playlist? More difficult.
                     if(playlist.id !== playlistId){
-                        Playlists.removePlaylistById(playlistId);
+                        playlists.removePlaylistById(playlistId);
                         refreshUI();
                     }
                 },

@@ -1,9 +1,7 @@
 //The play/pause icon.
 define(['player'], function(player){
 	'use strict';
-	var playPauseButton = $('#PlayPauseButton');
-	var pauseIcon = $('#pauseIcon');
-	var playIcon = $('#playIcon');
+	var playPauseButton = $('#PlayPauseButton'), pauseIcon = $('#pauseIcon'), playIcon = $('#playIcon');
 
 	return {
 		//Change the music button to the 'Play' image and cause a song to play upon click.
@@ -23,7 +21,6 @@ define(['player'], function(player){
 			playIcon.hide();
 
 			playPauseButton.off('click').on('click', function () {
-				console.log("Sending pause command");
 				player.pause(); 
 				pauseIcon.hide();
 				playIcon.show();

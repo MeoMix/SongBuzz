@@ -1,5 +1,5 @@
 //Responsible for showing options when interacting with a Song in SongList.
-define(['context_menu'], function(contextMenu){
+define(['context_menu', 'player'], function(contextMenu, player){
 	'use strict';
 	var songlistContextMenu = {};
 
@@ -8,7 +8,6 @@ define(['context_menu'], function(contextMenu){
 			this.empty();
 
 			this.addContextMenuItem('Copy song', function(){
-				console.log("song:")
 				if(song != null ){
 		        	chrome.extension.sendMessage({ text: song.url });
 				}
@@ -16,7 +15,7 @@ define(['context_menu'], function(contextMenu){
 
 			this.addContextMenuItem('Delete song', function(){
 				if(song != null ){
-		    		Player.removeSongById(song.id);
+		    		player.removeSongById(song.id);
 				}
 			})
 		}

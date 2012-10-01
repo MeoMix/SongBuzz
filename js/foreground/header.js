@@ -1,9 +1,7 @@
 ﻿//Displays the currently playing song or a default welcome message.
 define(function(){
     'use strict';
-    var header = $('#Header');
-    var title = $('#HeaderTitle');
-    var defaultCaption = 'Welcome to SongBuzz!';
+    var header = $('#Header'), title = $('#HeaderTitle'), defaultCaption = 'Welcome to SongBuzz!';
 
     //Scroll the song in the title if its too long to read.
     title.mouseover(function () {

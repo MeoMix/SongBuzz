@@ -1,6 +1,6 @@
 //When clicked -- shuffles the playlist. Doesn't affect curently playing song at all.
 //Can't be clicked with 2 or fewer songs.
-require([], function(){
+define(function(){
 	'use strict';
 	var shuffleButton = $('#ShuffleButton').click(shuffleSong);
 	//localStorage serializes bools to strings.

@@ -1,13 +1,11 @@
-var Playlist;
-
-define(['../song'], function(){
+define(['song', 'yt_helper', 'helpers'], function(songFunc, ytHelper, helpers){
     //Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
-    Playlist = function(id, name) {
+    return function(id, name) {
         "use strict";
         //If no playlistid or name provided assume default playlist and create default song list.
         var isDefaultPlaylist = !(id && name);
         var playlist = {
-            id: id ? id : Helpers.generateGuid(),
+            id: id ? id : helpers.generateGuid(),
             title: name ? name : "New Playlist",
             selected: true,
             shuffledSongs: [],
@@ -198,15 +196,15 @@ define(['../song'], function(){
                 return previousSong;
             },
             addSongBySong: function(song){
-                var newSong = new Song(song);
+                var newSong = new songFunc(song);
                 playlist.songs.push(newSong);
                 playlist.shuffledSongs.push(newSong);
                 shuffle(playlist.shuffledSongs);
                 save();
             },
             addSongByVideoId: function (videoId, callback) {
-                YTHelper.getVideoInformation(videoId, function(videoInformation){
-                    var song = new Song(videoInformation);
+                ytHelper.getVideoInformation(videoId, function(videoInformation){
+                    var song = new songFunc(videoInformation);
                     playlist.songs.push(song);
 
                     playlist.shuffledSongs.push(song);

@@ -1,6 +1,5 @@
-require([], function(){
+define(function(){
 	'use strict';
-	
 	return {
 		showReplacedSongNotification: function(){
 			var replacedSongDialog = $('#ReplacedSongDialog');

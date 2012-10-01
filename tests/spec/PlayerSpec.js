@@ -1,18 +1,15 @@
-describe("Player", function() {
-  var Player = null;
+define(['player'], function(player){
+  describe(
+    "The player", function(){
 
-  beforeEach(function() {    
-    Player = YoutubePlayer;
-  });
+      it("should exist", function(){
+        expect(YoutubePlayer).not.toEqual(null);
+      });
 
-  it("should exist", function(){
-    expect(Player).not.toEqual(null);
-  });
+      it("should have a playlist loaded", function(){
+        expect(YoutubePlayer.playlistTitle).toBeDefined();
+        expect(YoutubePlayer.playlistTitle).not.toEqual('');
+      });
 
-  it("should have a playlist loaded", function(){
-    expect(Player.playlistTitle).toBeDefined();
-    expect(Player.playlistTitle).not.toEqual('');
-  });
-
-  
+    });
 });

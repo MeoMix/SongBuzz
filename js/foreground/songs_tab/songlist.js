@@ -1,5 +1,5 @@
 ﻿//Represents the songs in a given playlist.
-define(['songs_tab/songlist_context_menu'], function(contextMenu){
+define(['songs_tab/songlist_context_menu', 'player'], function(contextMenu, player){
     'use strict';
     var songList = $('#SongList ul');
 
@@ -14,7 +14,7 @@ define(['songs_tab/songlist_context_menu'], function(contextMenu){
                 ids.push(this.id);
             });
 
-            Player.sync(ids);
+            player.sync(ids);
         }
     });
 
@@ -55,7 +55,7 @@ define(['songs_tab/songlist_context_menu'], function(contextMenu){
             //Load and start playing a song if it is clicked.
             songList.children().click(function(){
                 var clickedId = $(this).children()[0].id;
-                Player.loadSongById(clickedId);
+                player.loadSongById(clickedId);
                 return false;
             });
 

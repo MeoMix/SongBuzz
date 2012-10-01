@@ -1,10 +1,7 @@
 define(function(){
     'use strict';
-    var menuButtons = $('.menubutton');
-    var content = $('.content');
-    var homeContent = $('#HomeContent');
-    var playlistsContent = $('#PlaylistsContent');
-    var settingsContent = $('#SettingsContent');
+    var menuButtons = $('.menubutton'), content = $('.content'), homeContent = $('#HomeContent'), 
+    playlistsContent = $('#PlaylistsContent'), settingsContent = $('#SettingsContent');
 
     //User clicks on a different button on the LHS, possible change of content display.
     menuButtons.click(function(){

@@ -5,8 +5,9 @@
       <title></title>
     <link href="css/foreground.css" rel="stylesheet" type="text/css" />
     <link href="css/aristo/aristo.css" rel="stylesheet" type="text/css" />
-
-    <script data-main="js/foreground/foreground" src="js/third_party/require.min.js"></script>
+    
+    <script src="js/third_party/application_require_paths.js"></script>
+    <script data-main="js/foreground/main" src="js/third_party/require.min.js"></script>
   </head>
   <body>
       <div id="content">
@@ -56,10 +57,10 @@
               <div id="MuteButton" class="volumeControl">
                 <svg width="16" height="16">
                   <path d="M0,6 L3,6 L7,2 L7,14 L3,10 L0,10Z" fill="#fff" />
-                  <rect id="MuteButtonBar1" x="9" y="6.5" width="1" height="3" />
-                  <rect id="MuteButtonBar2" x="11" y="5" width="1" height="6" />
-                  <rect id="MuteButtonBar3" x="13" y="3.5" width="1" height="9" />
-                  <rect id="MuteButtonBar4" x="15" y="2" width="1" height="12" />
+                  <rect class="MuteButtonBar" id="MuteButtonBar1" x="9" y="6.5" width="1" height="3" />
+                  <rect class="MuteButtonBar"id="MuteButtonBar2" x="11" y="5" width="1" height="6" />
+                  <rect class="MuteButtonBar" id="MuteButtonBar3" x="13" y="3.5" width="1" height="9" />
+                  <rect class="MuteButtonBar" id="MuteButtonBar4" x="15" y="2" width="1" height="12" />
                 </svg>
               </div>
           </div>

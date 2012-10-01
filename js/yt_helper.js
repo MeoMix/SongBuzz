@@ -1,5 +1,5 @@
 ﻿//A global object which abstracts more difficult implementations of retrieving data from YouTube.
-define(['../js/third_party/geoplugin'], function(geoplugin){
+define(['geoplugin'], function(geoplugin){
     'use strict';
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
     var buildSearchUrl = function(){
