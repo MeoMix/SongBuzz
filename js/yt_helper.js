@@ -3,7 +3,9 @@ define(['geoplugin'], function(geoplugin){
     'use strict';
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
     var buildSearchUrl = function(){
-        return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin.countryCode + "&q=";
+        return "https://gdata.youtube.com/feeds/api/videos?format=5&v=2&alt=json&callback=?&q=";
+        //return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin.countryCode + "&q=";
+    
     };
 
     //Convert JSON response into object.
@@ -94,6 +96,8 @@ define(['geoplugin'], function(geoplugin){
                         bannedKeywords.push(this);
                     }
                 });
+
+                console.log("Response Feed entry:", response.feed.entry);
 
                 //Add all playable songs to a list and return.
                 $(response.feed.entry).each(function(){

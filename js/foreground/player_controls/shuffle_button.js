@@ -4,19 +4,19 @@ define(function(){
 	'use strict';
 	var shuffleButton = $('#ShuffleButton').click(shuffleSong);
 	//localStorage serializes bools to strings.
-	if(Boolean(localStorage.getItem('isShuffleEnabled') || false)){
+	if(JSON.parse(localStorage.getItem('isShuffleEnabled') || false)){
+		console.log("adding pressed class");
 		shuffleButton.addClass('pressed');
 	}
 
 	function shuffleSong(){
-		var isShuffleEnabled = shuffleButton.hasClass('pressed');
-		localStorage.setItem('isShuffleEnabled', isShuffleEnabled);
-
-		if(isShuffleEnabled){
+		if(shuffleButton.hasClass('pressed')){
 			shuffleButton.removeClass('pressed');
 		}
 		else{
 			shuffleButton.addClass('pressed');
 		}
+
+		localStorage.setItem('isShuffleEnabled', shuffleButton.hasClass('pressed'));
 	}
 });

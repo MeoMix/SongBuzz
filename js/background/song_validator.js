@@ -1,7 +1,10 @@
-var isPlayerBuilderBuilt = false;
+//This is 100% necessary because it is hosted on the background page.
+//I do not want to spawn another YT Player every time SongValidator is needed.
+//I do want the foreground to be able to interact with the SongValidator.
+//So, the requireJS model has to be broken to allow for chrome.extension.getBackgroundPage().SongValidator niceness.
+var SongValidator = null;
 define(['player_builder'], function(playerBuilder){
-	if(!isPlayerBuilderBuilt){
-		isPlayerBuilderBuilt = true;
+	if(SongValidator === null){
 		//Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
 		//This will prevent an error message 'Unable to post message to http://www.youtube.com'
 		var player = null;
@@ -29,7 +32,7 @@ define(['player_builder'], function(playerBuilder){
 	    });
 	}
 
-    return {
+	SongValidator = {
     	validateSongById: function(videoId, callback){
     		oldVolume = player.getVolume();
     		player.setVolume(0);
@@ -50,4 +53,6 @@ define(['player_builder'], function(playerBuilder){
     		}, 200)
     	}
     };
+
+    return SongValidator;
 });

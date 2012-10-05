@@ -149,7 +149,8 @@ define(['song', 'yt_helper', 'helpers'], function(songFunc, ytHelper, helpers){
             getNextSong: function () {
                 var nextSong = null;
 
-                var isShuffleEnabled = Boolean(localStorage.getItem('isShuffleEnabled') || false);
+                var isShuffleEnabled = JSON.parse(localStorage.getItem('isShuffleEnabled')) || false;
+
                 if(isShuffleEnabled === true){
                     nextSong = playlist.shuffledSongs[0];
                 }
