@@ -146,7 +146,7 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
                 },
                 //Return undefined until player has state VIDCUED
                 get volume(){
-                    return player.getVolume();
+                    return player.getVolume ? player.getVolume() : 0;
                 },
                 set volume(value){
                     if(value){

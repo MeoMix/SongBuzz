@@ -1,13 +1,11 @@
 //This is the list of playlists on the playlists tab.
-define(['playlists_tab/playlists_context_menu', 'player'], function(contextMenu, player){
-    //TODO: Make this sortable and should inherit from a common List object. And fix it.
-    'use strict';
+define(['playlists_tab/playlists_context_menu', 'player', '../yt_helper'], function(contextMenu, player, ytHelper){
+    //TODO: Make this sortable and should inherit from a common List object. 
     var playlistList;
 
     var initialize = function(onValidInputEvent){
         playlistList = $('#PlaylistList ul');
         var addInput = $('#PlaylistDisplay .addInput').attr('placeholder', 'Enter a playlist name or YouTube playlist URL');
-
 
         //Whenever the user submits a name for a new playlist create a new playlist with that name.
         addInput.keyup(function (e) {
@@ -23,14 +21,14 @@ define(['playlists_tab/playlists_context_menu', 'player'], function(contextMenu,
         var processInput = function(){
             setTimeout(function () {
                 var userInput = addInput.val();
-                var possiblePlaylistId = YTHelper.parseUrlForPlaylistId(userInput);
+                var possiblePlaylistId = ytHelper.parseUrlForPlaylistId(userInput);
                 
                 if(possiblePlaylistId !== null){     
                     if(onValidInputEvent){
                         onValidInputEvent();
                     }
 
-                    YTHelper.buildPlaylistFromId(possiblePlaylistId, function(playlist){
+                    ytHelper.buildPlaylistFromId(possiblePlaylistId, function(playlist){
                         if(playlist){
                             player.addPlaylistByPlaylist(playlist);
                         }

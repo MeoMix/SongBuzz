@@ -17,5 +17,5 @@
     "http://www.geoplugin.net/json.gp"
 	],
   "content_security_policy": 
-    "script-src 'self' https://ssl.google-analytics.com/ga.js https://gdata.youtube.com/ https://suggestqueries.google.com/ https://www.youtube.com/player_api https://s.ytimg.com/yt/jsbin/www-widgetapi-vfl9Ni0ki.js; object-src 'self'"
+    "script-src 'self' https://ssl.google-analytics.com https://gdata.youtube.com https://suggestqueries.google.com https://www.youtube.com https://s.ytimg.com; object-src 'self'"
 }

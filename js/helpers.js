@@ -21,6 +21,11 @@ define(function(){
 
 		//Takes a time in seconds and converts it to a displayable format of H:mm:ss or mm:ss.
 		prettyPrintTime: function(timeInSeconds){
+			if(isNaN(timeInSeconds)){
+				console.log("Time in seconds:", timeInSeconds);
+				timeInSeconds = 0;
+			}
+
 			var date = new Date(timeInSeconds * 1000);
 
 			//Need to remove 16 hours from hours to represent properly.
