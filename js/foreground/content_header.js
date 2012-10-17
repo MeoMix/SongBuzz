@@ -1,4 +1,4 @@
-define(['player'], function(player){
+define(function(){
     'use strict';
 
     return function(selector, addText, addInputPlaceholder){
@@ -10,14 +10,15 @@ define(['player'], function(player){
 
         var processTitle = function(playlistTitle){
             if(playlistTitle !== ''){
-                player.playlistTitle = playlistTitle;
+                chrome.extension.getBackgroundPage().YoutubePlayer.playlistTitle = playlistTitle;
             }
         };
 
+        var headerText = chrome.extension.getBackgroundPage().YoutubePlayer ? chrome.extension.getBackgroundPage().YoutubePlayer.playlistTitle : '';
         var headerInput = $('<input/>', {
             'class': 'headerInput',
             type: 'text',
-            text: player.playlistTitle,
+            text: headerText,
             originalValue: '',
             mouseover: function(){
                 this.originalValue = $(this).val();

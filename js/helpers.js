@@ -1,9 +1,10 @@
 /*jshint bitwise:false*/
 //Provides helper methods for non-specific functionality.
+var Helpers;
 define(function(){
 	'use strict';
 
-	return {	
+	Helpers = {	
 		//Based off of: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
 		generateGuid: function(){
 			var startStringFormat = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';

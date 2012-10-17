@@ -1,7 +1,7 @@
 //The songs tab header. Users may add songs by clicking on Add Songs or click-and-holding on Add Songs.
 //Clicking Add Songs will allow the user to either search w/ auto-complete suggestions, or to paste youtube URLs into the input.
 //Alternatively, the user can click-and-hold on the button which will cause all open tabs to be parsed for songs.
-define(['../../yt_helper', 'player', '../../helpers'], function(ytHelper, player, helpers){
+define(['../../yt_helper', 'dialogs'], function(ytHelper, dialogs){
     'use strict';
 
     var initialize = function(onValidInputEvent){
@@ -28,12 +28,12 @@ define(['../../yt_helper', 'player', '../../helpers'], function(ytHelper, player
 
                 chrome.extension.getBackgroundPage().SongValidator.validateSongById(ui.item.value.videoId, function(isPlayable){
                     if(isPlayable){
-                        player.addSongByVideoId(ui.item.value.videoId);
+                        chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(ui.item.value.videoId);
                     }
                     else{
-                        Dialogs.showReplacedSongNotification();
+                        dialogs.showReplacedSongNotification();
                         ytHelper.findPlayableByVideoId(ui.item.value.videoId, function(playableSong){
-                            player.addSongByVideoId(playableSong.videoId);
+                            chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(playableSong.videoId);
                         });
                     }
                 });
@@ -52,22 +52,18 @@ define(['../../yt_helper', 'player', '../../helpers'], function(ytHelper, player
                     }
 
                     var onResponse = function(videoInformation){
-                        if(videoInformation === null){
-                            Dialogs.showBannedSongDialog();
+                        if(typeof videoInformation === "undefined"){
+                            dialogs.showBannedSongDialog();
                         }
                         else{
-                            ytHelper.isPlayable(videoId, function (isPlayable) {
-                                if(isPlayable){
-                                    chrome.extension.getBackgroundPage().SongValidator.validateSongById(videoId, function(playedSuccessfully){
-                                        if(playedSuccessfully){
-                                            player.addSongByVideoId(videoId);
-                                        }
-                                        else{
-                                           Dialogs.showReplacedSongNotification();
-                                            ytHelper.findPlayableByVideoId(videoId, function(playableSong){
-                                                player.addSongByVideoId(playableSong.videoId);
-                                            });
-                                        }
+                            chrome.extension.getBackgroundPage().SongValidator.validateSongById(videoId, function(playedSuccessfully){
+                                if(playedSuccessfully){
+                                    chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(videoId);
+                                }
+                                else{
+                                   dialogs.showReplacedSongNotification();
+                                    ytHelper.findPlayableByVideoId(videoId, function(playableSong){
+                                        chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(playableSong.videoId);
                                     });
                                 }
                             });
@@ -83,7 +79,6 @@ define(['../../yt_helper', 'player', '../../helpers'], function(ytHelper, player
             var userIsTyping = false;
             var typingTimeout = null;
 
-            console.log("addInput:", addInput);
             //Validate URL input on enter key.
             //Otherwise show suggestions. Use keyup event because input's val is updated at that point.
             addInput.keyup(function (e) {
@@ -115,33 +110,20 @@ define(['../../yt_helper', 'player', '../../helpers'], function(ytHelper, player
 
             //Searches youtube for song results based on the given text.
             var showSongSuggestions = function (text) {
-                var elapsedTime = 0;
-                var timeInterval = 200;
-                var timeout = 1000;
-
-                var addSongInterval = setInterval(function(){
-                    var songTitles = [];
-                    elapsedTime += timeInterval;
-
-                    if(elapsedTime < timeout){
-                        ytHelper.search(text, function (videos) {
-                            if(!userIsTyping){
-                                $(videos).each(function(){
-                                    //I wanted the label to be duration | title to help delinate between typing suggestions and actual songs.
-                                    var label = helpers.prettyPrintTime(this.duration) + " | " + this.title;
-                                    songTitles.push({ label: label, value: this});
-                                });
-
-                                //Show songs found instead of suggestions.
-                                addInput.autocomplete("option", "source", songTitles);
-                                addInput.autocomplete("search", '');
-                            }
+                ytHelper.search(text, function (videos) {
+                    if(!userIsTyping){
+                        var songTitles = [];
+                        $(videos).each(function(){
+                            //I wanted the label to be duration | title to help delinate between typing suggestions and actual songs.
+                            var label = Helpers.prettyPrintTime(this.duration) + " | " + this.title;
+                            songTitles.push({ label: label, value: this});
                         });
+
+                        //Show songs found instead of suggestions.
+                        addInput.autocomplete("option", "source", songTitles);
+                        addInput.autocomplete("search", '');
                     }
-                    else{
-                        clearInterval(addSongInterval);
-                    }
-                }, timeInterval);
+                });
             };
         }();
     };

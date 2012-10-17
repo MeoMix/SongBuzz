@@ -16,8 +16,9 @@ define(function(){
     });
 
     return {
-        updateTitle: function (currentSong) {
-            var text = currentSong ? currentSong.name : defaultCaption;
+        updateTitle: function () {
+            var currentSong = chrome.extension.getBackgroundPage().YoutubePlayer.currentSong;
+            var text = currentSong ? currentSong.title : defaultCaption;
             title.text(text);
         }
     };

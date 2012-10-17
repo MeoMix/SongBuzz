@@ -1,5 +1,5 @@
 //This is the list of playlists on the playlists tab.
-define(['playlists_tab/playlists_context_menu', 'player', '../yt_helper'], function(contextMenu, player, ytHelper){
+define(['playlists_tab/playlists_context_menu', '../yt_helper'], function(contextMenu, ytHelper){
     //TODO: Make this sortable and should inherit from a common List object. 
     var playlistList;
 
@@ -27,27 +27,24 @@ define(['playlists_tab/playlists_context_menu', 'player', '../yt_helper'], funct
                     if(onValidInputEvent){
                         onValidInputEvent();
                     }
-
+                    console.log("building playlist from id");
                     ytHelper.buildPlaylistFromId(possiblePlaylistId, function(playlist){
                         if(playlist){
-                            player.addPlaylistByPlaylist(playlist);
+                            console.log("Playlist:", playlist);
+                            chrome.extension.getBackgroundPage().YoutubePlayer.addPlaylist(playlist.title, playlist.videos);
                         }
                     });
                 }
                 else{
-                    addPlaylistByName(userInput);
+                    //Only add the playlist if a name was provided.
+                    if(userInput.trim() !== ''){
+                        chrome.extension.getBackgroundPage().YoutubePlayer.addPlaylist(userInput);
+                        if(onValidInputEvent){
+                            onValidInputEvent();
+                        }
+                    }
                 }
             });
-        };
-
-        var addPlaylistByName = function(playlistName){
-            //Only add the playlist if a name was provided.
-            if(playlistName.trim() !== ''){
-                player.addPlaylistByName(playlistName);
-                if(onValidInputEvent){
-                    onValidInputEvent();
-                }
-            }
         };
     };
 
@@ -61,11 +58,11 @@ define(['playlists_tab/playlists_context_menu', 'player', '../yt_helper'], funct
             var selectRow = function(id){
                 playlistList.find('li').removeClass('current');
                 $('#' + id).parent().addClass('current');
-                player.selectPlaylist(id);
+                chrome.extension.getBackgroundPage().YoutubePlayer.selectPlaylist(id);
             };
 
             //Build up each row.
-            for(var key in player.playlists){
+            for(var key in chrome.extension.getBackgroundPage().YoutubePlayer.playlists){
                 var listItem = $('<li/>').appendTo(playlistList);
 
                 (function(playlist){                
@@ -84,7 +81,7 @@ define(['playlists_tab/playlists_context_menu', 'player', '../yt_helper'], funct
                     if(playlist.isSelected){
                         selectRow(playlist.id); 
                     }
-                })(player.playlists[key]);
+                })(chrome.extension.getBackgroundPage().YoutubePlayer.playlists[key]);
             }
 
             //Clicking on a playlist will select that playlist.

@@ -1,13 +1,13 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
-define(['player', '../third_party/jquery.mousewheel'], function(player){
+define(['../third_party/jquery.mousewheel'], function(){
     'use strict';
     var selector = $('#SongTimeProgressBar');
     var mousewheelTimeout = null, mousewheelValue = -1;
     
     selector.mousewheel(function(event, delta){
         clearTimeout(mousewheelTimeout);
-        player.seekStart();
+        chrome.extension.getBackgroundPage().YoutubePlayer.seekStart();
 
         if(mousewheelValue === -1){
             mousewheelValue = parseInt(selector.val(), 10);
@@ -18,7 +18,7 @@ define(['player', '../third_party/jquery.mousewheel'], function(player){
         repaint();
 
         mousewheelTimeout = setTimeout(function(){
-            player.seekTo(mousewheelValue);
+            chrome.extension.getBackgroundPage().YoutubePlayer.seekTo(mousewheelValue);
             mousewheelValue = -1;
         }, 250);
 
@@ -26,11 +26,11 @@ define(['player', '../third_party/jquery.mousewheel'], function(player){
     });
 
     selector.mousedown(function(){
-        player.seekStart();
+        chrome.extension.getBackgroundPage().YoutubePlayer.seekStart();
     }).mouseup(function(){
         //Bind to selector mouse-up to support dragging as well as clicking.
         //I don't want to send a message until drag ends, so mouseup works nicely. 
-        player.seekTo(selector.val());
+        chrome.extension.getBackgroundPage().YoutubePlayer.seekTo(selector.val());
     }).change(function(){
         repaint();
     });
@@ -47,17 +47,24 @@ define(['player', '../third_party/jquery.mousewheel'], function(player){
     };
 
     //If a song is currently playing when the GUI opens then initialize with those values.
-    if(player.currentTime && player.totalTime){
-        selector.prop('max', player.totalTime);
-        selector.val(player.currentTime);
+    var currentTime = chrome.extension.getBackgroundPage().YoutubePlayer.currentTime;
+    var totalTime = chrome.extension.getBackgroundPage().YoutubePlayer.totalTime;
+
+    if(currentTime && totalTime){
+        selector.prop('max', totalTime);
+        selector.val(currentTime);
         repaint();
     }
 
     //Pause the GUI's refreshes for updating the timers while the user is dragging the song time slider around.
     var update = function(){
-        if(!player.isSeeking) {
-            selector.val(player.currentTime);
-            selector.prop('max', player.totalTime);
+        var playerIsSeeking = chrome.extension.getBackgroundPage().YoutubePlayer.isSeeking;
+
+        if(!playerIsSeeking) {
+            var currentTime = chrome.extension.getBackgroundPage().YoutubePlayer.currentTime;
+            var totalTime = chrome.extension.getBackgroundPage().YoutubePlayer.totalTime;
+            selector.val(currentTime);
+            selector.prop('max', totalTime);
             repaint();
         }
     };

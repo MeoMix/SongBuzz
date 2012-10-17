@@ -1,11 +1,11 @@
 //When clicked -- skips to the next song. Can't be clicked with only 1 song.
 //Will skip from the end of the list to the front again.
-define(['player'], function(player){
+define(function(){
     'use strict';
     var skipButton = $('#SkipButton');
 
     function skipSong() {
-        player.skipSong('next');
+        chrome.extension.getBackgroundPage().YoutubePlayer.skipSong('next');
         //Prevent spamming by only allowing a next click once a second.
         setTimeout(function () { 
             skipButton.off('click').one('click', skipSong);

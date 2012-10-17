@@ -1,5 +1,5 @@
 //Holds onto the currentTime and totalTime song labels as well as the elapsed time progress bar.
-define(['player', '../helpers'], function(player, helpers){
+define(function(){
     'use strict';
     var currentTimeLabel = $('#CurrentTimeLabel'), totalTimeLabel = $('#TotalTimeLabel');
 
@@ -9,7 +9,10 @@ define(['player', '../helpers'], function(player, helpers){
     };
 
     (function initialize(){
-        updateLabel(helpers.prettyPrintTime(player.currentTime), helpers.prettyPrintTime(player.totalTime));
+        //Generally player will always be defined here, but if someone's internet is slow and they quickly open the UI it might not be.
+        var currentTime = chrome.extension.getBackgroundPage().YoutubePlayer.currentTime;
+        var totalTime = chrome.extension.getBackgroundPage().YoutubePlayer.totalTime;
+        updateLabel(Helpers.prettyPrintTime(currentTime), Helpers.prettyPrintTime(totalTime));
         //Update the time every half a second.
         setInterval(function(){
             update()
@@ -18,11 +21,14 @@ define(['player', '../helpers'], function(player, helpers){
 
         //In charge of updating the time labels
     var update = function(currentTimeInSeconds){
+        var playerIsSeeking = chrome.extension.getBackgroundPage().YoutubePlayer.isSeeking;
+
         //Do not update from automatic updates if the progress bar is being dragged.
-        if(currentTimeInSeconds || !player.isSeeking) {
+        if(currentTimeInSeconds || !playerIsSeeking) {
             //If told to update to a specific time (by user interaction) then use that time, otherwise get the players current time (automatic update)
-            var currentTime = currentTimeInSeconds ? currentTimeInSeconds : player.currentTime;
-            updateLabel(helpers.prettyPrintTime(currentTime), helpers.prettyPrintTime(player.totalTime));
+            var totalTime = chrome.extension.getBackgroundPage().YoutubePlayer.totalTime;
+            var currentTime = currentTimeInSeconds ? currentTimeInSeconds : chrome.extension.getBackgroundPage().YoutubePlayer.currentTime;
+            updateLabel(Helpers.prettyPrintTime(currentTime), Helpers.prettyPrintTime(totalTime));
         };
     };
 

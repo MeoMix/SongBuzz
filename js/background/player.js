@@ -1,6 +1,6 @@
-﻿var YoutubePlayer = null;
+var YoutubePlayer = null;
 
-define(['playlists', 'player_builder'], function(playlists, playerBuilder){
+define(['playlists', 'player_builder', 'yt_helper'], function(playlists, playerBuilder, ytHelper){
     'use strict'; 
     //Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
     //This will prevent an error message 'Unable to post message to http://www.youtube.com'
@@ -18,14 +18,27 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
                     if (playlist.songCount > 0) {
                         cueSongById(playlist.songs[0].id);
                     }
+                    refreshUI();
                 };
 
                 var onStateChange = function (playerState) {
                     //If the song stopped playing and there's another song to skip to, do so.
-                    if (playerState.data === PlayerStates.ENDED && playlist.songCount > 1) {
+                    if (playerState.data === PlayerStates.ENDED ) {
                         //Don't pass message to UI if it is closed. Handle sock change in the background.
                         //The player can be playing in the background and UI changes may try and be posted to the UI, need to prevent.
-                        loadSongById(playlist.getNextSong().id);  
+                        var isRadioModeEnabled =  JSON.parse(localStorage.getItem('isRadioModeEnabled')) || false;
+                        var nextSong = null;
+                        if(isRadioModeEnabled){
+                            nextSong = playlist.getRelatedVideo();
+                            playlist.addSong(nextSong);
+                            loadSongById(nextSong.id);  
+                        }
+                        else {
+                            if(playlist.songCount > 1){
+                                nextSong = playlist.getNextSong();
+                                loadSongById(nextSong.id);  
+                            }
+                        }                 
                     } 
 
                     refreshUI();
@@ -35,7 +48,7 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
                     if(currentSong !== null){
                         (function replaceUnplayableSong(){
                             var unplayableSong = currentSong;
-                            YTHelper.findPlayableByVideoId(unplayableSong.videoId, function(playableSong){
+                            ytHelper.findPlayableByVideoId(unplayableSong.videoId, function(playableSong){
                                 addSongByVideoId(playableSong.videoId, function(song){
                                     loadSongById(song.id);
                                     removeSongById(unplayableSong.id);
@@ -97,10 +110,10 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
             };
 
             var removeSongById = function (id) {
-                //Get nextSong before removing currentSong because the position of currentSong is important.
-                var nextSong = playlist.getNextSong();
-
                 if(currentSong && id === currentSong.id){
+                    //Get nextSong before removing currentSong because the position of currentSong is important.
+                    var nextSong = playlist.getNextSong();
+
                     currentSong = null;
                     player.pauseVideo();
 
@@ -128,7 +141,7 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
                     return playlists.playlists;
                 },
                 get playerState(){
-                    return player.getPlayerState ? player.getPlayerState() : PlayerStates.UNSTARTED;
+                    return (player && player.getPlayerState) ? player.getPlayerState() : PlayerStates.UNSTARTED;
                 },
                 get songs() {
                     return playlist.songs;
@@ -138,15 +151,15 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
                 },
                 //Returns the elapsed time of the currently loaded song. Returns 0 if no song is playing.
                 get currentTime() {
-                    return player.getCurrentTime ? player.getCurrentTime() : 0;
+                    return (player && player.getCurrentTime) ? player.getCurrentTime() : 0;
                 },
                 //Gets the total time of the currently loaded song. Returns 0 if there is no song loaded.
                 get totalTime() {
-                    return currentSong ? currentSong.totalTime : 0;
+                    return currentSong ? currentSong.duration : 0;
                 },
                 //Return undefined until player has state VIDCUED
                 get volume(){
-                    return player.getVolume ? player.getVolume() : 0;
+                    return (player && player.getVolume) ? player.getVolume() : 0;
                 },
                 set volume(value){
                     if(value){
@@ -178,12 +191,8 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
                         refreshUI();
                     }
                 },
-                addPlaylistByName: function(playlistName){
-                    playlists.addPlaylistByName(playlistName);
-                    refreshUI();
-                },
-                addPlaylistByPlaylist: function(playlist){
-                    playlists.addPlaylistByPlaylist(playlist);
+                addPlaylist: function(playlistName, songs){
+                    playlists.addPlaylist(playlistName, songs);
                     refreshUI();
                 },
                 removePlaylistById: function(playlistId){
@@ -247,7 +256,15 @@ define(['playlists', 'player_builder'], function(playlists, playerBuilder){
                     var nextSong = null;
 
                     if (where == "next"){
-                        nextSong = playlist.getNextSong();
+                        var isRadioModeEnabled = JSON.parse(localStorage.getItem('isRadioModeEnabled')) || false;
+
+                        if(isRadioModeEnabled){
+                            nextSong = playlist.getRelatedVideo();
+                            playlist.addSong(nextSong);
+                        }
+                        else{
+                            nextSong = playlist.getNextSong();
+                        }
                     }
                     else if(where == "previous"){
                         nextSong = playlist.getPreviousSong();

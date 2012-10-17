@@ -1,5 +1,5 @@
 ﻿//Represents the songs in a given playlist.
-define(['songs_tab/songlist_context_menu', 'player'], function(contextMenu, player){
+define(['songs_tab/songlist_context_menu'], function(contextMenu){
     'use strict';
     var songList = $('#SongList ul');
 
@@ -7,14 +7,13 @@ define(['songs_tab/songlist_context_menu', 'player'], function(contextMenu, play
     songList.sortable({
         axis: 'y',
         //Whenever a song row is moved inform the Player of the new songlist order.
-        //TODO: If it proves necessary I can rewrite this such that instead of syncing the entire playlist I only move the song affected.
         update: function () {
             var ids = [];
             songList.find('li a').each(function(){
                 ids.push(this.id);
             });
 
-            player.sync(ids);
+            chrome.extension.getBackgroundPage().YoutubePlayer.sync(ids);
         }
     });
 
@@ -27,6 +26,10 @@ define(['songs_tab/songlist_context_menu', 'player'], function(contextMenu, play
     return {
         //Refresh all the songs displayed to ensure they GUI matches background's data.
         reload: function (songs, currentSong) {
+            var player = chrome.extension.getBackgroundPage().YoutubePlayer
+            var songs = player.songs;
+            var currentSong = player.currentSong;
+
             songList.empty();
 
             for (var i = 0; i < songs.length; i++){
@@ -40,7 +43,7 @@ define(['songs_tab/songlist_context_menu', 'player'], function(contextMenu, play
                     var link = $('<a/>', {
                         id: song.id,
                         href: '#' + song.id,
-                        text: song.name,
+                        text: song.title,
                         contextmenu: function(e){
                             contextMenu.initialize(song);
                             contextMenu.show(e.pageY, e.pageX);
@@ -55,7 +58,7 @@ define(['songs_tab/songlist_context_menu', 'player'], function(contextMenu, play
             //Load and start playing a song if it is clicked.
             songList.children().click(function(){
                 var clickedId = $(this).children()[0].id;
-                player.loadSongById(clickedId);
+                chrome.extension.getBackgroundPage().YoutubePlayer.loadSongById(clickedId);
                 return false;
             });
 

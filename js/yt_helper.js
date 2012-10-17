@@ -1,157 +1,128 @@
-﻿//A global object which abstracts more difficult implementations of retrieving data from YouTube.
-define(['geoplugin'], function(geoplugin){
+//A global object which abstracts more difficult implementations of retrieving data from YouTube.
+define(['geoplugin', 'levenshtein'], function(geoplugin, levDist){
     'use strict';
-    //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
-    var buildSearchUrl = function(){
-        return "https://gdata.youtube.com/feeds/api/videos?format=5&v=2&alt=json&callback=?&q=";
-        //return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&time=all_time&max-results=50&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin.countryCode + "&q=";
-    
-    };
-
-    //Convert JSON response into object.
-    var buildYouTubeVideo = function(entry){
-        var youtubeVideo = {
-            //Strip out the videoid. An example of $t's contents: tag:youtube.com,2008:video:UwHQp8WWMlg
-            videoId: entry.id.$t.substring(entry.id.$t.length - 11),
-            title: entry.title.$t,
-            duration: entry.media$group.yt$duration.seconds,
-            accessControls: entry.yt$accessControls,
-            appControl: entry.app$control,
-            //Returns whether the video was found to have any content restrictions which would restrict playback.
-            isPlayable: function(bannedKeywords){
-                var isPlayable = true;
-
-                if(bannedKeywords){
-                    //Look for banned keywords in the title.
-                    for(var index = 0; index < bannedKeywords.length; index++){
-                        if(this.title.toLowerCase().indexOf(bannedKeywords[index]) !== -1){
-                            isPlayable = false;
-                        }
-                    }
-                }
-
-                //A video may have access controls which limit its playability. IE: embedding disabled, syndication disabled.
-                $(this.accessControls).each(function(){
-                    if (this.permission === "denied" && (this.action === "embed" || this.action === "syndicate")){
-                        isPlayable = false;
-                    }
-                });
-
-                //Restrictions may be implemented at a parent level, though, too.
-                if(this.appControl){
-                    var appControlState = this.appControl.yt$state;
-
-                    if (appControlState.name === "restricted" && appControlState.reasonCode === "limitedSyndication"){
-                        isPlayable = false;
-                    }
-                }
-
-                return isPlayable;
-            }
-        };
-
-        return youtubeVideo;
-    };
 
     var buildYouTubePlaylist = function(entry){
+        console.log("Entry:", entry);
+        var videos = [];
+        $.each(entry.entry, function(){
+            var video = SongBuilder.buildSong(this);
+            videos.push(video);
+        });
+
         var youTubePlaylist = {
             //Strip out the videoid. An example of $t's contents: tag:youtube.com,2008:playlist:B16354B8069E4E4D
             playlistId: entry.id.$t.substring(entry.id.$t.length - 16),
             title: entry.title.$t,
-            videos: entry.entry
+            videos: videos
         };
+
+        console.log("I built a playlist with songs: ", videos);
 
         return youTubePlaylist;
     };
 
-    return {
-        //Determine whether a given youtube video will play properly inside of the Google Chrome Extension.
-        //http://apiblog.youtube.com/2011/12/understanding-playback-restrictions.html
-        //NOTE: YouTube has explicitly stated that the only way to know 'for sure' that a video will play is to click 'Play.'
-        //This statement has been proven quite true. As such, this method will only state whether a video is playable based on information exposed via the YouTube API.
-        isPlayable: function (youtubeVideoId, callback) {
-            this.getVideoInformation(youtubeVideoId, function(videoInformation){
-                if (videoInformation !== null){
-                    var video = buildYouTubeVideo(videoInformation);
-                    callback(video.isPlayable());   
-                }
-                else{
-                    callback(false);
-                }
+    var findPlayableWithVideoInformation = function(videoInformation, callback){
+        var songName = videoInformation.title.$t;
+        search(songName, function (videos) {
+            videos.sort(function(a,b){
+                return levDist(a.title, songName) - levDist(b.title, songName);
             });
-        },
 
-        //Performs a search of YouTube with the provided text and returns a list of playable videos (<= max-results)
-        search: function (text, callback) {
-            $.getJSON(buildSearchUrl() + text, function (response) {
-                var playableVideos = [];
-
-                //Keywords which skew results if user was not intending to find.
-                //Associated with whether they were found in users provided text. Banned if not 
-                var keywords = ['live', 'cover', 'remix', 'karaoke'];
-                var bannedKeywords = [];
-
-                $(keywords).each(function(){
-                    if(text.toLowerCase().indexOf(this) === -1){
-                        bannedKeywords.push(this);
-                    }
-                });
-
-                console.log("Response Feed entry:", response.feed.entry);
-
-                //Add all playable songs to a list and return.
-                $(response.feed.entry).each(function(){
-                    var video = buildYouTubeVideo(this);
-
-                    if(video.isPlayable(bannedKeywords)){
-                        playableVideos.push(video);
-                    }
-                });
-
-                callback(playableVideos);
-            });
-        },
-
-        //Takes a videoId which is presumed to have content restrictions and looks through YouTube
-        //for a song with a similiar name that might be the right song to play.
-        findPlayableByVideoId: function(videoId, callback){
-            this.getVideoInformation(videoId, function(videoInformation){
-                if (videoInformation !== null) {
-                    var songName = videoInformation.title.$t;
-                    YTHelper.search(songName, function (videos) {
-                        videos.sort(function(a,b){
-                            //TODO: I might also want to consider the distance between users input text and a/b title
-                            return levDist(a.title, songName) - levDist(b.title, songName);
-                        });
-
-                        var wait = false;
-                        var processInterval = setInterval(function(){
-                            if(!wait){
-                                var currentVideo = videos.shift();
-
-                                if(currentVideo){
-                                    wait = true;
-                                    if(currentVideo.isPlayable()){
-                                        chrome.extension.getBackgroundPage().SongValidator.validateSongById(currentVideo.videoId, function(result){
-                                            wait = false;
-                                            if(result){
-                                                clearInterval(processInterval);
-                                                callback(currentVideo);
-                                                return;
-                                            }
-                                        });
-                                    }
-                                    else{
-                                        wait = false;
-                                    }
-                                }
-                            }
-                        }, 200);
+            var videoIndex = 0;
+            var processNext;
+            (processNext = function() {
+                if(videoIndex < videos.length) {
+                    var video = videos[videoIndex];
+                    chrome.extension.getBackgroundPage().SongValidator.validateSongById(video.videoId, function (songWasValid) {
+                        if(songWasValid){
+                            callback(video);
+                        }
+                        else{
+                            videoIndex++;
+                            processNext();
+                        }
                     });
+                } else {
+                    //Failed to find a video.
+                    callback(); 
                 }
+            })();
+        });
+    };
+        
+    //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
+    var buildSearchUrl = function(searchIndex, maxResults, searchText){
+        return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&start-index=" + searchIndex + "&time=all_time&max-results=" + maxResults + "&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin.countryCode + "&q=" + searchText;
+    };
+
+    //Performs a search of YouTube with the provided text and returns a list of playable videos (<= max-results)
+    var search = function (text, callback) {
+        var searchIndex = 1;
+        var timeInterval = 200;
+        var timeToSpendSearching = 500;
+        var elapsedTime = 0;
+        var videos = [];
+        var maxResultsPerSearch = 50;
+
+        var searchInterval = setInterval(function(){
+            elapsedTime += timeInterval;
+
+            if(elapsedTime < timeToSpendSearching){
+                var searchUrl = buildSearchUrl(searchIndex, maxResultsPerSearch, text);
+
+                $.getJSON(searchUrl, function (response) {
+                    //Add all playable songs to a list and return.
+                    $(response.feed.entry).each(function(){
+                        videos.push(SongBuilder.buildSong(this));
+                    });
+
+                    searchIndex += maxResultsPerSearch;
+                });
+            }
+            else{
+                clearInterval(searchInterval);
+                callback(videos);
+            }
+        }, timeInterval);
+    };
+
+    //Takes a videoId which is presumed to have content restrictions and looks through YouTube
+    //for a song with a similiar name that might be the right song to play.
+    var findPlayableByVideoId = function(videoId, callback){
+        var self = this;
+        this.getVideoInformation(videoId, function(videoInformation){
+            if (videoInformation) {
+                findPlayableWithVideoInformation(videoInformation, callback);
+            }
+        });
+    }
+
+    return {
+        getRelatedVideos: function(songs, callback){
+            var relatedVideos = [];
+            var deferredRequests = [];
+
+            $.each(songs, function(){
+                var song = this;
+
+                deferredRequests.push($.ajax({
+                    url: 'https://gdata.youtube.com/feeds/api/videos/' + song.videoId + '/related?v=2&alt=json',
+                    success: function(result){
+                        $.each(result.feed.entry, function(){
+                            relatedVideos.push(SongBuilder.buildSong(this));
+                        });
+                    }
+                }));
+            });
+
+            $.when.apply($, deferredRequests).done(function(){
+                callback(relatedVideos);
             });
         },
 
+        search: search,
+        findPlayableByVideoId: findPlayableByVideoId,
         //Takes a URL and returns a videoId if found inside of the URL.
         //http://stackoverflow.com/questions/3452546/javascript-regex-how-to-get-youtube-video-id-from-url
         parseUrl: function(url){
@@ -178,16 +149,46 @@ define(['geoplugin'], function(geoplugin){
         },
 
         buildPlaylistFromId: function(playlistId, callback){
-            $.ajax({
-                url:  "https://gdata.youtube.com/feeds/api/playlists/" + playlistId + "?v=2&alt=json",
-                success: function(result){
-                    var playlist = buildYouTubePlaylist(result.feed);
-                    callback(playlist);
-                },
-                error: function(){
-                    callback();
-                }
-            });
+            var startIndex = 1;
+            var videos = [];
+            var maxResultsPerSearch = 50;
+            var youtubePlaylist = null;
+
+            var getPlaylistInterval = setInterval(function(){
+                $.ajax({
+                    url:  "https://gdata.youtube.com/feeds/api/playlists/" + playlistId + "?v=2&alt=json&max-results=" + maxResultsPerSearch + "&start-index=" + startIndex,
+                    success: function(result){
+                        //Go and build up a playlist. Can only get up to max-results # of songs per query, so have to
+                        //fetch the playlist data multiple times to ensure all songs are captured.
+                        var videoResultsFound = 0;
+                        if(youtubePlaylist === null){
+                            youtubePlaylist = buildYouTubePlaylist(result.feed);
+                            videoResultsFound = youtubePlaylist.videos.length;
+                        } 
+                        else {
+                            var additionalVideos = buildYouTubePlaylist(result.feed).videos;
+                            youtubePlaylist.videos = youtubePlaylist.videos.concat(additionalVideos);
+                            videoResultsFound = additionalVideos.length;
+                        }
+                        
+                        //Done finding videos when less than max possible results are returned.
+                        console.log("videoResultsFound:", videoResultsFound);
+
+                        if(videoResultsFound != maxResultsPerSearch){
+                            console.log("calling callback!");
+                            clearInterval(getPlaylistInterval);
+                            callback(youtubePlaylist);
+                        }
+
+                        startIndex += maxResultsPerSearch;
+                    },
+                    error: function(){
+                        callback();
+                        clearInterval(getPlaylistInterval);
+                    }
+                });
+            }, 5000);
+
         },
 
         // Returns NULL if the request throws a 403 error if videoId has been banned on copyright grounds.

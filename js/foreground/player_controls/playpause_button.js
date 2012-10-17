@@ -1,5 +1,5 @@
 //The play/pause icon.
-define(['player'], function(player){
+define(function(){
 	'use strict';
 	var playPauseButton = $('#PlayPauseButton'), pauseIcon = $('#pauseIcon'), playIcon = $('#playIcon');
 
@@ -10,7 +10,7 @@ define(['player'], function(player){
 			playIcon.show();
 
 			playPauseButton.off('click').on('click', function () {
-				player.play(); 
+				chrome.extension.getBackgroundPage().YoutubePlayer.play(); 
 				pauseIcon.show();
 				playIcon.hide();
 			});
@@ -21,14 +21,12 @@ define(['player'], function(player){
 			playIcon.hide();
 
 			playPauseButton.off('click').on('click', function () {
-				player.pause(); 
+				chrome.extension.getBackgroundPage().YoutubePlayer.pause(); 
 				pauseIcon.hide();
 				playIcon.show();
 			});
 		},
 		//Paint playPauseButton's path black and allow it to be clicked.
-		//NOTE: This does not actually bind the click event.
-		//TODO: Should this bind a click event?
 		enable: function(){
 			playPauseButton.removeClass('disabled');
 			playPauseButton.find('.path').css('fill', 'black');

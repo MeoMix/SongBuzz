@@ -1,28 +1,15 @@
-define(['song', 'yt_helper', 'helpers'], function(songFunc, ytHelper, helpers){
+define(['yt_helper'], function(ytHelper){
     //Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
     return function(id, name) {
         "use strict";
-        //If no playlistid or name provided assume default playlist and create default song list.
-        var isDefaultPlaylist = !(id && name);
         var playlist = {
-            id: id ? id : helpers.generateGuid(),
+            id: id ? id : Helpers.generateGuid(),
             title: name ? name : "New Playlist",
-            selected: true,
+            selected: false,
             shuffledSongs: [],
             songHistory: [],
-            songs: !isDefaultPlaylist ? [] : [{ 
-                    "id": "3bc1b5e6-0055-4d55-bca0-ee472c8474ed", 
-                    "videoId": "bU639WhxTIs", 
-                    "url": "http://youtu.be/bU639WhxTIs", 
-                    "name": "Bondax - All Inside | HD", 
-                    "totalTime": "235" 
-                }, {
-                    "id": "a7b60601-636f-41db-ac96-5e0fd1a0f7d0", 
-                    "videoId": "CxHFnVCZDRo", 
-                    "url": "http://youtu.be/CxHFnVCZDRo", 
-                    "name": "The Beatles - Don't Let Me Down (Gramatik 2012 Remix)", 
-                    "totalTime": "327"
-                }]
+            relatedVideos: [],
+            songs: []
         };
 
         var save = function () {
@@ -45,11 +32,37 @@ define(['song', 'yt_helper', 'helpers'], function(songFunc, ytHelper, helpers){
             }
         }();
 
-        //TODO: Can I replace this with an extend call?
+        var syncRelatedVideos = function(){
+            ytHelper.getRelatedVideos(playlist.songs, function(relatedVideos){
+                console.log("I've set playlists related videos to:", relatedVideos);
+                playlist.relatedVideos = relatedVideos;
+                save();
+            });
+        };
+
+        //Make sure a playlist and its songs always have the current versions properties.
+        //If a user has an old version of a playlist stored in localStorage -- things could go awry.
         var legacySupport = function(){
             if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
             if(!playlist.songHistory) playlist.songHistory = [];
             if(!playlist.songs) playlist.songs = [];
+
+            if(playlist.relatedVideos == null || playlist.relatedVideos.length == 0){
+                syncRelatedVideos();
+            }
+
+            //Changed to match YouTube properties more closely.
+            $.each(playlist.songs, function(){
+                if(this.name){
+                    this.title = this.name;
+                    delete this.name;
+                }
+
+                if(this.totalTime){
+                    this.duration = this.totalTime;
+                    delete this.totalTime;
+                }
+            });
         }();
 
         var shuffle = function (songs) {
@@ -145,6 +158,9 @@ define(['song', 'yt_helper', 'helpers'], function(songFunc, ytHelper, helpers){
             addSongToHistory: function(song){
                 playlist.songHistory.unshift(song);
             },
+            getRelatedVideo: function(){
+                 return playlist.relatedVideos[Math.floor(Math.random()*playlist.relatedVideos.length)];
+            },
             //Takes a song and returns the next song object by index.
             getNextSong: function () {
                 var nextSong = null;
@@ -163,14 +179,15 @@ define(['song', 'yt_helper', 'helpers'], function(songFunc, ytHelper, helpers){
 
                         //Loop back to the front if at end. Should make this togglable in the future.
                         if (playlist.songs.length <= nextSongIndex){
-                            // var pandoraModeActivated = true;
-                            nextSongIndex = 0;        
+                            nextSongIndex = 0;
+                            nextSong = playlist.songs[nextSongIndex];
                         }
-
-                        nextSong = playlist.songs[nextSongIndex];
+                        else{
+                            nextSong = playlist.songs[nextSongIndex];
+                        }
                     }
 
-                }
+                }                
 
                 return nextSong;
             },
@@ -196,27 +213,34 @@ define(['song', 'yt_helper', 'helpers'], function(songFunc, ytHelper, helpers){
 
                 return previousSong;
             },
-            addSongBySong: function(song){
-                var newSong = new songFunc(song);
-                playlist.songs.push(newSong);
-                playlist.shuffledSongs.push(newSong);
+            addSongs: function(songs){
+                $.each(songs, function(){
+                    playlist.songs.push(this);
+                    playlist.shuffledSongs.push(this);
+                })
+
                 shuffle(playlist.shuffledSongs);
+                syncRelatedVideos();
+                save();
+            },
+            addSong: function(song){ 
+                playlist.songs.push(song);
+                playlist.shuffledSongs.push(song);
+                shuffle(playlist.shuffledSongs);
+                syncRelatedVideos();
                 save();
             },
             addSongByVideoId: function (videoId, callback) {
+                var self = this;
                 ytHelper.getVideoInformation(videoId, function(videoInformation){
-                    var song = new songFunc(videoInformation);
-                    playlist.songs.push(song);
-
-                    playlist.shuffledSongs.push(song);
-                    shuffle(playlist.shuffledSongs);
-                    save();
+                    var song = SongBuilder.buildSong(videoInformation);
+                    self.addSong(song);
                     callback(song);
                 })
             },
             removeSongById: function (id) {
                 var index = getSongIndexById(playlist.songs, id);
-
+                syncRelatedVideos();
                 this.syncShuffledSongs(id);
 
                 if (index !== -1) {

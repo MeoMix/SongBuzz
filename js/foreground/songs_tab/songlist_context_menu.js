@@ -1,5 +1,5 @@
 //Responsible for showing options when interacting with a Song in SongList.
-define(['context_menu', 'player'], function(contextMenu, player){
+define(['context_menu'], function(contextMenu){
 	'use strict';
 	var songlistContextMenu = {};
 
@@ -15,7 +15,7 @@ define(['context_menu', 'player'], function(contextMenu, player){
 
 			this.addContextMenuItem('Delete song', function(){
 				if(song != null ){
-		    		player.removeSongById(song.id);
+		    		chrome.extension.getBackgroundPage().YoutubePlayer.removeSongById(song.id);
 				}
 			})
 		}

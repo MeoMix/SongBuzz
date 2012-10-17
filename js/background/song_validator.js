@@ -5,52 +5,70 @@
 var SongValidator = null;
 define(['player_builder'], function(playerBuilder){
 	if(SongValidator === null){
-		//Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
-		//This will prevent an error message 'Unable to post message to http://www.youtube.com'
-		var player = null;
-		var receivedAnswer = false;
-		var isPlayable = false;
 		//Only mute the volume to test the song playing -- but don't permanently change volume because
 		//this will mess up the volume the actual player loads with on restart.
 		var oldVolume = -1;
 
 		var onStateChange = function(playerState){
+			console.log("playerState:", playerState);
 			if(playerState.data === PlayerStates.PLAYING){
-				isPlayable = true;
-				receivedAnswer = true;
+				SongValidator.isPlayable = true;
+				SongValidator.receivedAnswer = true;
 			}
 		};
 
 		var onPlayerError = function(error){
-			isPlayable = false;
-			receivedAnswer = true;
+			console.log("I hit an error!!", error.message);
+			console.error(error);
+			SongValidator.isPlayable = false;
+			SongValidator.receivedAnswer = true;
 		};		
 
 		//Don't try and pass null in instead of a blank onReady or you'll generate errors.
 	    playerBuilder.buildPlayer('MusicTester', function(){}, onStateChange, onPlayerError, function(builtPlayer) {
-	        player = builtPlayer;
+	        SongValidator.player = builtPlayer;
 	    });
 	}
 
+	var loadSongAndValidate = function(videoId, callback){
+		SongValidator.receivedAnswer = false;
+
+		SongValidator.player.loadVideoById(videoId);
+
+		var isValidPoller = setInterval(function(){
+			console.log("isValidPoller tick");
+			if(SongValidator.receivedAnswer){
+				SongValidator.player.pauseVideo();
+				SongValidator.player.setVolume(oldVolume);
+				clearInterval(isValidPoller);
+
+				if(SongValidator.queuedValidateRequests.length != 0){
+					var validateRequest = SongValidator.queuedValidateRequests.pop();
+					loadSongAndValidate(validateRequest.videoId, validateRequest.callback);
+				}
+
+				callback(SongValidator.isPlayable);
+			}
+		}, 200);
+	};
+
 	SongValidator = {
+		queuedValidateRequests: [],
+		player: null,
+		receivedAnswer: true,
+		isSongPlayable: false,
+		
     	validateSongById: function(videoId, callback){
-    		oldVolume = player.getVolume();
-    		player.setVolume(0);
-
-    		receivedAnswer = false;
-    		isPlayable = false;
-    		player.loadVideoById(videoId);
-
-    		var isValidPoller = setInterval(function(){
-    			if(receivedAnswer){
-    				receivedAnswer = false;
-
-    				player.pauseVideo();
-    				player.setVolume(oldVolume);
-    				clearInterval(isValidPoller);
-    				callback(isPlayable);
-    			}
-    		}, 200)
+    		console.log("receivedAnswer:", SongValidator.receivedAnswer);
+    		if(!SongValidator.receivedAnswer){
+    			SongValidator.queuedValidateRequests.push({videoId: videoId, callback: callback});
+    		}
+    		else{
+	    		console.log("validating song.", SongValidator.queuedValidateRequests.length);
+	    		oldVolume = SongValidator.player.getVolume();
+	    		SongValidator.player.setVolume(0);
+				loadSongAndValidate(videoId, callback);	
+    		}
     	}
     };
 

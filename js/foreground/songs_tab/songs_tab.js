@@ -1,4 +1,4 @@
-define(['content_header', 'songs_tab/songlist', 'songs_tab/songinput', 'player'], function(contentHeaderFunc, songList, songInput, player){
+define(['content_header', 'songs_tab/songlist', 'songs_tab/songinput'], function(contentHeaderFunc, songList, songInput){
 	'use strict';
 	var contentHeader = contentHeaderFunc('#CurrentSongDisplay', 'Add Songs', 'Search for artists or songs');
 	contentHeader.expand();
@@ -8,14 +8,13 @@ define(['content_header', 'songs_tab/songlist', 'songs_tab/songinput', 'player']
 	});
 
     //Serves to initialize the song list;
-    songList.reload(player.songs, player.currentSong);
-    
+    songList.reload();
+
 	return {
-		set contentHeaderTitle(value){
-			contentHeader.title = value;
-		},
-		reloadSongList: function(songs, currentSong){
-			songList.reload(songs, currentSong);
+		reload: function(){        
+			var playlistTitle = chrome.extension.getBackgroundPage().YoutubePlayer.playlistTitle;
+        	contentHeader.title = playlistTitle;
+			songList.reload();
 		}
 	};
 });

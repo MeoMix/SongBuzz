@@ -1,5 +1,5 @@
 //Responsible for controlling the volume indicator of the UI.
-define(['player', '../../third_party/jquery.mousewheel'], function(player){
+define(['../../third_party/jquery.mousewheel'], function(){
 	var muteButton = $('#MuteButton');
 	'use strict';
 	var MUTED_KEY = 'musicMuted', VOLUME_KEY = 'musicVolume';  
@@ -20,18 +20,8 @@ define(['player', '../../third_party/jquery.mousewheel'], function(player){
 	});
 
 	$('.volumeControl').mousewheel(function(event, delta){
-		//TODO: How to access without using [0]? Need more elegant solution.
-		var newVolume = parseInt(volumeSlider[0].value,10) + (delta * 3);
-
-		if(newVolume > volumeSlider[0].max){
-			newVolume = volumeSlider[0].max;
-		}
-		else if(newVolume < volumeSlider[0].min){
-			newVolume = volumeSlider[0].min;
-		}
-
-		volumeSlider.val(newVolume);
-		updateWithVolume(newVolume);
+		//Convert current value from string to int, then go a few volume points in a given direction.
+		volumeSlider.val(parseInt(volumeSlider.val(), 10) + delta * 3).trigger('change');
 	});
 
 	//Show the volume slider control by expanding its parent whenever any of the volume controls are hovered.
@@ -96,7 +86,7 @@ define(['player', '../../third_party/jquery.mousewheel'], function(player){
 		}
 
 		updateSoundIcon(volume);
-		player.volume = volume;
+		chrome.extension.getBackgroundPage().YoutubePlayer.volume = volume;
 	};
 	
 	var setVolume = function(volume){

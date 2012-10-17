@@ -4,20 +4,26 @@ define(['player_controls/volume_slider', 'player_controls/playpause_button', 'pl
     'use strict';
 
     return {
-        refreshControls: function(playerState, currentSong, songCount, playerIsSeeking, playerVolume){
-            if(playerState === PlayerStates.PLAYING){
+        refreshControls: function(){
+            var player = chrome.extension.getBackgroundPage().YoutubePlayer;
+
+            if(player.playerState === PlayerStates.PLAYING){
                 //Volume only becomes available once a video has become cued or when popup reopens.
-                volumeSlider.volume = playerVolume;
+                volumeSlider.volume = player.volume;
                 playPauseButton.setToPause();
             }
-            else if(!playerIsSeeking){
+            else if(!player.playerIsSeeking){
                 playPauseButton.setToPlay();
             }
 
-            if(currentSong){
+            if(player.currentSong){
                 playPauseButton.enable();
 
-                if(songCount > 1){
+                if(JSON.parse(localStorage.getItem('isRadioModeEnabled')) || false){
+                    skipButton.enable();
+                }
+
+                if(player.songs.length > 1){
                     skipButton.enable();
                     previousButton.enable();
                 }
