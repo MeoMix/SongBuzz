@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^get/([^/]*)$/([^/]*)$ /backend/songs/get.php?$2=$1 [L]
+RewriteRule ^listen/([^/]*)$ /backend/songs/listen.php?songid=$1 [L]
