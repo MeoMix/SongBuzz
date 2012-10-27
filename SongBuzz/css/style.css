@@ -1,0 +1,299 @@
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.preload *{
+	-webkit-transition: none !important;
+	-moz-transition: none !important;
+	-o-transition: none !important;
+	-ms-transition: none !important;
+	transition: none !important;
+}
+body {
+	font-size: 16px;
+	background: #363636;
+	color: white;
+	font-family: "Tahoma";
+}
+#sidebar {
+	width: 242px;
+	background: rgb(39, 39, 39);
+	height: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	border-right: 1px solid rgba(255,255,255,0.1);
+	box-shadow: 1px 0px 0px rgba(0,0,0,0.4);
+}
+#sidebar h2 {
+	text-align: center;
+	font-family: "Helvetica";
+	letter-spacing: -0.05em;
+	-webkit-font-smoothing: antialiased;
+	opacity: 0.7;
+}
+@-webkit-keyframes rotating {
+	from { -webkit-transform: rotate(0deg) scale(1,1); }
+	to { -webkit-transform: rotate(360deg) scale(1,1); }
+}
+@-ms-keyframes rotating {
+	from { -ms-transform: rotate(0deg) scale(1,1); }
+	to { -ms-transform: rotate(360deg) scale(1,1); }
+}
+@-o-keyframes rotating {
+	from { -o-transform: rotate(0deg) scale(1,1); }
+	to { -o-transform: rotate(360deg) scale(1,1); }
+}
+@-moz-keyframes rotating {
+	from { -moz-transform: rotate(0deg) scale(1,1); }
+	to { -moz-transform: rotate(360deg) scale(1,1); }
+}
+#drag-area {
+	background: rgba(0, 0, 0, 0.05);
+	width: 200px;
+	height: 200px;
+	margin: 20px;
+	border: 8px dashed rgba(255, 255, 255, 0.2);
+	border-radius: 50%;
+	-webkit-animation: rotating 200s infinite linear;
+	-moz-animation: rotating 200s infinite linear;
+	-ms-animation: rotating 200s infinite linear;
+	-o-animation: rotating 200s infinite linear;
+	animation: rotating 200s infinite linear;
+	-webkit-transition: 0.2s;
+	-moz-transition: 0.2s;
+	-o-transition: 0.2s;
+	-ms-transition: 0.2s;
+	transition: 0.2s;
+}
+.fileover {
+	border: 4px solid rgba(245,184,0,0.7) !important;
+	margin: 10px !important;
+	height: 220px !important;
+	width: 220px !important;
+}
+#drag-area img {
+	-webkit-animation: rotating 200s reverse infinite linear;
+	-moz-animation: rotating 200s reverse infinite linear;
+	-ms-animation: rotating 200s reverse infinite linear;
+	-o-animation: rotating 200s reverse infinite linear;
+	animation: rotating 200s reverse infinite linear;
+	margin: 30px;
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+}
+#drop-music {
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 0.75em;
+	position: absolute;
+	top: 152px;
+	text-align: center;
+	width: 240px;
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	filter: alpha(opacity=80);
+	opacity: 0.8;
+	z-index: -1;
+	-webkit-transition: 0.5s;
+	-moz-transition: 0.5s;
+	-o-transition: 0.5s;
+	-ms-transition: 0.5s;
+	transition: 0.5s;
+}
+.fileover-text {
+	top: 162px !important;
+}
+div.hr {
+	width: 100%;
+	border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+div.hr:before {
+	content: '';
+	width: 100%;
+	background: rgba(0,0,0,0.4);
+	position: absolute;
+	height: 1px;
+	margin-top: -1px;
+}
+textarea {
+	position: absolute;
+	bottom: 0;
+	opacity: 0.5;
+	height: 200px;
+	width: 200px;
+	top: 67px;
+	border-radius: 50%;
+	left: 20px;
+	opacity: 0;
+}
+@-webkit-keyframes fadeslide {
+	from {
+		-webkit-transform: translateY(-10px);
+		opacity: 0
+	}
+	to {
+		-webkit-transform: translateY(0px);
+		opacity: 1;
+	}
+} 
+@-moz-keyframes fadeslide {
+	from {
+		-moz-transform: translateY(-10px);
+		opacity: 0
+	}
+	to {
+		-moz-transform: translateY(0px);
+		opacity: 1;
+	}
+} 
+@-ms-keyframes fadeslide {
+	from {
+		-ms-transform: translateY(-10px);
+		opacity: 0
+	}
+	to {
+		-ms-transform: translateY(0px);
+		opacity: 1;
+	}
+} 
+@-o-keyframes fadeslide {
+	from {
+		-o-transform: translateY(-10px);
+		opacity: 0
+	}
+	to {
+		-o-transform: translateY(0px);
+		opacity: 1;
+	}
+} 
+#recognitionlist {
+	min-height: 100px;
+}
+#recognitionlist p {
+	font-size: 0.8em;
+	margin-left: 20px;
+	-webkit-font-smoothing: antialiased;
+	
+}
+.fadeandslide {
+	-webkit-animation: fadeslide 0.7s;
+	-moz-animation: fadeslide 0.7s;
+	-ms-animation: fadeslide 0.7s;
+	-o-animation: fadeslide 0.7s;
+	animation: fadeslide 0.7s;
+
+	
+}
+.rec-thumb {
+	clip: rect(15px 90px 75px 30px);
+	position: absolute;
+	margin-left: -30px;
+	margin-top: -15px;
+}
+.rec-album {
+	margin-left: 60px;
+	width: 60px;
+	height: 60px;
+	position: absolute;
+}
+.rec-check {
+	margin-left: 180px;
+	width: 60px;
+	height: 60px;
+	text-align: center;
+	background: rgb(12, 12, 12);
+	padding-top: 19px;
+	padding-left: 2px;
+	margin-top: -63px;
+}
+img.fadeandslide.rec-album {
+	background: -webkit-linear-gradient(top, black, rgb(27, 27, 27));
+	background: -moz-linear-gradient(top, black, rgb(27, 27, 27));
+	background: -o-linear-gradient(top, black, rgb(27, 27, 27));
+	background: -ms-linear-gradient(top, black, rgb(27, 27, 27));
+	background: linear-gradient(top, black, rgb(27, 27, 27));
+	
+}
+.finishedrecognized {
+	background: -webkit-radial-gradient(top, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+	height: 60px;
+	width: 240px;
+	margin-top: -60px;
+	z-index: 1;
+	position: absolute;
+	border-bottom: 1px solid #111;
+}
+.recognitionlist:first-child {
+	border-top: 1px solid rgba(255,255,255,0.3);
+}
+.recognized-cover {
+	height: 59px;
+	position: absolute;
+}
+.finishedrecognized {
+	display: none;
+}
+.finishedrecognized div {
+	margin-left: 65px;
+	font-size: 0.75em;
+	-webkit-font-smoothing: antialiased;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	margin-bottom: 2px;
+	opacity: 0.8;
+}
+.recognized-title {
+	font-weight: bold;
+	padding-top: 5px;
+}
+.recognized-artist {
+	opacity: 0.6 !important;
+}
+.recognized-album {
+	opacity: 0.4 !important;
+}
+.recognized-length {
+	position: absolute;
+	margin-left: 200px !important;
+	margin-top: -15px;
+}
+.recognized-album {
+	width: 130px;
+}
+@-webkit-keyframes spark {
+	from {
+		opacity: 0;
+	}
+	25% {
+		opacity: 1;
+	}
+	to {
+		-webkit-transform: translateX(240px);
+		opacity: 0;
+	}
+}
+.spark {
+	width: 5px;
+	height: 5px;
+	background: -webkit-radial-gradient(center, rgba(255,255,255,0.3), transparent);
+	-webkit-animation: spark 2s;
+	margin-top: -62px;
+	position: absolute;
+	z-index: 2;
+	opacity: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
