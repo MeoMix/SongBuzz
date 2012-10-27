@@ -1,0 +1,27 @@
+{
+  "name": "SongBuzz",
+  "version": "0.30",
+  "manifest_version": 2,
+  "description": "Converts YouTube into an MP3 player for your browser.",
+  "background":{
+    "page": "background.htm"
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "SongBuzz: Buzzworthy songs for today's busy bees.",
+    "default_popup": "foreground.htm"
+  },
+  "permissions": [
+    "contextMenus",
+    "clipboardWrite",
+    "webRequest",
+    "webRequestBlocking",
+    "unlimitedStorage",
+    "http://www.geoplugin.net/json.gp",
+    "http://www.beatport.com/top-100",
+    "http://www.youtube.com/",
+    "https://www.youtube.com/"
+	],
+  "content_security_policy": 
+    "script-src 'self' https://www.youtube.com https://ssl.google-analytics.com https://gdata.youtube.com https://suggestqueries.google.com https://www.youtube.com https://s.ytimg.com; object-src 'self'"
+}
