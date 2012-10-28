@@ -1,196 +1,141 @@
-$(document).ready(function() {
-	$("body").removeClass("preload")
-	$("textarea").live("dragover dragenter",function(e) {
-		$("#drag-area").addClass("fileover")
-		$("#drop-music").addClass("fileover-text")
-	})
-	$("textarea").live("dragleave",function() {
-		$("#drag-area").removeClass("fileover")
-		$("#drop-music").removeClass("fileover-text")
-	})
-	$("textarea").live("drop", function(e) {
-		$("#drag-area").removeClass("fileover")
-		$("#drop-music").removeClass("fileover-text")
-		setTimeout(function(){
-			url = $("textarea").val()
-			$("textarea").val("")
-			//If YouTube
-			if (contains(url, "youtube.com")) {
-				var id = parseId(url);
-				$.ajax({
-	
-            		url: "http://gdata.youtube.com/feeds/api/videos/" + id,
-            		data: {
-            		    "alt": "json"
-            		},
-            		success: function(json) {
-            		    //Search on Last.fm
-            		    var title = json.entry.title.$t
-            		    randonnumber = Math.floor(Math.random()*100000)
-            		    randomid = $("<div>").attr("id", randonnumber).appendTo("#recognitionlist")
-            		    randomdiv = $("#" + randonnumber)
-            		    $("<img>")
-            		    .addClass("fadeandslide")
-            		    .attr("src", "images/youtube-metro.png")
-            		    .appendTo(randomdiv)
-            		    thumb = json.entry.media$group.media$thumbnail[json.entry.media$group.media$thumbnail.length-2].url
-            		    countries = (json.entry.media$group.media$restriction != undefined) ? json.entry.media$group.media$restriction.$t : "all"
-            		    searchmetadata(title, "youtube", id, json.entry.media$group.yt$duration.seconds, countries)
-            		},
-            		asnyc: false
-        		})
-			}
-			else {
-				$("<p>").addClass("fadeandslide").text("Link can not be recognized. Try a YouTube link!").appendTo("#recognitionlist")
-			}
-		})
-	})
-})
-function searchmetadata(name, hoster, hosterid, length, countries) {
-	var title = name
+define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend'], function(recognitionArea, audioScrobbler, recognitionList, backend){
+    'use strict';
+    recognitionArea.onLinkNotRecognized(function(){
+        var unrecognizedLinkNotice = $('<p>', {
+            'class': 'fadeandslide',
+            text: 'Link cannot be recognized. Try a YouTube link!'
+        });
+
+        recognitionList.addNotice(unrecognizedLinkNotice);
+    });
+
+    recognitionArea.onSongDropped(function(event, song){
+        var songDiv = $('<div>', {
+            id: song.id
+        });
+        recognitionList.addSong(songDiv);
+
+        var youtubeMetroImage = $('<img>', {
+            'class': 'fadeandslide',
+            src: 'images/youtube-metro.png'
+        });
+        recognitionList.addImageToCurrentSong(youtubeMetroImage);
+
+        //TODO: This code needs a home. Should it be handled when creating a song object?
         //Get tag properly
-        termstoremove = ["HD", "official", "video", "-", "audio", "lyrics", "feat", "ft."]
+        var termstoremove = ["HD", "official", "video", "-", "audio", "lyrics", "feat", "ft."]
         $.each(termstoremove, function(k, v) {
             var regex = new RegExp(v, "gi")
-            title = title.replace(regex, "")
+            song.title = song.title.replace(regex, "")
         })
+
         //Remove brackets
-        title = cropuntil(cropuntil(title, "("), "/")
-        title = cropuntil(cropuntil(title, "["), "/")
+        song.title = cropuntil(cropuntil(song.title, "("), "/")
+        song.title = cropuntil(cropuntil(song.title, "["), "/")
+
+        searchMetaData(song);
+    });
+
+    function searchMetaData(song){
         //FEEDBACK HERE
+        audioScrobbler.getData(song.title, function(json){
+            var totalResults = parseInt(json.results["opensearch:totalResults"]);
 
-        $.ajax({
-            url: "http://ws.audioscrobbler.com/2.0/",
-            data: {
-                "method": "track.search",
-                "track": title,
-                "api_key": "29c1ce9127061d03c0770b857b3cb741",
-                "format": "json"
-            },
-            async: false,
-            success: function(json) {
-                if (json.results["opensearch:totalResults"] != "0") {
-                    var track = (json.results['opensearch:totalResults'] != 1) ? json.results.trackmatches.track[0] : json.results.trackmatches.track
-                    var title = track.name
-                    var artist = track.artist
-                    $("<img>")
-            		.addClass("fadeandslide rec-thumb")
-            		.attr("src", thumb)
-            		.appendTo(randomdiv)
+            if (totalResults !== 0) {
+                var track = totalResults === 1 ? json.results.trackmatches.track : json.results.trackmatches.track[0];
 
-            		 
-                    //Get album
-                    $.ajax({
-                        url: "http://ws.audioscrobbler.com/2.0/",
-                        data: {
-                            "method": "track.getInfo",
-                            "track": title,
-                            "artist": artist,
-                            "format": "json",
-                            "api_key": "29c1ce9127061d03c0770b857b3cb741"
-                        },
-                        asnyc: false,
-                        success: function(json) {
-                        	
-                            var track = json.track
-                          
-                            if (track.album == undefined) {
-                                track.album = {
-                                    title: "Unknown",
-                                    image: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-                                }
-                            } else {
-                                track.album.image = track.album.image[track.album.image.length - 1]["#text"]
-                            }
-                            $("<img>")
-                            .addClass("fadeandslide rec-album")
-            				.attr("src", track.album.image)
-            				.appendTo(randomdiv)
-                            var song = {
-                            	hoster: "youtube",
-                                hosterid: hosterid,
-                                title: track.name,
-                                artists: track.artist.name,
-                                album: track.album.title,
-                                cover: track.album.image,
-                                id: track.id,
-                                countries: countries,
-                                length: length,
-                                artistsid: track.artist.mbid,
-                                albumid: track.album.mbid
+                var thumbnailImage = $('<img>', {
+                    'class': 'fadeandslide rec-thumb',
+                    src: song.thumbnailUrl
+                });
+                recognitionList.addImageToCurrentSong(thumbnailImage);
 
-                            }
-                            console.log(song)
-                            $.ajax({
-                            	url: "http://buzztube.site11.com/backend/songs/add.php",
-                            	data: song,
-                            	dataType: "json",
-                            	success: function(json) {
-                            		if (json.success == "true") {
-                            			$("<div>").text(formatDuration(length))
-                            			.addClass("fadeandslide rec-check")
-            							.appendTo(randomdiv)
-            							var track = $("<div>").addClass("finishedrecognized")
-            							$("<img>").addClass("recognized-cover").attr("src", song.cover).appendTo(track)
-            							$("<div>").addClass("recognized-title").text(song.title).appendTo(track)
-            							$("<div>").addClass("recognized-artist").text(song.artists).appendTo(track)
-            							$("<div>").addClass("recognized-album").text(song.album).appendTo(track)
-            							$("<div>").addClass("recognized-length").text(formatDuration(song.length)).appendTo(track)
-            							setTimeout(function() {
-            								randomdiv.animate({"opacity": 0}, 2000)
-            								track.insertAfter(randomdiv).fadeIn()
-            								setTimeout(function() {
-            									$("<div>").addClass("spark").insertAfter(randomdiv)
-            								}, 1000)
-            							},1000)
-
-            						}
-
-
-                            	}
-                            })
+                audioScrobbler.getAlbum(track.name, track.artist, function(json){
+                    var track = json.track
+                  
+                    if (track.album == undefined) {
+                        track.album = {
+                            title: "Unknown",
+                            image: "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
                         }
-                    })
-                }
+                    } else {
+                        track.album.image = track.album.image[track.album.image.length - 1]["#text"]
+                    }
+
+                    var albumImage = $('<img>', {
+                        'class': 'fadeandslide rec-album',
+                        'src': track.album.image
+                    });
+                    recognitionList.addImageToCurrentSong(albumImage);
+
+                    backend.onSaveData(function(event, data){
+                        var songDurationDiv = $('<div>', {
+                            text: Helpers.prettyPrintTime(song.duration),
+                            'class': 'fadeandslide rec-check'
+                        });
+                        recognitionList.addImageToCurrentSong(songDurationDiv);
+
+                        //TODO: Move this somewhere, seems a bit clunky here.
+                        var track = $('<div>', {
+                            'class': 'finishedrecognized'
+                        });
+
+                        $('<img>', {
+                            'class': 'recognized-cover',
+                            src: data.cover
+                        }).appendTo(track);
+
+                        $('<div>', {
+                            'class': 'recognized-title',
+                            text: data.title
+                        }).appendTo(track);
+
+                        $('<div>', {
+                            'class': 'recognized-artist',
+                            text: data.artists
+                        }).appendTo(track);
+
+                        $('<div>', {
+                            'class': 'recognized-album',
+                            text: data.album
+                        }).appendTo(track);
+
+                        $('<div>', {
+                            'class': 'recognized-length',
+                            text: Helpers.prettyPrintTime(data.duration)
+                        }).appendTo(track);
+
+                        recognitionList.showFinishedAnimation(track);
+                    });
+
+                    backend.saveData({
+                        hoster: "youtube",
+                        hosterid: song.id,
+                        title: track.name,
+                        artists: track.artist.name,
+                        album: track.album.title,
+                        cover: track.album.image,
+                        id: track.id,
+                        countries: song.restrictedCountries,
+                        duration: song.duration,
+                        artistsid: track.artist.mbid,
+                        albumid: track.album.mbid
+                    });
+                });
             }
-        })
-}
-function contains(text, contains) {
-    return (text.indexOf(contains) != -1)
-}
+        });
+    }
 
-function cropat(input, slice) {
-    if (contains(input, slice)) {
-        return input.substr(input.indexOf(slice) + slice.length)
-    } else {
-        return input
+    function cropuntil(input, slice) {
+        if(input.indexOf(slice) != -1) {
+            return input.substr(0, input.indexOf(slice))
+        } else {
+            return input
+        }
     }
-}
 
-function cropuntil(input, slice) {
-    if (contains(input, slice)) {
-        return input.substr(0, input.indexOf(slice))
-    } else {
-        return input
-    }
-}
+    //Any public methods which need to be returned.
+    return {
 
-function formatDuration(time) {
-    var minutes, seconds;
-    if (time > 60) {
-        minutes = Math.floor(time / 60);
-        seconds = Math.floor(time - minutes * 60);
-    } else {
-        minutes = 0;
-        seconds = Math.floor(time);
-    }
-    if (seconds < 10) {
-        seconds = "0" + seconds;
-    }
-    return "" + minutes + ":" + seconds;
-}
-function parseId(url) {
-	if (contains(url, "youtube.com") && contains(url, "watch?")) {
-	    return cropuntil(cropat(url, "watch?v="), "&")
-	}
-}
+    };
+});
