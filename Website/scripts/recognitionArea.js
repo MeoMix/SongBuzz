@@ -1,25 +1,24 @@
 define(['ytHelper', 'songBuilder'], function(ytHelper, songBuilder){
-	'use strict';
-	var recognitionArea = $('#recognition-area');
+    'use strict';
+    var recognitionArea = $('#recognition-area');
     var dragAreaSelector = $('#drag-area');
     var dropMusicSelector = $('#drop-music');
-    var divElement = null;
 
     var events = {
-    	//[Meo] TODO: Standardize event names.
-    	onLinkNotRecognized: 'onLinkNotRecognized',
-    	onSongDropped: 'onSongDropped'
+        //[Meo] TODO: Standardize event names.
+        onLinkNotRecognized: 'onLinkNotRecognized',
+        onSongDropped: 'onSongDropped'
     };
 
     $(window).on('dragover dragenter', 'textarea', function(){
-        dragAreaSelector.addClass("fileover")
-        dropMusicSelector.addClass("fileover-text")
+        dragAreaSelector.addClass("fileover");
+        dropMusicSelector.addClass("fileover-text");
     }).on('dragleave', 'textarea', function(){
-        dragAreaSelector.removeClass("fileover")
-        dropMusicSelector.removeClass("fileover-text")
+        dragAreaSelector.removeClass("fileover");
+        dropMusicSelector.removeClass("fileover-text");
     }).on('drop', 'textarea', function() {
-        dragAreaSelector.removeClass("fileover")
-        dropMusicSelector.removeClass("fileover-text")
+        dragAreaSelector.removeClass("fileover");
+        dropMusicSelector.removeClass("fileover-text");
 
         var self = this;
         setTimeout(function(){
@@ -35,17 +34,17 @@ define(['ytHelper', 'songBuilder'], function(ytHelper, songBuilder){
                 });
             }
             else {
-            	recognitionArea.trigger(events.onLinkNotRecognized);
+                recognitionArea.trigger(events.onLinkNotRecognized);
             }
-        })
+        });
     });
 
-	return {
-		onLinkNotRecognized: function(event){
-			recognitionArea.bind(events.onLinkNotRecognized, event);
-		},
-		onSongDropped: function(event){
-			recognitionArea.bind(events.onSongDropped, event);
-		}
-	};
+    return {
+        onLinkNotRecognized: function(event){
+            recognitionArea.bind(events.onLinkNotRecognized, event);
+        },
+        onSongDropped: function(event){
+            recognitionArea.bind(events.onSongDropped, event);
+        }
+    };
 });
