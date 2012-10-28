@@ -91,7 +91,7 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                         cover: album.image,
                         id: track.id,
                         countries: song.restrictedCountries,
-                        length: song.duration,
+                        duration: song.duration,
                         artistsid: track.artist.mbid,
                         albumid: album.mbid,
                     });
