@@ -22,7 +22,6 @@ define(function(){
             var track = $('<div>', {
                 'class': 'finishedrecognized'
             });
-
             $('<img>', {
                 'class': 'recognized-cover',
                 src: data.cover

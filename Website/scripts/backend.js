@@ -5,7 +5,6 @@ define(function(){
     var events = {
         onSaveData: 'onSaveData'
     };
-
     return {
         saveData: function(data){
             var self = this;
@@ -13,7 +12,8 @@ define(function(){
                 url: url,
                 data: data,
                 dataType: "json",
-                //[Meo] TODO: This function is called success, yet it checks the result of success. Why?
+                // [Meo] TODO: This function is called success, yet it checks the result of success. Why?
+                // [Jonny] It checks if there was a database error.
                 success: function(json) {
                     if (json.success === "true") {
                         $(self).trigger(events.onSaveData, data);

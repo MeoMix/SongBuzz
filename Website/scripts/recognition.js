@@ -26,8 +26,10 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
         //Remove brackets
         // [Meo]: This removes a lot of remixes. We should try and make the logic smarter so that
         // If a remix is detected we trim out some stuff but not the remix or remix artist.
-        // song.title = cropuntil(cropuntil(song.title, "("), "/");
-        // song.title = cropuntil(cropuntil(song.title, "["), "/");
+            song.title = cropuntil(song.title, "(")
+            song.title = cropuntil(song.title, "[")
+        // [Jonny]: I uncommented this. It takes away the remix label, but if it is commented, the
+        // Song wouldn't be recognized. But you're right, we should find a solution for that.
 
         searchMetaData(song);
     });
@@ -89,9 +91,9 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                         cover: album.image,
                         id: track.id,
                         countries: song.restrictedCountries,
-                        duration: song.duration,
+                        length: song.duration,
                         artistsid: track.artist.mbid,
-                        albumid: album.mbid
+                        albumid: album.mbid,
                     });
                 });
             }
