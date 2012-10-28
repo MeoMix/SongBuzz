@@ -16,6 +16,7 @@ define(function(){
                 duration: videoInformation.media$group.yt$duration.seconds,
                 thumbnailUrl: videoInformation.media$group.media$thumbnail[videoInformation.media$group.media$thumbnail.length-2].url,
                 //TODO: Not sure why I need to keep track of this yet.
+                //[Jonny] Some users can not play some tracks from YouTube. We should hide them.
                 restrictedCountries: restrictionsEntry ? restrictionsEntry.$t : "none"
             };
         }

@@ -2,11 +2,11 @@
 define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder'], 
     function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder){
     'use strict';
-
     //Whenever a user drops a song onto the left-hand side drop area
     //and it is a viable song to add -- add it to the recognition list
     //by getting its meta data. Show some images to the user to indicate success. 
     //[Meo] TODO: Is this a good event name?
+    //[Jonny] I like it!
     recognitionArea.onSongDropped(function(event, song){
         //Need a base song div element to attach any data to -- so add that to the page.
         recognitionList.addSong(song);
@@ -37,7 +37,8 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
         var unrecognizedLinkNotice = $('<p>', {
             'class': 'fadeandslide',
             //TODO: Internationalization?
-            text: 'Link cannot be recognized. Try a YouTube link!'
+            //
+            text: strings.linkNotRecognized[window.language]
         });
 
         recognitionList.addNotice(unrecognizedLinkNotice);
@@ -46,7 +47,6 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
     //Go out to audioscrobbler and ask it for metadata information
     //Metadata information includes artist/song/album/album cover art.
     function searchMetaData(song){
-        //FEEDBACK HERE
         audioScrobbler.getData(song.title, function(json){
             var totalResults = parseInt(json.results["opensearch:totalResults"], 10);
 
