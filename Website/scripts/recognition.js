@@ -5,8 +5,6 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
     //Whenever a user drops a song onto the left-hand side drop area
     //and it is a viable song to add -- add it to the recognition list
     //by getting its meta data. Show some images to the user to indicate success. 
-    //[Meo] TODO: Is this a good event name?
-    //[Jonny] I like it!
     recognitionArea.onSongDropped(function(event, song){
         //Need a base song div element to attach any data to -- so add that to the page.
         recognitionList.addSong(song);
@@ -24,13 +22,9 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
             song.title = song.title.replace(regex, "");
         });
         //Remove brackets
-        // [Meo]: This removes a lot of remixes. We should try and make the logic smarter so that
-        // If a remix is detected we trim out some stuff but not the remix or remix artist.
-            song.title = cropuntil(song.title, "(")
-            song.title = cropuntil(song.title, "[")
-        // [Jonny]: I uncommented this. It takes away the remix label, but if it is commented, the
-        // Song wouldn't be recognized. But you're right, we should find a solution for that.
-
+		//TODO: Need to be able to detext/identify/handle remixes.
+		song.title = cropuntil(song.title, "(")
+		song.title = cropuntil(song.title, "[")
         searchMetaData(song);
     });
 
@@ -39,12 +33,17 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
         var unrecognizedLinkNotice = $('<p>', {
             'class': 'fadeandslide',
             //TODO: Internationalization?
-            //
             text: strings.linkNotRecognized[window.language]
         });
 
         recognitionList.addNotice(unrecognizedLinkNotice);
     });
+	
+	//Whenever we successfully save to the server -- reflect that to the user
+	//by showing the song's duration and showing a nice animation.
+	backend.onSaveData(function(event, data){
+		recognitionList.showFinishedAnimation(data);
+	});
 
     //Go out to audioscrobbler and ask it for metadata information
     //Metadata information includes artist/song/album/album cover art.
@@ -74,13 +73,8 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                     var albumImage = recognitionImageBuilder.buildAlbumImage(album);
                     recognitionList.addImageToCurrentSong(albumImage);
 
-                    //Whenever we successfully save to the server -- reflect that to the user
-                    //by showing the song's duration and showing a nice animation.
-                    backend.onSaveData(function(event, data){
-                        var songDurationDiv = recognitionImageBuilder.buildSongDurationDiv(song);
-                        recognitionList.addImageToCurrentSong(songDurationDiv);
-                        recognitionList.showFinishedAnimation(data);
-                    });
+					var songDurationDiv = recognitionImageBuilder.buildSongDurationDiv(song);
+					recognitionList.addImageToCurrentSong(songDurationDiv);
 
                     backend.saveData({
                         hoster: "youtube",
@@ -109,9 +103,4 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
 
         return croppedValue;
     }
-
-    //Any public methods which need to be returned.
-    return {
-
-    };
 });
