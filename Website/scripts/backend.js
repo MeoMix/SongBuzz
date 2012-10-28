@@ -1,6 +1,6 @@
 define(function(){
     'use strict';
-    var url = 'http://buzztube.site11.com/backend/songs/add.php';
+    var url = 'http://songbuzz.host56.com/backend/songs/add.php';
     
     var events = {
         onSaveData: 'onSaveData'
