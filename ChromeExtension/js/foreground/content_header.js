@@ -1,6 +1,5 @@
 define(function(){
     'use strict';
-
     return function(selector, addText, addInputPlaceholder){
         var contentHeader = $(selector);
 

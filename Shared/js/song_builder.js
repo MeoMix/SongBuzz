@@ -6,9 +6,10 @@ define(function(){
         buildSong: function(videoInformation) {
             //Strip out the videoid. An example of $t's contents: tag:youtube.com,2008:video:UwHQp8WWMlg
             var videoId = videoInformation.media$group.yt$videoid.$t;
-            var restrictionsEntry = videoInformation.media$group.media$restriction; 
+            var restrictionsEntry = videoInformation.media$group.media$restriction;
+            var guid = Helpers.generateGuid();
             return {
-                id: Helpers.generateGuid(),
+                id: guid,
                 videoId: videoId,
                 url: 'http://youtu.be/' + videoId,
                 title: videoInformation.title.$t,

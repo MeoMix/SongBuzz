@@ -1,7 +1,6 @@
 //A global object which abstracts more difficult implementations of retrieving data from YouTube.
 define(['geoplugin', 'levenshtein', 'song_builder'], function(geoplugin, levDist, songBuilder){
     'use strict';
-
     var buildYouTubePlaylist = function(entry){
         console.log("Entry:", entry);
         var videos = [];

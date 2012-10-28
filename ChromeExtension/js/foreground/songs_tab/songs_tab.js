@@ -1,4 +1,4 @@
-define(['content_header', 'songs_tab/songlist', 'songs_tab/songinput'], function(contentHeaderFunc, songList, songInput){
+define(['content_header', 'songlist', 'songinput'], function(contentHeaderFunc, songList, songInput){
 	'use strict';
 	var contentHeader = contentHeaderFunc('#CurrentSongDisplay', 'Add Songs', 'Search for artists or songs');
 	contentHeader.expand();

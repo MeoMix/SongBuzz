@@ -1,9 +1,7 @@
 ﻿//The buttons, sliders, etc. which serve as the middle-men between user interactions and player responses.
-define(['player_controls/volume_slider', 'player_controls/playpause_button', 'player_controls/skip_button', 
-    'player_controls/previous_button', 'player_controls/shuffle_button'],
+define(['volume_slider', 'playpause_button', 'skip_button', 'previous_button', 'shuffle_button'], 
     function(volumeSlider, playPauseButton, skipButton, previousButton){
     'use strict';
-
     return {
         refreshControls: function(){
             var player = chrome.extension.getBackgroundPage().YoutubePlayer;

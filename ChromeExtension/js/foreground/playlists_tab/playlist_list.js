@@ -1,5 +1,5 @@
 //This is the list of playlists on the playlists tab.
-define(['playlists_tab/playlists_context_menu', '../yt_helper'], function(contextMenu, ytHelper){
+define(['playlists_context_menu', 'yt_helper'], function(contextMenu, ytHelper){
     //TODO: Make this sortable and should inherit from a common List object. 
     var playlistList;
 

@@ -1,5 +1,5 @@
 ﻿//Represents the songs in a given playlist.
-define(['songs_tab/songlist_context_menu'], function(contextMenu){
+define(['songlist_context_menu'], function(contextMenu){
     'use strict';
     var songList = $('#SongList ul');
 

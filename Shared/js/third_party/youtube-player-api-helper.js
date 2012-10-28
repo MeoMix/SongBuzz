@@ -4,7 +4,6 @@ var onReady_funcs = [], api_isReady = false;
 
 define(['onYouTubePlayerAPIReady'],function(){
     'use strict';
-
     //This code will trigger onYouTubePlayerAPIReady
     $(window).load(function(){
         //Load YouTube Frame API

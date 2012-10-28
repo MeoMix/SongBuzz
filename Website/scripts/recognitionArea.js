@@ -1,4 +1,4 @@
-define(['ytHelper', 'songBuilder'], function(ytHelper, songBuilder){
+define(['ytHelper', 'song_builder'], function(ytHelper, songBuilder){
     'use strict';
     var recognitionArea = $('#recognition-area');
     var dragAreaSelector = $('#drag-area');
@@ -29,7 +29,6 @@ define(['ytHelper', 'songBuilder'], function(ytHelper, songBuilder){
             if(videoId !== null){
                 ytHelper.getVideoInformation(videoId, function(videoInformation){
                     var song = songBuilder.buildSong(videoInformation);
-                    console.log("song is:", song);
                     recognitionArea.trigger(events.onSongDropped, song);
                 });
             }

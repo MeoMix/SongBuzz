@@ -1,4 +1,4 @@
-define(['content_header', 'playlists_tab/playlist_list'], function(contentHeaderFunc, playlistList){
+define(['content_header', 'playlist_list'], function(contentHeaderFunc, playlistList){
 	'use strict';
 	var contentHeader = new contentHeaderFunc('#PlaylistDisplay', 'Add Playlist', 'Enter a playlist name');
     contentHeader.contract();

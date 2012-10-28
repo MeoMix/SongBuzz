@@ -24,8 +24,10 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
             song.title = song.title.replace(regex, "");
         });
         //Remove brackets
-        song.title = cropuntil(cropuntil(song.title, "("), "/");
-        song.title = cropuntil(cropuntil(song.title, "["), "/");
+        // [Meo]: This removes a lot of remixes. We should try and make the logic smarter so that
+        // If a remix is detected we trim out some stuff but not the remix or remix artist.
+        // song.title = cropuntil(cropuntil(song.title, "("), "/");
+        // song.title = cropuntil(cropuntil(song.title, "["), "/");
 
         searchMetaData(song);
     });
