@@ -1,7 +1,7 @@
 //The songs tab header. Users may add songs by clicking on Add Songs or click-and-holding on Add Songs.
 //Clicking Add Songs will allow the user to either search w/ auto-complete suggestions, or to paste youtube URLs into the input.
 //Alternatively, the user can click-and-hold on the button which will cause all open tabs to be parsed for songs.
-define(['../../yt_helper', 'dialogs'], function(ytHelper, dialogs){
+define(['../../../../Shared/js/yt_helper', 'dialogs'], function(ytHelper, dialogs){
     'use strict';
 
     var initialize = function(onValidInputEvent){

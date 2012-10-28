@@ -1,6 +1,6 @@
 ﻿//A progress bar which shows the elapsed time as compared to the total time of the current song.
 //Changes colors based on player state -- yellow when paused, green when playing.
-define(['../third_party/jquery.mousewheel'], function(){
+define(['jquery-mousewheel'], function(){
     'use strict';
     var selector = $('#SongTimeProgressBar');
     var mousewheelTimeout = null, mousewheelValue = -1;

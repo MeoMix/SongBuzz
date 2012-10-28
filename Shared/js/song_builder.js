@@ -1,7 +1,6 @@
 ﻿//Holds all the relevant data for a song.
 define(function(){
     'use strict';
-
     return {
         //When a single song is retrieved from YouTube, use this method as we know the URL of the video.
         buildSong: function(videoInformation) {

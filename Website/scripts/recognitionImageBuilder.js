@@ -6,7 +6,6 @@ define(function(){
                 'class': 'fadeandslide rec-thumb',
                 src: song.thumbnailUrl
             });
-
             return thumbnailImage;
         },
         buildAlbumImage: function(album){
@@ -14,7 +13,6 @@ define(function(){
                 'class': 'fadeandslide rec-album',
                 'src': album.image
             });
-
             return albumImage;
         },
         buildYoutubeMetroImage: function(){
@@ -22,7 +20,6 @@ define(function(){
                 'class': 'fadeandslide',
                 src: 'images/youtube-metro.png'
             });
-
             return youtubeMetroImage;
         },
         buildSongDurationDiv: function(song){
@@ -30,7 +27,6 @@ define(function(){
                 text: Helpers.prettyPrintTime(song.duration),
                 'class': 'fadeandslide rec-check'
             });
-
             return songDurationDiv;
         }
     };

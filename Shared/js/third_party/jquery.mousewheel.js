@@ -1,4 +1,4 @@
-require(['../third_party/jquery-1.7.2.min'], function(){
+require(['jquery'], function(){
     /*! Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net)
      * Licensed under the MIT License (LICENSE.txt).
      *

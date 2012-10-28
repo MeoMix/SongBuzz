@@ -1,12 +1,12 @@
 //A global object which abstracts more difficult implementations of retrieving data from YouTube.
-define(['geoplugin', 'levenshtein'], function(geoplugin, levDist){
+define(['geoplugin', 'levenshtein', 'song_builder'], function(geoplugin, levDist, songBuilder){
     'use strict';
 
     var buildYouTubePlaylist = function(entry){
         console.log("Entry:", entry);
         var videos = [];
         $.each(entry.entry, function(){
-            var video = SongBuilder.buildSong(this);
+            var video = songBuilder.buildSong(this);
             videos.push(video);
         });
 
@@ -74,7 +74,7 @@ define(['geoplugin', 'levenshtein'], function(geoplugin, levDist){
                 $.getJSON(searchUrl, function (response) {
                     //Add all playable songs to a list and return.
                     $(response.feed.entry).each(function(){
-                        videos.push(SongBuilder.buildSong(this));
+                        videos.push(songBuilder.buildSong(this));
                     });
 
                     searchIndex += maxResultsPerSearch;
@@ -110,7 +110,7 @@ define(['geoplugin', 'levenshtein'], function(geoplugin, levDist){
                     url: 'https://gdata.youtube.com/feeds/api/videos/' + song.videoId + '/related?v=2&alt=json',
                     success: function(result){
                         $.each(result.feed.entry, function(){
-                            relatedVideos.push(SongBuilder.buildSong(this));
+                            relatedVideos.push(songBuilder.buildSong(this));
                         });
                     }
                 }));

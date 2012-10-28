@@ -1,5 +1,5 @@
 //Responsible for controlling the volume indicator of the UI.
-define(['../../third_party/jquery.mousewheel'], function(){
+define(['jquery-mousewheel'], function(){
 	var muteButton = $('#MuteButton');
 	'use strict';
 	var MUTED_KEY = 'musicMuted', VOLUME_KEY = 'musicVolume';  

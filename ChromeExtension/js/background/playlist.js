@@ -1,4 +1,4 @@
-define(['yt_helper'], function(ytHelper){
+define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
     //Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
     return function(id, name) {
         "use strict";
@@ -233,7 +233,7 @@ define(['yt_helper'], function(ytHelper){
             addSongByVideoId: function (videoId, callback) {
                 var self = this;
                 ytHelper.getVideoInformation(videoId, function(videoInformation){
-                    var song = SongBuilder.buildSong(videoInformation);
+                    var song = songBuilder.buildSong(videoInformation);
                     self.addSong(song);
                     callback(song);
                 })
