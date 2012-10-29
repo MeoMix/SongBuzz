@@ -1,7 +1,7 @@
 //Contains globalization info for string constants.
 define(function(){
 	'use strict';
-	window.language = "en"
+	window.language = "de"
 	window.strings = window.s = {
 		appName: {
 			de: "SongBuzz",
@@ -15,5 +15,6 @@ define(function(){
 			de: "Der Link konnte nicht erkannt werden. Probiere einen YouTube-Link!",
 			en: "Link cannot be recognized. Try a YouTube link!"
 		}
+
 	};
 });

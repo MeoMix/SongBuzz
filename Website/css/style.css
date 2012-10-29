@@ -280,3 +280,52 @@ img.fadeandslide.rec-album {
 	z-index: 2;
 	opacity: 0;
 }
+.fb-profile-image {
+	vertical-align: middle;
+	border-radius: 2px;
+}
+.fb-name-label {
+	opacity: 0.8;
+	text-transform: uppercase;
+	font-size: 0.75em;
+	margin-left: 10px;
+}
+.sidebar-button {
+	background: rgba(245,184,0,1);
+	border: none;
+	color: rgb(39, 39, 39);
+	text-transform: uppercase;
+	margin-left: 20px;
+	width: 200px;
+	height: 40px;
+	margin-top: 10px;
+	border-radius: 2px;
+	font-size: 1em;
+	opacity: 0.5;
+	-webkit-transition: 0.2s;
+}
+.sidebar-button:hover {
+	opacity: 1;
+}
+.fb-profile {
+	background: rgba(255,255,255,0.05);
+	margin-left: 20px;
+	width: 200px;
+	border-radius: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

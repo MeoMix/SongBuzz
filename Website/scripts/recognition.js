@@ -16,7 +16,7 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
         //TODO: This code needs a home. Should it be handled when creating a song object?
         //Get tag properly
         //This helps the metaData function properly find metadata by throwing out garbage.
-        var termstoremove = ["HD", "official", "video", "-", "audio", "lyrics", "feat", "ft."];
+        var termstoremove = ["HD", "official", "video", "-", "audio", "lyrics", "feat.", "ft."];
         $.each(termstoremove, function(k, v) {
             var regex = new RegExp(v, "gi");
             song.title = song.title.replace(regex, "");

@@ -1,3 +1,5 @@
 backend
 *.min.js
 Website/scripts/recognition.min.js
+
+Website/sftp-config.json

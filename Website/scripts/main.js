@@ -1,6 +1,6 @@
-require(['jquery', 'jquery-ui', 'helpers'], function(){
+require(['jquery', 'helpers'], function(){
     'use strict';
     $(function() {
-        require(['recognition', 'strings']);
+        require(['recognition', 'strings', 'FacebookLogin']);
     });
 });
