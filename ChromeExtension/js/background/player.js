@@ -6,10 +6,14 @@ define(['playlists', 'player_builder', 'yt_helper'], function(playlists, playerB
     //This will prevent an error message 'Unable to post message to http://www.youtube.com'
     $(window).load( function(){
         //Handles communications between the GUI and the YT Player API.
-        YoutubePlayer = (function() {  
+        YoutubePlayer = (function() {
+            //The actual youtubePlayer API object.
             var player = null;
+            //Current queued or loaded song.
             var currentSong = null;
+            //A communication port to the foreground. Needs to be re-established everytime foreground opens.
             var port = null;
+            //The currently loaded playlist.
             var playlist = playlists.selectedPlaylist;      
         
             (function initialize(){
@@ -110,7 +114,7 @@ define(['playlists', 'player_builder', 'yt_helper'], function(playlists, playerB
             };
 
             var removeSongById = function (id) {
-                if(currentSong && id === currentSong.id){
+                if(currentSong && currentSong.id === id){
                     //Get nextSong before removing currentSong because the position of currentSong is important.
                     var nextSong = playlist.getNextSong();
 
@@ -179,13 +183,15 @@ define(['playlists', 'player_builder', 'yt_helper'], function(playlists, playerB
                 selectPlaylist: function(playlistId){
                     if(playlist.id !== playlistId){
                         this.pause();
-                        currentSong = null;
                         playlist = playlists.getPlaylistById(playlistId);
                         playlists.selectedPlaylist = playlist;
 
                         //If the newly loaded playlist has a song to play cue it to replace the currently loaded song.
                         if(playlist.songCount > 0){
                             cueSongById(playlist.songs[0].id);
+                        }
+                        else {
+                            currentSong = null;
                         }
 
                         refreshUI();
@@ -215,6 +221,8 @@ define(['playlists', 'player_builder', 'yt_helper'], function(playlists, playerB
                 //Called when the user clicks mousedown on the progress bar dragger.
                 seekStart: function(){
                     this.isSeeking = true;
+                    //Need to record this to decide if should be playing after seek ends. You'd think that seek would handle this, but
+                    //it does it incorrectly when a song hasn't been started. It will start to play a song if you seek in an unplayed song.
                     this.wasPlayingBeforeSeek = player.getPlayerState() === PlayerStates.PLAYING;
                     this.pause();
                 },

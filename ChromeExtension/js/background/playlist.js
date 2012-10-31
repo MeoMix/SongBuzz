@@ -65,21 +65,9 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
             });
         }();
 
-        var shuffle = function (songs) {
-            var i, j, t;
-            for (i = 1; i < songs.length; i++) {
-                j = Math.floor(Math.random() * (1 + i));  // choose j in [0..i]
-                if (j !== i) {
-                    t = songs[i];                        // swap songs[i] and songs[j]
-                    songs[i] = songs[j];
-                    songs[j] = t;
-                }
-            }
-        }
-
         var loadShuffledSongs = function(){
             $.extend(playlist.shuffledSongs, playlist.songs);
-            shuffle(playlist.shuffledSongs);
+            playlist.shuffledSongs = _.shuffle(playlist.shuffledSongs);
         }
 
         //Takes a song's UID and returns the index of that song in the playlist if found.
@@ -124,11 +112,7 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
                 save();
             },
             syncShuffledSongs: function(id){
-                var index = getSongIndexById(playlist.shuffledSongs, id);
-
-                if (index !== -1) {
-                    playlist.shuffledSongs.splice(index, 1);
-                }
+                playlist.shuffledSongs = _.reject(playlist.shuffledSongs, function(s) {return s.id === id; });
 
                 if(playlist.shuffledSongs.length == 0){
                     loadShuffledSongs();
@@ -140,20 +124,7 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
             },
             //Takes a song's UID and returns the full song object if found.
             getSongById: function (id) {
-                var song = null;
-
-                for (var i = 0; i < playlist.songs.length; i++) {
-                    if (playlist.songs[i].id === id) {
-                        song = playlist.songs[i];
-                        break;
-                    }
-                }
-
-                if (song === null){
-                    throw "Couldn't find song with UID:  " + id;
-                }
-
-                return song;
+                return _.find(playlist.songs, function(s){ s.id === id; });
             },
             addSongToHistory: function(song){
                 playlist.songHistory.unshift(song);
@@ -214,19 +185,19 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
                 return previousSong;
             },
             addSongs: function(songs){
-                $.each(songs, function(){
-                    playlist.songs.push(this);
-                    playlist.shuffledSongs.push(this);
+                _.each(songs, function(song){
+                    playlist.songs.push(song);
+                    playlist.shuffledSongs.push(song);
                 })
 
-                shuffle(playlist.shuffledSongs);
+                playlist.shuffledSongs = _.shuffle(playlist.shuffledSongs);
                 syncRelatedVideos();
                 save();
             },
             addSong: function(song){ 
                 playlist.songs.push(song);
                 playlist.shuffledSongs.push(song);
-                shuffle(playlist.shuffledSongs);
+                playlist.shuffledSongs = _.shuffle(playlist.shuffledSongs);
                 syncRelatedVideos();
                 save();
             },
@@ -239,22 +210,19 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
                 })
             },
             removeSongById: function (id) {
-                var index = getSongIndexById(playlist.songs, id);
                 syncRelatedVideos();
                 this.syncShuffledSongs(id);
-
-                if (index !== -1) {
-                    playlist.songs.splice(index, 1);
-                    save();
-                }
+                playlist.songs = _.reject(playlist.songs, function(s) {return s.id === id; });
+                save();
             },
             //Naieve implementation
             //Sync is used to ensure proper song order after the user drag-and-drops a song on the playlist. 
             sync: function (ids) {
                 var syncedSongs = [];
 
+                var self = this;
                 $(ids).each(function(){
-                    var song = this.getSongById(this);
+                    var song = self.getSongById(this);
                     syncedSongs.push(song);
                 });
 
@@ -263,7 +231,7 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
             },
             //Randomizes the playlist and then saves it.
             shuffle: function(){
-                shuffle(playlist.songs)
+                playlist.songs = _.shuffle(playlist.songs);
                 save();
             }
         };

@@ -36,5 +36,6 @@ var require = {
     'jquery-ui': 'Shared/js/third_party/jquery-ui-1.8.21.custom.min',
     'geoplugin': 'Shared/js/third_party/geoplugin',
     'levenshtein': 'Shared/js/third_party/levenshtein',
+    'underscore': 'Shared/js/third_party/underscore.min'
   }
 };

@@ -62,27 +62,25 @@ define(['playlists_context_menu', 'yt_helper'], function(contextMenu, ytHelper){
             };
 
             //Build up each row.
-            for(var key in chrome.extension.getBackgroundPage().YoutubePlayer.playlists){
+            _.each(chrome.extension.getBackgroundPage().YoutubePlayer.playlists, function(playlist){
                 var listItem = $('<li/>').appendTo(playlistList);
-
-                (function(playlist){                
-                    $('<a/>', {
-                        id: playlist.id,
-                        href: '#' + playlist.id,
-                        text: playlist.title,
-                        contextmenu: function(e){
-                            contextMenu.initialize(playlist);
-                            contextMenu.show(e.pageY, e.pageX);
-                            //Prevent default context menu display.
-                            return false;
-                        }
-                    }).appendTo(listItem);
-
-                    if(playlist.isSelected){
-                        selectRow(playlist.id); 
+         
+                $('<a/>', {
+                    id: playlist.id,
+                    href: '#' + playlist.id,
+                    text: playlist.title,
+                    contextmenu: function(e){
+                        contextMenu.initialize(playlist);
+                        contextMenu.show(e.pageY, e.pageX);
+                        //Prevent default context menu display.
+                        return false;
                     }
-                })(chrome.extension.getBackgroundPage().YoutubePlayer.playlists[key]);
-            }
+                }).appendTo(listItem);
+
+                if(playlist.isSelected){
+                    selectRow(playlist.id); 
+                }
+            });
 
             //Clicking on a playlist will select that playlist.
             playlistList.children().click(function(){

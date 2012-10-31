@@ -16,6 +16,7 @@ var require = {
     'helpers': 'Shared/js/helpers',
   	'jquery': 'Shared/js/third_party/jquery-1.7.2.min',
     'geoplugin': 'Shared/js/third_party/geoplugin',
-    'levenshtein': 'Shared/js/third_party/levenshtein'
+    'levenshtein': 'Shared/js/third_party/levenshtein',
+    'underscore': 'Shared/js/third_party/underscore.min'
   }
 };
