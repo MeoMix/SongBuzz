@@ -15,7 +15,9 @@ var require = {
     'levenshtein': 'Shared/js/third_party/levenshtein',
     'song_builder': 'Shared/js/song_builder',
     'ytHelper': 'Shared/js/yt_helper',
-    'helpers': 'Shared/js/helpers'
+    'helpers': 'Shared/js/helpers',
+    'libraryController': 'Shared/js/libraryController',
+    'bindings': 'Website/scripts/bindings'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

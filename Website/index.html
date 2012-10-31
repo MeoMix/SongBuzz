@@ -8,7 +8,13 @@
 	<script data-main="main" src="../Shared/js/third_party/require.min.js"></script>
 	<link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="preload">
+	<div id="leftbar">
+		<h2>Playlists</h2>
+		<div id="nowplaying">
+			<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" id="now-cover">
+		</div>
+	</div>
 	<div id="sidebar">
 		<div id="backend"></div>
 		<div class="spark"></div>
@@ -31,5 +37,24 @@
 			<a href="../backend/fb/auth.php"><button id="login-button" class="sidebar-button">Loading...</button></a>
 		</div>
 	</div>
+	
+	<div id="songtable"></div>
+		<script type="text/javascript" src="../Shared/js/third_party/swfobject.js"></script>
+		  <div id="ytapiplayer">
+    You need Flash player 8+ and JavaScript enabled to view this video.
+  </div>
+	<script type="text/javascript">
+	ytplayerready = false;
+	function onYouTubePlayerReady(playerId) {
+		ytplayer = document.getElementById("myytplayer");
+		ytplayerready = true
+
+	}
+    var params = { allowScriptAccess: "always" };
+    var atts = { id: "myytplayer" };
+    swfobject.embedSWF("http://www.youtube.com/v/dFVxGRekRSg?enablejsapi=1&playerapiid=ytplayer&version=3",
+                       "ytapiplayer", "425", "356", "8", null, null, params, atts);
+
+	</script>
 </body>
 </html>

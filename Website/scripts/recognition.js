@@ -1,6 +1,7 @@
 //Defines the whole left side song drag-and-drop / recognition area.
 define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder'], 
     function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder){
+    libraryController.start()
     'use strict';
     //Whenever a user drops a song onto the left-hand side drop area
     //and it is a viable song to add -- add it to the recognition list
@@ -43,6 +44,10 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
 	//by showing the song's duration and showing a nice animation.
 	backend.onSaveData(function(event, data){
 		recognitionList.showFinishedAnimation(data);
+        //Also, we add it to the users library!
+        backend.userLibrary("add", {"song": data.id, "list": "songs", "authkey": localStorage['authKey']});
+        //Finally, add it to the DOM!
+        libraryController.addSong(data, "songs");
 	});
 
     //Go out to audioscrobbler and ask it for metadata information
@@ -78,12 +83,12 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
 
                     backend.saveData({
                         hoster: "youtube",
-                        hosterid: song.id,
+                        hosterid: track.hosterid,
                         title: track.name,
                         artists: track.artist.name,
                         album: album.title,
                         cover: album.image,
-                        id: track.id,
+                        lastfmid: track.id,
                         countries: song.restrictedCountries,
                         duration: song.duration,
                         artistsid: track.artist.mbid,

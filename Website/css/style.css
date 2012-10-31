@@ -12,16 +12,24 @@ body {
 	font-family: "Tahoma";
 }
 #sidebar {
+	right: 0;
+	border-left: 1px solid rgba(255,255,255,0.1);
+	box-shadow: -1px 0px 0px rgba(0,0,0,0.4);
+}
+#sidebar, #leftbar {
 	width: 242px;
 	background: rgb(39, 39, 39);
 	height: 100%;
 	position: fixed;
-	left: 0;
 	top: 0;
+	z-index: 1;
+}
+#leftbar {
+	left: 0;
 	border-right: 1px solid rgba(255,255,255,0.1);
 	box-shadow: 1px 0px 0px rgba(0,0,0,0.4);
 }
-#sidebar h2 {
+#sidebar h2, #leftbar h2 {
 	text-align: center;
 	font-family: "Helvetica";
 	letter-spacing: -0.05em;
@@ -281,14 +289,23 @@ img.fadeandslide.rec-album {
 	opacity: 0;
 }
 .fb-profile-image {
-	vertical-align: middle;
 	border-radius: 2px;
+	vertical-align: middle;
 }
 .fb-name-label {
 	opacity: 0.8;
-	text-transform: uppercase;
-	font-size: 0.75em;
+	font-size: 0.6em;
 	margin-left: 10px;
+	font-family: "Helvetica Neue", Helvetica;
+	margin-top: 14px;
+	position: absolute;
+	text-transform: uppercase;
+}
+.fb-name-label span {
+	font-size: 1.8em;
+	font-weight: bold;
+	margin-right: 5px;
+	text-transform: none;
 }
 .sidebar-button {
 	background: rgba(245,184,0,1);
@@ -313,11 +330,60 @@ img.fadeandslide.rec-album {
 	width: 200px;
 	border-radius: 2px;
 }
-
-
-
-
-
+#songtable {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	padding-right: 242px;
+	padding-left: 242px;
+	top: 0;
+	left: 0;
+	z-index: 0;
+	color: white;
+}
+#thetable {
+	width: 100%;
+	border-collapse: collapse;
+	-webkit-user-select: none;
+}
+#thetable tr {
+	font-size: 0.7em;
+	font-family: "Lucida Sans";
+}
+#thetable tr:first-child {
+	color: black;
+	background: -webkit-linear-gradient(bottom, silver, white);
+	opacity: 0.7;
+}
+#thetable th {
+	text-align: left;
+}
+#thetable tr:nth-child(2n) {
+	background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+}
+#thetable tr td, #thetable th {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	word-wrap: break-word;
+	white-space: nowrap;
+	padding: 3px;
+	opacity: 0.9;
+}
+.selected {
+	background: rgba(255, 233, 168, 0.82) !important;
+	color: black;
+}
+#now-cover {
+	width: 240px;
+	height: 240px;
+	position: absolute;
+	bottom: 0;
+}
+#myytplayer {
+	opacity: 0;
+	position: absolute;
+	margin-top: -100000px;
+}
 
 
 

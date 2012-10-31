@@ -31,7 +31,7 @@ define(function() {
 		//Show name
 		$("<span>", {
 			class: "fb-name-label"
-		}).text(localStorage['prename'] + " " + localStorage['name'])
+		}).html("<span>" + localStorage['prename'] + "</span>" + localStorage['name'])
 		.appendTo(profile)
 		profile.appendTo("#account-area")
 		//Logout button
