@@ -32,7 +32,7 @@ var require = {
     'song_builder': 'Shared/js/song_builder',
     'yt_helper': 'Shared/js/yt_helper',
     'helpers': 'Shared/js/helpers',
-    'jquery': 'Shared/js/third_party/jquery-1.7.2.min',
+    'jquery': 'Shared/js/third_party/jquery-1.7.2',
     'jquery-ui': 'Shared/js/third_party/jquery-ui-1.8.21.custom.min',
     'geoplugin': 'Shared/js/third_party/geoplugin',
     'levenshtein': 'Shared/js/third_party/levenshtein',

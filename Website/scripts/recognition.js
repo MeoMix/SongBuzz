@@ -33,7 +33,6 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
     recognitionArea.onLinkNotRecognized(function(){
         var unrecognizedLinkNotice = $('<p>', {
             'class': 'fadeandslide',
-            //TODO: Internationalization?
             text: strings.linkNotRecognized[window.language]
         });
 

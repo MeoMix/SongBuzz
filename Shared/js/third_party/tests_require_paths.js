@@ -1,6 +1,6 @@
 var require = {
   paths: {
-    'jquery': '../Shared/js/third_party/jquery-1.7.2.min',
+    'jquery': '../Shared/js/third_party/jquery-1.7.2',
     'player': '../js/background/player',
     'playlists': '../js/background/playlists',
     'player_builder': '../js/background/player_builder',

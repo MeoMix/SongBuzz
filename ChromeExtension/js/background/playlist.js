@@ -124,7 +124,8 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
             },
             //Takes a song's UID and returns the full song object if found.
             getSongById: function (id) {
-                return _.find(playlist.songs, function(s){ s.id === id; });
+                console.log("looking through songs for id", playlist.songs, id);
+                return _.find(playlist.songs, function(s){ return s.id === id; });
             },
             addSongToHistory: function(song){
                 playlist.songHistory.unshift(song);
