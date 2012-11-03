@@ -6,15 +6,24 @@ define(function(){
 
 	//Cross-Origin Resource Sharing unavailable from file://
 	if(window.location.protocol !== 'file:'){
-		$.ajax({
-			url: 'http://www.geoplugin.net/json.gp',
-			dataType: "jsonp",
-			jsonp: 'jsoncallback',
-			success: function(result) {
-			    countryCode = result.geoplugin_countryCode;
-			    window.countryCode = countryCode;
-			}
-		});
+	    if(window.location.protocol === 'chrome-extension:') {
+		    $.ajax({
+			    url: 'http://www.geoplugin.net/json.gp',
+			    success: function(result) {
+                    var geoplugin = JSON.parse(result.replace(/^[^\{]+/, '').replace(/\);?$/, ''));
+                    countryCode = geoplugin.geoplugin_countryCode;
+			    }
+		    });
+	    }else {
+		    $.ajax({
+			    url: 'http://www.geoplugin.net/json.gp',
+			    dataType: 'jsonp',
+			    jsonp: 'jsoncallback',
+			    success: function(result) {
+			        countryCode = result.geoplugin_countryCode;
+			    }
+		    });
+	    }
 	}
 
 	return {

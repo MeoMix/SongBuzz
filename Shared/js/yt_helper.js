@@ -1,10 +1,10 @@
 //A global object which abstracts more difficult implementations of retrieving data from YouTube.
-define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recognitionList', 'recognitionImageBuilder'], function(geoplugin, levDist, songBuilder, audioScrobbler, recognitionList, recognitionImageBuilder){
+define(['geoplugin', 'levenshtein', 'song_builder'], function (geoplugin, levDist, songBuilder) {
     'use strict';
-    var buildYouTubePlaylist = function(entry){
+    var buildYouTubePlaylist = function (entry) {
         console.log("Entry:", entry);
         var videos = [];
-        $.each(entry.entry, function(){
+        $.each(entry.entry, function () {
             var video = songBuilder.buildSong(this);
             videos.push(video);
         });
@@ -21,37 +21,37 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
         return youTubePlaylist;
     };
 
-    var findPlayableWithVideoInformation = function(videoInformation, callback){
+    var findPlayableWithVideoInformation = function (videoInformation, callback) {
         var songName = videoInformation.title.$t;
         search(songName, function (videos) {
-            videos.sort(function(a,b){
+            videos.sort(function (a, b) {
                 return levDist(a.title, songName) - levDist(b.title, songName);
             });
 
             var videoIndex = 0;
             var processNext;
-            (processNext = function() {
-                if(videoIndex < videos.length) {
+            (processNext = function () {
+                if (videoIndex < videos.length) {
                     var video = videos[videoIndex];
                     chrome.extension.getBackgroundPage().SongValidator.validateSongById(video.videoId, function (songWasValid) {
-                        if(songWasValid){
+                        if (songWasValid) {
                             callback(video);
                         }
-                        else{
+                        else {
                             videoIndex++;
                             processNext();
                         }
                     });
                 } else {
                     //Failed to find a video.
-                    callback(); 
+                    callback();
                 }
             })();
         });
     };
-        
+
     //Be sure to filter out videos and suggestions which are restricted by the users geographic location.
-    var buildSearchUrl = function(searchIndex, maxResults, searchText){
+    var buildSearchUrl = function (searchIndex, maxResults, searchText) {
         return "https://gdata.youtube.com/feeds/api/videos?category=Music&orderBy=relevance&start-index=" + searchIndex + "&time=all_time&max-results=" + maxResults + "&format=5&v=2&alt=json&callback=?&restriction=" + geoplugin.countryCode + "&q=" + searchText;
     };
 
@@ -64,22 +64,22 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
         var videos = [];
         var maxResultsPerSearch = 50;
 
-        var searchInterval = setInterval(function(){
+        var searchInterval = setInterval(function () {
             elapsedTime += timeInterval;
 
-            if(elapsedTime < timeToSpendSearching){
+            if (elapsedTime < timeToSpendSearching) {
                 var searchUrl = buildSearchUrl(searchIndex, maxResultsPerSearch, text);
 
                 $.getJSON(searchUrl, function (response) {
                     //Add all playable songs to a list and return.
-                    $(response.feed.entry).each(function(){
+                    $(response.feed.entry).each(function () {
                         videos.push(songBuilder.buildSong(this));
                     });
 
                     searchIndex += maxResultsPerSearch;
                 });
             }
-            else{
+            else {
                 clearInterval(searchInterval);
                 callback(videos);
             }
@@ -88,28 +88,27 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
 
     //Takes a videoId which is presumed to have content restrictions and looks through YouTube
     //for a song with a similiar name that might be the right song to play.
-    var findPlayableByVideoId = function(videoId, callback){
-        var self = this;
-        this.getVideoInformation(videoId, function(videoInformation){
+    var findPlayableByVideoId = function(videoId, callback) {
+        this.getVideoInformation(videoId, function(videoInformation) {
             if (videoInformation) {
                 findPlayableWithVideoInformation(videoInformation, callback);
             }
         });
-    }
+    };
 
     return {
-        getRelatedVideos: function(songs, callback){
+        getRelatedVideos: function (songs, callback) {
             var relatedVideos = [];
             var deferredRequests = [];
 
-            $.each(songs, function(){
+            $.each(songs, function () {
                 var song = this;
 
                 deferredRequests.push($.ajax({
                     url: 'https://gdata.youtube.com/feeds/api/videos/' + song.videoId + '/related?v=2&alt=json',
-                    success: function(result){
+                    success: function (result) {
                         //Don't tack on a lot of songs. We can easily exceed the 5mb storage limit of local storage here.
-                        for(var i = 0; i < 2; i++){
+                        for (var i = 0; i < 2; i++) {
                             var relatedVideo = result.feed.entry[i];
                             var song = songBuilder.buildSong(relatedVideo);
                             relatedVideos.push(song);
@@ -118,7 +117,7 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
                 }));
             });
 
-            $.when.apply($, deferredRequests).done(function(){
+            $.when.apply($, deferredRequests).done(function () {
                 callback(relatedVideos);
             });
         },
@@ -126,65 +125,74 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
         search: search,
         findPlayableByVideoId: findPlayableByVideoId,
         //Takes a URL and returns a videoId if found inside of the URL.
-        parseUrl: function(url) {
+        parseUrl: function (url) {
             var hostersscheme = {
                 "youtube": "youtube.com/watch?v=",
                 "spotify": "open.spotify.com/track/"
             }
             var song = null
-            $.each(hostersscheme, function(hoster, scheme) {
+            $.each(hostersscheme, function (hoster, scheme) {
                 if (url.indexOf(scheme) != -1) {
                     song = {
                         hoster: hoster,
-                        id: url.substr(url.indexOf(scheme)+scheme.length)
+                        id: url.substr(url.indexOf(scheme) + scheme.length)
                     }
                 }
+
+                //TODO: Does this regExp really match a lot of stuff?
+                //                    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+                //                    var match = url.match(regExp);
+                //                    console.log("match:", match);
+                //                    if (match && match[2].length === 11) {
+                //                        console.log(match[2]);
+                //                    }
+
             })
             return song;
         },
 
-        parseUrlForPlaylistId: function(url){
+        parseUrlForPlaylistId: function (url) {
             var urlTokens = url.split('list=PL');
             var videoId = null;
 
-            if(urlTokens.length > 1){
+            if (urlTokens.length > 1) {
                 videoId = url.split('list=PL')[1];
                 var ampersandPosition = videoId.indexOf('&');
-                if(ampersandPosition !== -1) {
-                  videoId = videoId.substring(0, ampersandPosition);
+                if (ampersandPosition !== -1) {
+                    videoId = videoId.substring(0, ampersandPosition);
                 }
             }
 
             return videoId;
         },
 
-        buildPlaylistFromId: function(playlistId, callback){
+        buildPlaylistFromId: function (playlistId, callback) {
             var startIndex = 1;
             var videos = [];
             var maxResultsPerSearch = 50;
             var youtubePlaylist = null;
 
-            var getPlaylistInterval = setInterval(function(){
+            var getPlaylistInterval = setInterval(function () {
                 $.ajax({
-                    url:  "https://gdata.youtube.com/feeds/api/playlists/" + playlistId + "?v=2&alt=json&max-results=" + maxResultsPerSearch + "&start-index=" + startIndex,
-                    success: function(result){
+                    url: "https://gdata.youtube.com/feeds/api/playlists/" + playlistId + "?v=2&alt=json&max-results=" + maxResultsPerSearch + "&start-index=" + startIndex,
+                    success: function (result) {
                         //Go and build up a playlist. Can only get up to max-results # of songs per query, so have to
                         //fetch the playlist data multiple times to ensure all songs are captured.
                         var videoResultsFound = 0;
-                        if(youtubePlaylist === null){
+                        if (youtubePlaylist === null) {
                             youtubePlaylist = buildYouTubePlaylist(result.feed);
                             videoResultsFound = youtubePlaylist.videos.length;
-                        } 
+                        }
                         else {
                             var additionalVideos = buildYouTubePlaylist(result.feed).videos;
                             youtubePlaylist.videos = youtubePlaylist.videos.concat(additionalVideos);
                             videoResultsFound = additionalVideos.length;
                         }
-                        
+
                         //Done finding videos when less than max possible results are returned.
                         console.log("videoResultsFound:", videoResultsFound);
 
-                        if(videoResultsFound != maxResultsPerSearch){
+                        if (videoResultsFound != maxResultsPerSearch) {
                             console.log("calling callback!");
                             clearInterval(getPlaylistInterval);
                             callback(youtubePlaylist);
@@ -192,7 +200,7 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
 
                         startIndex += maxResultsPerSearch;
                     },
-                    error: function(){
+                    error: function () {
                         callback();
                         clearInterval(getPlaylistInterval);
                     }
@@ -202,89 +210,54 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
         },
 
         // Returns NULL if the request throws a 403 error if videoId has been banned on copyright grounds.
-        getVideoInformation: function(videoId, callback){
+        getVideoInformation: function (videoId, callback) {
             $.ajax({
                 url: 'https://gdata.youtube.com/feeds/api/videos/' + videoId + '?v=2&alt=json',
-                success: function(result){
+                success: function (result) {
                     callback(result.entry);
                 },
-                error: function(){
+                error: function () {
                     callback();
                 },
                 dataType: "json"
             });
         },
-        recognizeSpotify: function(id, callback) {
+        recognizeSpotify: function (id, callback) {
             var data = {
                 "uri": "spotify:track:" + id
-            }
+            };
+
             $.ajax({
                 url: 'http://ws.spotify.com/lookup/1/.json',
                 data: data,
-                success: function(result) {
-                    callback(result)
+                success: function (result) {
+                    callback(result);
                 },
                 dataType: "json"
-            })
+            });
         },
-        findVideo: function(song,mycallback,id) {
-            var originalduration = song.duration
+
+        findVideo: function (song, callback) {
             $.ajax({
                 url: "http://gdata.youtube.com/feeds/api/videos",
                 data: {
                     alt: "json",
                     q: song.title + " - " + song.artists
                 },
-                success: function(json) {
-                    var closestvideo = {
-                        video: null,
-                        difference: 10000000000000
-                    };
-                    var videos = json.feed.entry
-                    $.each(videos, function(k,video) {
-                        if (video.title.$t.toLowerCase().indexOf("chipmunk") == -1) {
+                success: function (json) {
+                    //Find the video most related to our video by duration.
+                    var videos = json.feed.entry;
+                    //TODO: Do we also want to compare levenshtein distance of song titles?
+                    var closestVideo = _.sortBy(videos, function (video) {
+                        var duration = video.media$group.yt$duration.seconds;
+                        var durationDifference = Math.abs(song.duration - duration);
+                        return durationDifference;
+                    })[0];
 
-                       
-                        var duration = video["media$group"]["yt$duration"]["seconds"];
-                        var durationdifference = (parseFloat(originalduration) - duration)
-                        var durationdifference = Math.sqrt(durationdifference*durationdifference)
-                        if (closestvideo.difference > durationdifference) {
-                            closestvideo.video = video;
-                            closestvideo.difference = durationdifference
-                        }
-                    }
-                    })
-                    
-                    song.hoster = "youtube"
-                    song.hosterid = closestvideo.video.id.$t.substr(closestvideo.video.id.$t.indexOf("videos/")+7)
-                    song.duration = closestvideo.video["media$group"]["yt$duration"]["seconds"]
-                    song.countries = closestvideo.video.media$group.media$restriction ? closestvideo.video.media$group.media$restriction.$t : "none";
-                    if (id != undefined) {
-                        var track = {thumbnailUrl: closestvideo.video["media$group"]["media$thumbnail"][1].url}
-                        recognitionList.addImageToSong(recognitionImageBuilder.buildThumbnailImage(track),id)
-                    }
-                    //One last request just for the lastfmid ..
-                    audioScrobbler.getAlbum(song.title,song.artists, function(json) {
-
-                        var track = json.track
-                        if (track.album) {
-                            song.albumid = track.album.mbid
-                            song.cover = track.album.image[track.album.image.length-1]['#text']
-                            var album = {image: track.album.image[0]['#text']}
-                        }
-                        song.lastfmid = track.id
-                        song.mbid = track.id
-                        song.artistsid = track.artist.mbid
-                        if (id != undefined) {
-                            if (track.album) {
-                                recognitionList.addImageToSong(recognitionImageBuilder.buildAlbumImage(album),id)
-                            }
-                            recognitionList.addImageToSong(recognitionImageBuilder.buildSongDurationDiv(song),id)
-                        }
-                        mycallback(song,json)
-                    })
+                    console.log("found video:", closestVideo);
+                    callback(closestVideo);
                 }
-            })
+            });
         }
     };
 });
