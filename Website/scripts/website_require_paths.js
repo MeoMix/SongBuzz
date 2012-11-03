@@ -3,9 +3,9 @@ var require = {
   paths: {
     'main': 'Website/scripts/main',
     'recognition': 'Website/scripts/recognition',
-    'audioScrobbler': 'Website/scripts/audioScrobbler',
+    'audioScrobbler': 'Shared/js/audioScrobbler',
     'backend': 'Website/scripts/backend',
-    'FacebookLogin': 'Shared/js/fblogin',
+    'fblogin': 'Shared/js/fblogin',
     'recognitionArea': 'Website/scripts/recognitionArea',
     'recognitionImageBuilder': 'Website/scripts/recognitionImageBuilder',
     'recognitionList': 'Website/scripts/recognitionList',
@@ -18,8 +18,10 @@ var require = {
     'helpers': 'Shared/js/helpers',
     'libraryController': 'Shared/js/libraryController',
     'bindings': 'Website/scripts/bindings',
-    'albums': "Website/scripts/albums",
-    'contextmaster': "Website/scripts/contextmaster"
+    'albums': 'Website/scripts/albums',
+    'contextmaster': 'Website/scripts/contextmaster',
+    'underscore': 'Shared/js/third_party/underscore.min',
+    'songDecorator': 'Website/scripts/songDecorator'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };
