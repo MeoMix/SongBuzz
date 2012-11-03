@@ -4,12 +4,15 @@
 	-ms-box-sizing: border-box;
 	box-sizing: border-box;
 }
-
+*:not(textarea) {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
 body {
 	font-size: 16px;
 	background: #363636;
 	color: white;
-	font-family: "Tahoma";
+	font-family: "Tahoma", "Helvetica";
 }
 #sidebar {
 	right: 0;
@@ -23,18 +26,25 @@ body {
 	position: fixed;
 	top: 0;
 	z-index: 1;
+	height: -webkit-calc(100% - 50px);
+	height: -moz-calc(100% - 50px);
+	overflow: scroll;
 }
 #leftbar {
 	left: 0;
 	border-right: 1px solid rgba(255,255,255,0.1);
 	box-shadow: 1px 0px 0px rgba(0,0,0,0.4);
 }
-#sidebar h2, #leftbar h2 {
+h2 {
 	text-align: center;
 	font-family: "Helvetica";
 	letter-spacing: -0.05em;
 	-webkit-font-smoothing: antialiased;
 	opacity: 0.7;
+}
+#popup h2 {
+	text-align: left;
+	margin-bottom: 0;
 }
 @-webkit-keyframes rotating {
 	from { -webkit-transform: rotate(0deg) scale(1,1); }
@@ -189,17 +199,9 @@ textarea {
 
 	
 }
-.rec-thumb {
-	clip: rect(15px 90px 75px 30px);
-	position: absolute;
-	margin-left: -30px;
-	margin-top: -15px;
-}
 .rec-album {
-	margin-left: 60px;
 	width: 60px;
 	height: 60px;
-	position: absolute;
 }
 .rec-check {
 	margin-left: 180px;
@@ -278,6 +280,9 @@ img.fadeandslide.rec-album {
 		opacity: 0;
 	}
 }
+.song {
+	cursor: default;
+}
 .spark {
 	width: 5px;
 	height: 5px;
@@ -334,17 +339,17 @@ img.fadeandslide.rec-album {
 	width: 100%;
 	height: 100%;
 	position: absolute;
-	padding-right: 242px;
-	padding-left: 242px;
+	padding-right: 243px;
+	padding-left: 243px;
 	top: 0;
 	left: 0;
 	z-index: 0;
-	color: white;
+	overflow: scroll;
+	height: -webkit-calc(100% - 55px);
 }
 #thetable {
 	width: 100%;
 	border-collapse: collapse;
-	-webkit-user-select: none;
 }
 #thetable tr {
 	font-size: 0.7em;
@@ -353,6 +358,12 @@ img.fadeandslide.rec-album {
 #thetable tr:first-child {
 	color: black;
 	background: -webkit-linear-gradient(bottom, silver, white);
+	background: -moz-linear-gradient(bottom, silver, white);
+	background: -o-linear-gradient(bottom, silver, white);
+	background: -ms-linear-gradient(bottom, silver, white);
+	background: linear-gradient(bottom, silver, white);
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+	filter: alpha(opacity=70);
 	opacity: 0.7;
 }
 #thetable th {
@@ -360,6 +371,10 @@ img.fadeandslide.rec-album {
 }
 #thetable tr:nth-child(2n) {
 	background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+	background: -moz-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+	background: -o-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+	background: -ms-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+	background: linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
 }
 #thetable tr td, #thetable th {
 	text-overflow: ellipsis;
@@ -369,6 +384,9 @@ img.fadeandslide.rec-album {
 	padding: 3px;
 	opacity: 0.9;
 }
+.song {
+	color: rgba(255,255,255,0.7)
+}
 .selected {
 	background: rgba(255, 233, 168, 0.82) !important;
 	color: black;
@@ -376,13 +394,177 @@ img.fadeandslide.rec-album {
 #now-cover {
 	width: 240px;
 	height: 240px;
-	position: absolute;
-	bottom: 0;
+	position: fixed;
+	bottom: 70px;
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0.7), black);
+	border-top: 1px solid rgba(255,255,255,0.1);
 }
 #myytplayer {
-	opacity: 0;
 	position: absolute;
-	margin-top: -100000px;
+	z-index: -2;
+	width: 240px;
+	height: 240px;
+	left: 0;
+	opacity: 0;
+}
+#controls {
+	background: #222;
+	position: absolute;
+	width: 100%;
+	height: 70px;
+	bottom: 0;
+	left: 0;
+	z-index: 3;
+	border-top: 1px solid rgba(255,255,255,0.1);
+}
+#controls div {
+	float: left;
+	bottom: 12px;
+	margin-top: 20px;
+	opacity: 0.6;
+	-webkit-transition: 0.15s
+}
+#controls div:hover {
+	opacity: 1;
+}
+#controls div img {
+	height: 30px;
+	margin-left: 20px;
+}
+.playing-indicator {
+	min-width: 9px;
+}
+.nowplaying {
+	font-weight: bold;
+}
+.nowplaying .playing-indicator{
+	background: url(../images/playing.png);
+}
+.nowplaying.selected .playing-indicator{
+	background: url(../images/playing-black.png);
+}
+tr[data-album=Unknown] td.list-album {
+	color: rgba(0,0,0,0);
+}
+td.list-album:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+#popup {
+	position: fixed;
+	width: 900px;
+	height: 600px;
+	background: rgb(63, 63, 63);
+	box-shadow: 0 0 50px black;
+	margin-left: -450px;
+	left: 50%;
+	z-index: 4;
+	top: -1000px;
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	padding: 20px;
+	cursor: default;
+}
+#closepopup {
+	background: rgba(245, 184, 0, 1);
+	opacity: 0.55;
+	color: black;
+	cursor: pointer;
+	width: 100px;
+	text-align: center;
+	padding: 10px;
+	text-transform: uppercase;
+	border-radius: 2px;
+	font-size: 0.9em;
+	margin-top: -10px;
+	position: absolute;
+	right: 20px;
+	-webkit-transition: 0.2s;
+}
+#closepopup:hover {
+	opacity: 1;
+}
+.popupvisible {
+	margin-top: 1000px;
+}
+#popup h3 {
+	opacity: 0.4;
+	font-weight: 500;
+	font-size: 1.1em;
+	margin-top: 0;
+}
+#popup {
+	overflow: auto;
+}
+#popup p {
+	font-size: 0.75em;
+	opacity: 0.5;
+}
+#popup img {
+	width: 200px;
+	height: 205px;
+	float: left;
+	margin-right: 20px;
+}
+#popup table {
+	width: 560px;
+	margin-left: 20px;
+	font-size: 0.7em;
+	font-family: 'Lucida Sans';
+	border-collapse: collapse;
+}
+#popup tr:nth-child(2n-1) {
+	background: rgba(0,0,0,0.2);
+}
+#popup td {
+	padding: 3px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.db-not-in-db {
+	color: rgba(255,255,255,0.7);
+}
+.db-in-db.in-library .db-recognize {
+	color: transparent;
+}
+.db-recognize:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+::-webkit-scrollbar {
+	background: transparent;
+	width: 0;
+}
+tbody {
+	overflow: scroll;
+}
+a {
+	color: white;
+}
+#album-recognize-all {
+	text-align: right;
+	margin-top: 210px;
+	position: absolute;
+}
+.button {
+	background: rgba(255,255,255,0.09);
+	color: white;
+	display: inline-block;
+	position: relative;
+	border-radius: 2px;
+	padding: 5px;
+	font-family: "Helvetica Neue", "Helvetica";
+	font-size: 0.75em;
+	cursor: pointer;
+	-webkit-transition: 0.2s;
+}
+.button:hover {
+	background: rgba(255,255,255,0.15);
+}
+#recognitionlist img {
+	width: 60px;
+	height: 60px;
 }
 
 

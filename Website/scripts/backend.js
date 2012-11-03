@@ -7,7 +7,7 @@ define(function(){
         onSaveData: 'onSaveData'
     };
     return {
-        saveData: function(data){
+        saveData: function(data, prevent){
             var self = this;
             $.ajax({
                 url: url,
@@ -18,12 +18,15 @@ define(function(){
                 // [Meo] If a DB error occurs, why is success called? 
                 success: function(json) {
                     if (json.success === "true") {
+                        if (prevent != undefined) {
+                            data.prevent = prevent
+                        }
                         $(self).trigger(events.onSaveData, data);
                     }
                 }
             });
         },
-        onSaveData: function(event){
+        onSaveData: function(event) {
             $(this).bind(events.onSaveData, event);
         },
         userLibrary: function(method, data) {

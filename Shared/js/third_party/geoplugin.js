@@ -8,9 +8,11 @@ define(function(){
 	if(window.location.protocol !== 'file:'){
 		$.ajax({
 			url: 'http://www.geoplugin.net/json.gp',
-			success: function(result){
-			    var geoplugin = JSON.parse(result.replace(/^[^\{]+/, '').replace(/\);?$/, ''));
-			    countryCode = geoplugin.geoplugin_countryCode;
+			dataType: "jsonp",
+			jsonp: 'jsoncallback',
+			success: function(result) {
+			    countryCode = result.geoplugin_countryCode;
+			    window.countryCode = countryCode;
 			}
 		});
 	}

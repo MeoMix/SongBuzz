@@ -19,7 +19,7 @@ define(function() {
 		//Hide login button
 		$("#login-button").remove()
 		//Change the label from "Login" to "Account"
-		$("#login-string").text("Account")
+		$("#login-string").text(strings.account[language])
 		//Show profile image
 		var profile = $("<div>", {
 			class: "fb-profile"

@@ -7,10 +7,11 @@
 	<script src="scripts/website_require_paths.js"></script>
 	<script data-main="main" src="../Shared/js/third_party/require.min.js"></script>
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/contextmaster.css">
 </head>
 <body class="preload">
 	<div id="leftbar">
-		<h2>Playlists</h2>
+		<h2 data-lang-id="playlists">Playlists</h2>
 		<div id="nowplaying">
 			<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" id="now-cover">
 		</div>
@@ -18,16 +19,18 @@
 	<div id="sidebar">
 		<div id="backend"></div>
 		<div class="spark"></div>
-		<h2>Add Music</h2>
+		<h2 data-lang-id="addMusic">Add Music</h2>
 		<div id="recognition-area">
 			<div id="drag-area">
 				<img src="images/youtube.png" alt="Drop YouTube links!">
+				<img src="images/spotify.png" alt="Drop YouTube links!">
+				<img src="images/spotify.png" alt="Drop YouTube links!">
 			</div>
 			<textarea name="" id="" cols="30" rows="10"></textarea>
-			<div id="drop-music">Drop your<br>music here</div>
+			<div id="drop-music" data-lang-id="dropMusic">Drop your<br>music here</div>
 			<div class="hr"></div>
 		</div>
-		<h2>Recognition</h2>
+		<h2 data-lang-id="recognition">Recognition</h2>
 		<div id="recognitionlist">			
 		</div>
 		<br>
@@ -37,17 +40,27 @@
 			<a href="../backend/fb/auth.php"><button id="login-button" class="sidebar-button">Loading...</button></a>
 		</div>
 	</div>
-	
+<div id="controls">
+	<div id="previous"><img src="images/rewind.png"></div>
+	<div id="play"><img src="images/play.png"></div>
+	<div id="pause" style="display: none;"><img src="images/pause.png"></div>
+	<div id="next"><img src="images/ff.png"></div>
+</div>
 	<div id="songtable"></div>
 		<script type="text/javascript" src="../Shared/js/third_party/swfobject.js"></script>
 		  <div id="ytapiplayer">
     You need Flash player 8+ and JavaScript enabled to view this video.
   </div>
+  <div id="popup">
+  	<div id="closepopup">Close</div>
+  </div>
 	<script type="text/javascript">
 	ytplayerready = false;
 	function onYouTubePlayerReady(playerId) {
 		ytplayer = document.getElementById("myytplayer");
-		ytplayerready = true
+		ytplayerready = true;
+		ytplayer.setPlaybackQuality("small")
+		ytplayer.addEventListener("onStateChange", "updateIcon");
 
 	}
     var params = { allowScriptAccess: "always" };

@@ -17,7 +17,9 @@ var require = {
     'ytHelper': 'Shared/js/yt_helper',
     'helpers': 'Shared/js/helpers',
     'libraryController': 'Shared/js/libraryController',
-    'bindings': 'Website/scripts/bindings'
+    'bindings': 'Website/scripts/bindings',
+    'albums': "Website/scripts/albums",
+    'contextmaster': "Website/scripts/contextmaster"
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

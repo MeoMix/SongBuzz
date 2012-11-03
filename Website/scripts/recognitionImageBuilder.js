@@ -22,6 +22,13 @@ define(function(){
             });
             return youtubeMetroImage;
         },
+        buildSpotifyMetroImage: function() {
+            var spotifyMetroImage = $('<img>', {
+                'class': 'fadeandslide',
+                src: 'images/spotify-metro.png'
+            });
+            return spotifyMetroImage;
+        },
         buildSongDurationDiv: function(song){
             var songDurationDiv = $('<div>', {
                 text: Helpers.prettyPrintTime(song.duration),

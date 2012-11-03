@@ -8,16 +8,16 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
     //by getting its meta data. Show some images to the user to indicate success. 
     recognitionArea.onSongDropped(function(event, song){
         //Need a base song div element to attach any data to -- so add that to the page.
-        recognitionList.addSong(song);
+        recognitionList.addSong(song.videoId);
 
         //Show that progress has been made by displaying a youtube image icon.
         var youtubeMetroImage = recognitionImageBuilder.buildYoutubeMetroImage();
-        recognitionList.addImageToCurrentSong(youtubeMetroImage);
+        recognitionList.addImageToSong(youtubeMetroImage, song.videoId);
 
         //TODO: This code needs a home. Should it be handled when creating a song object?
         //Get tag properly
         //This helps the metaData function properly find metadata by throwing out garbage.
-        var termstoremove = ["HD", "official", "video", "-", "audio", "lyrics", "feat.", "ft."];
+        var termstoremove = ["HD", "official", "video", "-", "audio", "lyrics", "feat.", " ft."];
         $.each(termstoremove, function(k, v) {
             var regex = new RegExp(v, "gi");
             song.title = song.title.replace(regex, "");
@@ -42,11 +42,15 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
 	//Whenever we successfully save to the server -- reflect that to the user
 	//by showing the song's duration and showing a nice animation.
 	backend.onSaveData(function(event, data){
-		recognitionList.showFinishedAnimation(data);
+        console.log(data)
+		recognitionList.showFinishedAnimation(data, data.hosterid);
         //Also, we add it to the users library!
-        backend.userLibrary("add", {"song": data.id, "list": "songs", "authkey": localStorage['authKey']});
-        //Finally, add it to the DOM!
-        libraryController.addSong(data, "songs");
+        //Option to prevent adding to the library
+        if (data.prevent == undefined) {
+           backend.userLibrary("add", {"song": data.lastfmid, "list": "songs", "authkey": localStorage['authkey']});
+           //Finally, add it to the DOM!
+           libraryController.addSong(data, "songs"); 
+        }
 	});
 
     //Go out to audioscrobbler and ask it for metadata information
@@ -59,7 +63,7 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                 var track = totalResults === 1 ? json.results.trackmatches.track : json.results.trackmatches.track[0];
 
                 var thumbnailImage = recognitionImageBuilder.buildThumbnailImage(song);
-                recognitionList.addImageToCurrentSong(thumbnailImage);
+                recognitionList.addImageToSong(thumbnailImage, song.videoId);
 
                 audioScrobbler.getAlbum(track.name, track.artist, function(json){
                     var track = json.track;
@@ -75,14 +79,14 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                     }
 
                     var albumImage = recognitionImageBuilder.buildAlbumImage(album);
-                    recognitionList.addImageToCurrentSong(albumImage);
+                    recognitionList.addImageToSong(albumImage, song.videoId);
 
 					var songDurationDiv = recognitionImageBuilder.buildSongDurationDiv(song);
-					recognitionList.addImageToCurrentSong(songDurationDiv);
-
+					recognitionList.addImageToSong(songDurationDiv, song.videoId);
+                    console.log("song", song, "track", track)
                     backend.saveData({
                         hoster: "youtube",
-                        hosterid: track.hosterid,
+                        hosterid: song.videoId,
                         title: track.name,
                         artists: track.artist.name,
                         album: album.title,
@@ -92,6 +96,7 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                         duration: song.duration,
                         artistsid: track.artist.mbid,
                         albumid: album.mbid,
+                        mbid: track.mbid
                     });
                 });
             }

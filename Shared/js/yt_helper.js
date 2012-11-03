@@ -1,5 +1,5 @@
 //A global object which abstracts more difficult implementations of retrieving data from YouTube.
-define(['geoplugin', 'levenshtein', 'song_builder'], function(geoplugin, levDist, songBuilder){
+define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recognitionList', 'recognitionImageBuilder'], function(geoplugin, levDist, songBuilder, audioScrobbler, recognitionList, recognitionImageBuilder){
     'use strict';
     var buildYouTubePlaylist = function(entry){
         console.log("Entry:", entry);
@@ -123,13 +123,21 @@ define(['geoplugin', 'levenshtein', 'song_builder'], function(geoplugin, levDist
         search: search,
         findPlayableByVideoId: findPlayableByVideoId,
         //Takes a URL and returns a videoId if found inside of the URL.
-        //http://stackoverflow.com/questions/3452546/javascript-regex-how-to-get-youtube-video-id-from-url
-        parseUrl: function(url){
-            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
-            var match = url.match(regExp);
-            if (match && match[2].length === 11){
-                return match[2];
+        parseUrl: function(url) {
+            var hostersscheme = {
+                "youtube": "youtube.com/watch?v=",
+                "spotify": "open.spotify.com/track/"
             }
+            var song = null
+            $.each(hostersscheme, function(hoster, scheme) {
+                if (url.indexOf(scheme) != -1) {
+                    song = {
+                        hoster: hoster,
+                        id: url.substr(url.indexOf(scheme)+scheme.length)
+                    }
+                }
+            })
+            return song;
         },
 
         parseUrlForPlaylistId: function(url){
@@ -199,8 +207,77 @@ define(['geoplugin', 'levenshtein', 'song_builder'], function(geoplugin, levDist
                 },
                 error: function(){
                     callback();
-                }
+                },
+                dataType: "json"
             });
+        },
+        recognizeSpotify: function(id, callback) {
+            var data = {
+                "uri": "spotify:track:" + id
+            }
+            $.ajax({
+                url: 'http://ws.spotify.com/lookup/1/.json',
+                data: data,
+                success: function(result) {
+                    callback(result)
+                },
+                dataType: "json"
+            })
+        },
+        findVideo: function(song,mycallback,id) {
+            var originalduration = song.duration
+            $.ajax({
+                url: "http://gdata.youtube.com/feeds/api/videos",
+                data: {
+                    alt: "json",
+                    q: song.title + " - " + song.artists
+                },
+                success: function(json) {
+                    var closestvideo = {
+                        video: null,
+                        difference: 10000000000000
+                    };
+                    var videos = json.feed.entry
+                    $.each(videos, function(k,video) {
+                        var duration = video["media$group"]["yt$duration"]["seconds"];
+                        var durationdifference = (parseFloat(originalduration) - duration)
+                        var durationdifference = Math.sqrt(durationdifference*durationdifference)
+                        if (closestvideo.difference > durationdifference) {
+                            closestvideo.video = video;
+                            closestvideo.difference = durationdifference
+                        }
+                    })
+    
+                    song.hoster = "youtube"
+                    song.hosterid = closestvideo.video.id.$t.substr(closestvideo.video.id.$t.indexOf("videos/")+7)
+                    song.duration = closestvideo.video["media$group"]["yt$duration"]["seconds"]
+                    song.countries = closestvideo.video.media$group.media$restriction ? closestvideo.video.media$group.media$restriction.$t : "none";
+                    if (id != undefined) {
+                        var track = {thumbnailUrl: closestvideo.video["media$group"]["media$thumbnail"][1].url}
+                        recognitionList.addImageToSong(recognitionImageBuilder.buildThumbnailImage(track),id)
+                    }
+                    //One last request just for the lastfmid ..
+                    audioScrobbler.getAlbum(song.title,song.artists, function(json) {
+
+                        var track = json.track
+                        if (track.album) {
+                            song.albumid = track.album.mbid
+                            song.cover = track.album.image[track.album.image.length-1]['#text']
+                            var album = {image: track.album.image[0]['#text']}
+                        }
+                        song.lastfmid = track.id
+                        song.mbid = track.id
+                        song.artistsid = track.artist.mbid
+                        if (id != undefined) {
+                            if (track.album) {
+                                recognitionList.addImageToSong(recognitionImageBuilder.buildAlbumImage(album),id)
+                            }
+                            recognitionList.addImageToSong(recognitionImageBuilder.buildSongDurationDiv(song),id)
+                        }
+                        mycallback(song,json)
+                    })
+                }
+            })
         }
     };
 });

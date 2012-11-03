@@ -4,6 +4,7 @@ define(function(){
     //[Meo] TODO: Should we be exposing this API key to github?
     var apiKey = '29c1ce9127061d03c0770b857b3cb741';
     var format = 'json';
+    var dataType = 'json';
 
     return {
         getData: function(songTitle, callback){
@@ -15,6 +16,7 @@ define(function(){
                     "api_key": apiKey,
                     "format": format
                 },
+                dataType: dataType,
                 success: callback 
             });
         },
@@ -29,8 +31,22 @@ define(function(){
                     "format": format,
                     "api_key": apiKey
                 },
+                dataType: dataType,
                 success: callback
             });
+        },
+        getAlbumInfo: function(mbid, callback) {
+            $.ajax({
+                url: url,
+                data: {
+                    "method": "album.getInfo",
+                    "mbid": mbid,
+                    "format": format,
+                    "api_key": apiKey
+                },
+                dataType: dataType,
+                success: callback
+            })
         }
     };
 });
