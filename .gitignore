@@ -6,3 +6,6 @@ Website/sftp-config.json
 obj/
 bin/
 Properties/
+SongBuzz.csproj
+SongBuzz.csproj.user
+SongBuzz.suo
