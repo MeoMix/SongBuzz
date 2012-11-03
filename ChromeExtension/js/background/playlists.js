@@ -29,6 +29,7 @@ define(['playlist', 'yt_helper'], function(playlistFunc, ytHelper){
 
 	var loadPlaylists = function(){
 		var playlistIdsJson = localStorage.getItem('playlistIds');
+	    playlistIdsJson = null;
 		if (playlistIdsJson){
 			var playlistIds = [];
 			try {
@@ -70,45 +71,44 @@ define(['playlist', 'yt_helper'], function(playlistFunc, ytHelper){
 			playlists.push(gramatikPlaylist);
 
 			//TODO: Move this somewhere.
-		    var xmlhttp = new XMLHttpRequest();
-		    xmlhttp.onreadystatechange = function() {
-		        if (this.readyState == 4) {
-		            var page = document.implementation.createHTMLDocument("");
-		            page.documentElement.innerHTML = this.responseText;
+//		    var xmlhttp = new XMLHttpRequest();
+//		    xmlhttp.onreadystatechange = function() {
+//		        if (this.readyState == 4) {
+//		            var page = document.implementation.createHTMLDocument("");
+//		            page.documentElement.innerHTML = this.responseText;
 
-		            var songTitles = [];
-		            $(page).find('.secondColumn a').each(function(){
-		            	songTitles.push(this.title);
-		            })
+//		            var songTitles = [];
+//		            $(page).find('.secondColumn a').each(function() {
+//		                songTitles.push(this.title);
+//		            });
 
-		            var onBeatportScrapeComplete = function(songs){
-		            	console.log("creating beatport list", songs);
-		            	addPlaylist("Beatport Top 100", songs);
-		            };
+//		            var onBeatportScrapeComplete = function(songs) {
+//		                console.log("creating beatport list", songs);
+//		                addPlaylist("Beatport Top 100", songs);
+//		            };
 
-		            var songIndex = 0;
-		            var processNext;
-		            var beatportSongs = [];
-		            (processNext = function() {
-		                if(songIndex < songTitles.length) {
-		                    var songTitle = songTitles[songIndex];
-		                    songIndex++;
-		                    ytHelper.search(songTitle, function(videos){
-		                    	if(videos[0]){
-		                    		beatportSongs.push(videos[0]);
-		                    	}
-		                    	processNext();
-		                    });
-		                }
-		                else{
-		                	onBeatportScrapeComplete(beatportSongs);
-		                }
-		            })();
-		        }
-		    }
+//		            var songIndex = 0;
+//		            var processNext;
+//		            var beatportSongs = [];
+//		            (processNext = function() {
+//		                if (songIndex < songTitles.length) {
+//		                    var songTitle = songTitles[songIndex];
+//		                    songIndex++;
+//		                    ytHelper.search(songTitle, function(videos) {
+//		                        if (videos[0]) {
+//		                            beatportSongs.push(videos[0]);
+//		                        }
+//		                        processNext();
+//		                    });
+//		                } else {
+//		                    onBeatportScrapeComplete(beatportSongs);
+//		                }
+//		            })();
+//		        }
+//		    };
 
-		    xmlhttp.open("GET", "http://www.beatport.com/top-100", true);
-		    xmlhttp.send();
+//		    xmlhttp.open("GET", "http://www.beatport.com/top-100", true);
+//		    xmlhttp.send();
 		    save();
 		}
 	}();

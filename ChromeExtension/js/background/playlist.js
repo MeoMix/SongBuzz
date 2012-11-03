@@ -13,92 +13,24 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
         };
 
         var save = function () {
-            //LocalStorage has a 5MB storage limit - don't storage playlists in it!
-            //localStorage.setItem(playlist.id, JSON.stringify(playlist));
-            function onRequestFileSystemSuccess(fileSystem) {
-                var fileName = playlist.id + '.txt';
-                fileSystem.root.getFile(playlist.id + '.txt', {create: true, exclusive: false}, function(fileEntry) {
-                    // Create a FileWriter object for our FileEntry (log.txt).
-                    fileEntry.createWriter(function(fileWriter) {
-                        fileWriter.onwriteend = function(e) {
-                            console.log('Successfully saved playlist:', playlist.title);
-                        };
-
-                        fileWriter.onerror = function(e) {
-                            console.error('Write failed: ' + e.toString());
-                        };
-
-                        // Create a new Blob and write it to log.txt.
-                        //TODO: application/json maybe?
-                        var playlistJson = JSON.stringify(playlist);
-                        var blob = new Blob([playlistJson], {type: 'text/plain'});
-                        fileWriter.write(blob);
-                    }, function(){
-                        console.error("Failed to create writer while attempting to write to file:", fileName);
-                    });
-                }, function(){
-                    console.error("Failed to get file for write:", fileName);
-                });
-            };
-
-            //Start off with 10MB. Probably drop back down to 5 and request more later.
-            window.webkitRequestFileSystem(window.PERSISTENT, 1024 * 10240, onRequestFileSystemSuccess, function(){
-                console.error("Failed to successfully request 10MB of filesystem storage space.");
-            });
+            //TODO: LocalStorage has a 5MB storage limit - don't storage playlists in it!
+            localStorage.setItem(playlist.id, JSON.stringify(playlist));
         };
 
         var loadPlaylist = function(){
-            function onRequestFileSystemSuccess(fileSystem) {
-                var fileName = playlist.id + '.txt';
-                fileSystem.root.getFile(fileName, {}, function(fileEntry) {
+            //Methods are unable to be serized to localStorage.
+            var playlistJson = localStorage.getItem(playlist.id);
+            var backupPlaylist = playlist;
 
-                    // Get a File object representing the file,
-                    // then use FileReader to read its contents.
-                    fileEntry.file(function(file) {
-
-                        // fileEntry.remove(function(){
-                        //     console.log("File removed.");
-                        // }, function(){
-                        //     console.error("Failed to remove file entry:", fileName);
-                        // });
-                        var reader = new FileReader();
-
-                        reader.onloadend = function(e) {
-                            console.log("parsing playlist ", this.result);
-                            playlist = JSON.parse(this.result);
-                            console.log("playlist after parse:", playlist);
-
-                            //THIS IS LEGACY SUPPORT. Remove at some point in the future.
-                            if(!playlist || playlist.songs.length === 0){
-                                console.log("using legacy support");
-                                //Methods are unable to be serized to localStorage.
-                                var playlistJson = localStorage.getItem(playlist.id)
-                                
-                                var backupPlaylist = playlist;
-                                try {
-                                    if (playlistJson){
-                                        playlist = JSON.parse(playlistJson);
-                                    }
-                                }
-                                catch(exception){
-                                    console.error(exception);
-                                    playlist = backupPlaylist;
-                                }
-                            }
-                        };
-
-                        reader.readAsText(file);
-                    }, function(){
-                        console.error("Failed to open file for read:", fileName);
-                    });
-                }, function(){
-                    console.error("Failed to get file for read:", fileName);
-                });
-            };
-            //Start off with 10MB. Probably drop back down to 5 and request more later.
-            window.webkitRequestFileSystem(window.PERSISTENT, 1024 * 10240, onRequestFileSystemSuccess, function(){
-                console.error("Failed to successfully request 10MB of filesystem storage space.");
-            });
+            try {
+                if (playlistJson){
+                    playlist = JSON.parse(playlistJson);
+                }
+            }
+            catch(exception){
+                console.error(exception);
+                playlist = backupPlaylist;
+            }
         }();
 
         var syncRelatedVideos = function(){

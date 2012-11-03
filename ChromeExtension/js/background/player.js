@@ -14,7 +14,7 @@ define(['playlists', 'player_builder', 'yt_helper'], function(playlists, playerB
             //A communication port to the foreground. Needs to be re-established everytime foreground opens.
             var port = null;
             //The currently loaded playlist.
-            var playlist = playlists.selectedPlaylist;      
+            var playlist = playlists.selectedPlaylist;    
         
             (function initialize(){
                 var onReady = function(){
