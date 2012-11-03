@@ -1,6 +1,6 @@
 	window.libraryController = {
 		start: function() {
-			if (localStorage.songs == "null" || localStorage.songs == null || localStorage.songs == undefined || localStorage.songs == "undefined") {
+			if (localStorage.songs == "null" || localStorage.songs == null) {
 				localStorage.songs = "[]";
 				libraryController.loadAllSongs();
 			}
@@ -98,8 +98,10 @@
 			var joinedsongs = songs.join(",");
 			var authkey = localStorage["authkey"]
 			$.ajax({
-				url: "http://songbuzz.host56.com/backend/fb/compareSongs.php?songs=" + joinedsongs + "&authkey=" + authkey + "&list=" + list,
+				url: "http://songbuzz.host56.com/backend/fb/compareSongs.php?authkey=" + authkey + "&list=" + list,
 				dataType: "json",
+				data: {"songs": joinedsongs},
+				type: 'POST',
 				success: function(json) {
 					$.each(json.add, function(k,v) {
 						libraryController.addSong(v, list);

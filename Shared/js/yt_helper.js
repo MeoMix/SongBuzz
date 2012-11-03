@@ -242,6 +242,9 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
                     };
                     var videos = json.feed.entry
                     $.each(videos, function(k,video) {
+                        if (video.title.$t.toLowerCase().indexOf("chipmunk") == -1) {
+
+                       
                         var duration = video["media$group"]["yt$duration"]["seconds"];
                         var durationdifference = (parseFloat(originalduration) - duration)
                         var durationdifference = Math.sqrt(durationdifference*durationdifference)
@@ -249,8 +252,9 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
                             closestvideo.video = video;
                             closestvideo.difference = durationdifference
                         }
+                    }
                     })
-    
+                    
                     song.hoster = "youtube"
                     song.hosterid = closestvideo.video.id.$t.substr(closestvideo.video.id.$t.indexOf("videos/")+7)
                     song.duration = closestvideo.video["media$group"]["yt$duration"]["seconds"]

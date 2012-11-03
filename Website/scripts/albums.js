@@ -5,11 +5,32 @@ albums.showAlbumDialogue = function(node) {
 	//Pop up popup
 	$("#popup").addClass("popupvisible");
 	var mbid = $(node).parent("tr").attr("data-albumid")
-	albums.drawPopup(mbid)
+	var album = $(node).parent("tr").attr("data-album")
+	var artist = $(node).parent("tr").attr("data-artists")
+	albums.drawPopup(mbid, album, artist)
 }
-albums.drawPopup = function(mbid) {
+albums.drawPopup = function(mbid, album, artist) {
 	var popup = $("#popup")
-	audioScrobbler.getAlbumInfo(mbid, function(json) {
+	var format = "json"
+	var apiKey = "29c1ce9127061d03c0770b857b3cb741"
+	if (mbid == "" || mbid == undefined) {
+		var data = {
+           "method": "album.getInfo",
+           album: album,
+           artist: artist,
+           "format": format,
+           "api_key": apiKey
+        }
+	}
+	else {
+		var data = {
+           "method": "album.getInfo",
+           "mbid": mbid,
+           "format": format,
+           "api_key": apiKey
+        }
+	}
+	audioScrobbler.getAlbumInfo(data, function(json) {
 		if (json.error != undefined) {
 			$("<h2>").text(json.message).appendTo(popup);
 		}

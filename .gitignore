@@ -1,4 +1,4 @@
-backend
+backend/import.php
 *.min.js
 Website/scripts/recognition.min.js
 

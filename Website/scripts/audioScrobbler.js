@@ -35,15 +35,10 @@ define(function(){
                 success: callback
             });
         },
-        getAlbumInfo: function(mbid, callback) {
+        getAlbumInfo: function(data, callback) {
             $.ajax({
                 url: url,
-                data: {
-                    "method": "album.getInfo",
-                    "mbid": mbid,
-                    "format": format,
-                    "api_key": apiKey
-                },
+                data: data,
                 dataType: dataType,
                 success: callback
             })
