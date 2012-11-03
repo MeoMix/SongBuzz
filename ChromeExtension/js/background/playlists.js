@@ -7,13 +7,17 @@ define(['playlist', 'yt_helper'], function(playlistFunc, ytHelper){
 	//Select all the playlist IDs for storage. That's all that matters because
 	//the playlists themselves are stored in localStorage with the keys being their IDs.
 	var save = function () {
-		localStorage.setItem('playlistIds', JSON.stringify(_.pluck(playlists, 'id')));
+		var playlistIds = _.pluck(playlists, 'id');
+		console.log("saving playlistIDs:", playlistIds);
+		localStorage.setItem('playlistIds', JSON.stringify(playlistIds));
 	};
 
 	//Songs is an optional paramater. When adding a playlist from YouTube a collection of songs
 	//will be known -- so add them to the playlist during creation. When creating a new playlist
 	//directly inside the app there won't be any songs.
 	var addPlaylist = function(playlistName, songs){
+		console.log("adding playlist:", playlistName);
+
 		//TODO: I don't like having to pass null in as the first argument here.
 		var newPlaylist = new playlistFunc(null, playlistName);
 		if(songs){
@@ -25,7 +29,6 @@ define(['playlist', 'yt_helper'], function(playlistFunc, ytHelper){
 
 	var loadPlaylists = function(){
 		var playlistIdsJson = localStorage.getItem('playlistIds');
-		playlistIdsJson = null;
 		if (playlistIdsJson){
 			var playlistIds = [];
 			try {
@@ -34,6 +37,8 @@ define(['playlist', 'yt_helper'], function(playlistFunc, ytHelper){
 				console.error("Error parsing playlistIdsJson: " + exception.message);
 			}
 			
+			console.log("loading playlistIDs:", playlistIds);
+
 			_.each(playlistIds, function(id){
 				var playlist = new playlistFunc(id);
 				playlists.push(playlist);

@@ -108,9 +108,12 @@ define(['geoplugin', 'levenshtein', 'song_builder', 'audioScrobbler', 'recogniti
                 deferredRequests.push($.ajax({
                     url: 'https://gdata.youtube.com/feeds/api/videos/' + song.videoId + '/related?v=2&alt=json',
                     success: function(result){
-                        $.each(result.feed.entry, function(){
-                            relatedVideos.push(songBuilder.buildSong(this));
-                        });
+                        //Don't tack on a lot of songs. We can easily exceed the 5mb storage limit of local storage here.
+                        for(var i = 0; i < 2; i++){
+                            var relatedVideo = result.feed.entry[i];
+                            var song = songBuilder.buildSong(relatedVideo);
+                            relatedVideos.push(song);
+                        }
                     }
                 }));
             });
