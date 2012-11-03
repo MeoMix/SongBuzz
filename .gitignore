@@ -3,3 +3,6 @@ backend/import.php
 Website/scripts/recognition.min.js
 
 Website/sftp-config.json
+obj/
+bin/
+Properties/
