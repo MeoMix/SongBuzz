@@ -139,7 +139,7 @@ define(['audioScrobbler', 'levenshtein', 'backend', 'ytHelper', 'songDecorator']
             };
 
             ytHelpers.findVideo(song, function (foundVideo) {
-                songDecorator.decorateWithYouTubeInformation(foundVideo, song, function(song, json) {
+                songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined,function(song, json) {
                     if (json.error != undefined) {
                         $(nodeParent).find(".db-recognize").text("Track not found");
                     }
