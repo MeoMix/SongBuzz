@@ -34,7 +34,7 @@ define(function () {
                 success: callback
             });
         },
-        getAlbumInfo: function (mbid, callback, artist, album) {
+        getAlbumInfo: function (mbid, callback, album, artist) {
             //[Jonny] There should be the ability to pass in artist and album too!
             var data = {
                 "method": "album.getInfo",

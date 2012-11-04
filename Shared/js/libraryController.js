@@ -112,17 +112,32 @@
 				}
 			})
 		},
-		drawTable: function(list) {
-			$("#songtable").html("")
+		sortTable: function(sort, reverse) {
+			var currentList = $("#songtable").attr("data-list")
+			libraryController.drawTable(currentList, sort, reverse)
+		},
+		drawTable: function(list, sort, reverse) {
+			$("#songtable").html("").attr("data-list", list)
 			var songs = libraryController.getSongs(list);
+			if (sort) {
+				var songs = _.sortBy(libraryController.getSongs(list), function(song) {return song[sort]})
+			}
+			if (reverse) {
+				var songs = songs.reverse()
+			}
 			var table = $("<table>", {
 				id: "thetable",
 				border: 0
 			})
 			var th = $("<tr>")
-			var labels = ["","Title","Duration", "Artist", "Album"];
+			var labels = [["", ""],["Title", "title"],["Duration","duration"], ["Artists", "artists"], ["Album", "album"]];
 			$.each(labels, function(k,v) {
-				$("<th>").text(v).appendTo(th)
+				var td = $("<th>").text(v[0]).attr("data-sort-key", v[1])
+				if (sort == v[1]) {
+					var asordesc = (reverse == true) ? "descending" : "ascending"
+					td.addClass(asordesc + " sorted")
+				}
+				td.appendTo(th)
 			})
 			th.appendTo(table)
 			$.each(songs, function(key,value) {

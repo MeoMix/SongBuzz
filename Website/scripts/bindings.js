@@ -55,6 +55,20 @@ $(".db-in-db .db-recognize").live("click", function() {
 $("#album-recognize-all").live("click", function() {
 	albums.recognizeAll()
 })
+$("#songtable th").live("click", function() {
+	var node = $(this)
+	node.siblings().removeClass("ascending descending sorted");
+	var sort = node.attr("data-sort-key");
+	if (node.hasClass("descending")) {
+		libraryController.sortTable(sort);
+	}
+	else if (node.hasClass("ascending")) {
+		libraryController.drawTable($("#songtable").attr("data-list"))
+	}
+	else {
+		libraryController.sortTable(sort, true)
+	}
+})
 window.updateIcon = function(newState) {
 	if (newState == 0) {
 		libraryController.playNext()
