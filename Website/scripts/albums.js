@@ -15,23 +15,14 @@ define(['audioScrobbler', 'levenshtein', 'backend', 'ytHelper', 'songDecorator']
 			var format = "json"
 			var apiKey = "29c1ce9127061d03c0770b857b3cb741"
 			if (mbid == "" || mbid == undefined) {
-				var data = {
-				   "method": "album.getInfo",
-				   album: album,
-				   artist: artist,
-				   "format": format,
-				   "api_key": apiKey
-				}
+				audioScrobbler.getAlbumInfo("", albums.asCallback, album, artist);
 			}
 			else {
-				var data = {
-				   "method": "album.getInfo",
-				   "mbid": mbid,
-				   "format": format,
-				   "api_key": apiKey
-				}
+				audioScrobbler.getAlbumInfo(mbid, albums.asCallback);
 			}
-			audioScrobbler.getAlbumInfo(data, function(json) {
+			
+        }
+        albums.asCallback = function(json, mbid) {
 				if (json.error != undefined) {
 					$("<h2>").text(json.message).appendTo(popup);
 				}
@@ -57,8 +48,7 @@ define(['audioScrobbler', 'levenshtein', 'backend', 'ytHelper', 'songDecorator']
 				}).text(s.recognizeAll[language]).appendTo(popup)
 				albums.buildAlbumList(tracks);
 				}
-			});
-        }
+			}
         albums.buildAlbumList = function(tracks) {
 			var table = $("<table>")
 			if (tracks.length == undefined) {

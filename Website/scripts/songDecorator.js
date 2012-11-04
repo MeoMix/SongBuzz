@@ -30,7 +30,10 @@
                     }
                     recognitionList.addImageToSong(recognitionImageBuilder.buildSongDurationDiv(song), id);
                 }
-                callback(song, json);
+                
+                    callback(song, json);
+                
+
             });
         }
     };

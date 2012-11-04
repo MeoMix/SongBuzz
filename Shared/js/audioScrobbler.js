@@ -34,15 +34,23 @@ define(function () {
                 success: callback
             });
         },
-        getAlbumInfo: function (mbid, callback) {
+        getAlbumInfo: function (mbid, callback, artist, album) {
+            //[Jonny] There should be the ability to pass in artist and album too!
+            var data = {
+                "method": "album.getInfo",
+                "format": format,
+                "api_key": apiKey
+            }
+            if (mbid == "") {
+                data['artist'] = artist;
+                data['album'] = album
+            }
+            else {
+                data["mbid"] = mbid
+            }
             $.ajax({
                 url: url,
-                data: {
-                    "method": "album.getInfo",
-                    "mbid": mbid,
-                    "format": format,
-                    "api_key": apiKey
-                },
+                data: data,
                 dataType: dataType,
                 success: callback
             });
