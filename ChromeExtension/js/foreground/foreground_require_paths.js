@@ -37,6 +37,7 @@ var require = {
     'geoplugin': 'Shared/js/third_party/geoplugin',
     'levenshtein': 'Shared/js/third_party/levenshtein',
     'underscore': 'Shared/js/third_party/underscore.min',
-    'fblogin': 'Shared/js/fblogin'
+    'fblogin': 'Shared/js/fblogin',
+    'oauth2': '/oauth2/oauth2'
   }
 };

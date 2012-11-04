@@ -1,4 +1,4 @@
-﻿require(['jquery', 'playerstates', 'youtube-player-api-helper', 'song_validator', 'player', 'song_builder', 'helpers', 'underscore'], function(){
+﻿require(['jquery', 'playerstates', 'youtube-player-api-helper', 'song_validator', 'player', 'song_builder', 'helpers', 'underscore', 'oauth2'], function(){
 	'use strict';
 
 	//Bypass YouTube's content restrictions by looking like I'm a website.

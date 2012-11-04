@@ -5,6 +5,23 @@ define(['playlists', 'player_builder', 'yt_helper'], function(playlists, playerB
     //Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
     //This will prevent an error message 'Unable to post message to http://www.youtube.com'
     $(window).load( function(){
+
+    var facebookAuth = new OAuth2('facebook', {
+      client_id: '120407378113997',
+      client_secret: '2251642053b3ada76f3688d6e32d2fe9',
+      api_scope: 'publish_actions'
+    });
+
+    facebookAuth.authorize(function() {
+        console.log("authorized");
+        // console.log(facebookAuth.getAccessToken());
+      // Ready for action, can now make requests with
+      //facebookAuth.getAccessToken();
+
+      //xhr.setRequestHeader('Authorization', 'OAuth ' + facebookAuth.getAccessToken())
+    });
+
+
         //Handles communications between the GUI and the YT Player API.
         YoutubePlayer = (function() {
             //The actual youtubePlayer API object.

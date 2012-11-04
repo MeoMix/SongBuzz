@@ -11,6 +11,13 @@
     "default_title": "SongBuzz: Buzzworthy songs for today's busy bees.",
     "default_popup": "ChromeExtension/foreground.htm"
   },
+  "content_scripts":[
+    {
+      "matches": ["http://www.facebook.com/robots.txt*"],
+      "js": ["oauth2/oauth2_inject.js"],
+      "run_at": "document_start"
+    }
+  ],
   "permissions": [
     "contextMenus",
     "clipboardWrite",
@@ -20,7 +27,8 @@
     "http://www.geoplugin.net/",
     "http://www.beatport.com/top-100",
     "http://www.youtube.com/",
-    "https://www.youtube.com/"
+    "https://www.youtube.com/",
+    "https://graph.facebook.com/oauth/access_token"
 	],
   "content_security_policy": 
     "script-src 'self' https://www.youtube.com https://ssl.google-analytics.com https://gdata.youtube.com https://suggestqueries.google.com https://www.youtube.com https://s.ytimg.com; object-src 'self'"
