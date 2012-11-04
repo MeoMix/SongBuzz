@@ -55,7 +55,7 @@ define(['ytHelper', 'song_builder', 'recognitionImageBuilder', 'recognitionList'
                         };
 
                         ytHelper.findVideo(song, function (foundVideo) {
-                            songDecorator.decorateWithYouTubeInformation(foundVideo, song, videoId.id, function (song, json) {
+                            songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined, videoId.id, function (song, json) {
                                 recognitionList.showFinishedAnimation(song, videoId.id);
                                 backend.saveData(song);
                             });
