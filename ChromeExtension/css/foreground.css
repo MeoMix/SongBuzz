@@ -589,3 +589,23 @@
 .pressed svg *{
   fill:#060 !important;
 }
+
+
+
+.sidebar-button {
+	background: rgba(245,184,0,1);
+	border: none;
+	color: rgb(39, 39, 39);
+	text-transform: uppercase;
+	margin-left: 20px;
+	width: 200px;
+	height: 40px;
+	margin-top: 10px;
+	border-radius: 2px;
+	font-size: 1em;
+	opacity: 0.5;
+	-webkit-transition: 0.2s;
+}
+.sidebar-button:hover {
+	opacity: 1;
+}

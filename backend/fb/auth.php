@@ -10,6 +10,7 @@
    $app_secret = "2251642053b3ada76f3688d6e32d2fe9";
    //Works for localhost + server!
    $my_url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT']."/backend/fb/auth.php";
+   echo($my_url);
 
    session_start();
 
