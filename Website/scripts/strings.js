@@ -72,9 +72,4 @@ define(function(){
 			en: "Recognize"
 		}
 	};
-	$(document).ready(function() {
-		$.each($("[data-lang-id]"), function(key, node) {
-			$(node).html(strings[$(node).attr("data-lang-id")][language])
-		})
-	})
 });

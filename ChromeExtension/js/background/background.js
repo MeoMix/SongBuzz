@@ -17,6 +17,27 @@
     $('<iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
 	$('<iframe id="MusicTester" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
 
+	function onFacebookLogin() {
+		var successURL = 'https://www.facebook.com/connect/login_success.html';
+
+		if (!localStorage.accessToken) {
+			chrome.tabs.getAllInWindow(null, function(tabs) {
+				for (var i = 0; i < tabs.length; i++) {
+					if (tabs[i].url.indexOf(successURL) == 0) {
+						var params = tabs[i].url.split('#')[1];
+						console.log("Access token:", params);
+						localStorage.accessToken = params;
+						chrome.tabs.onUpdated.removeListener(onFacebookLogin);
+						return;
+					}
+				}
+			});
+		}
+	}
+
+	chrome.tabs.onUpdated.addListener(onFacebookLogin);
+
+
 	//http://stackoverflow.com/questions/5235719/how-to-copy-text-to-clipboard-from-a-google-chrome-extension
 	//Copies text to the clipboard. Has to happen on background page due to elevated privs.
 	chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {

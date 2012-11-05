@@ -1,85 +1,93 @@
-define(function() {
+define(['albums', 'libraryController'], function(albums, libraryController) {
 	'use strict';
-	//Setup a played recently array!
-window.previousSongs = [];
-window.nowPlaying = null;
-window.comingUp = [];
-//Is being used when comingUp is empty
-window.endQueue = [];
 
+	var constructor = _.once(function(){
+		return {
+			//Setup a played recently array!
+			previousSongs: [],
+			nowPlaying: null,
+			comingUp: [],
+			//Is being used when comingUp is empty
+			endQueue: []
+		};
+	});
 
-//Add a yellow background when clicked.
-//To play, the user must doubleclick.
-$(".recognized").live("click", function() {
-	$(".song").removeClass("selected")
-	$(this).addClass("selected")
-})
-//Play a song!
-.live("dblclick", function() {
-	//Remove all other nowplaying classes and give them to this one
-	$(".song").removeClass("nowplaying selected")
-	$(this).addClass("selected nowplaying")
-	//Defining the <tr> and getting attributes
-	var node = $(this)
-	var song = libraryController.makeSongOutOfTr(node);
-	endQueue = $(this).nextAll(".recognized")
-	libraryController.playSong(song)
-})
-$("#play").live("click", function() {
-	ytplayer.playVideo()
-})
-$("#pause").live("click", function() {
-	ytplayer.pauseVideo()
-})
-$("#next").live("click", function() {
-	libraryController.playNext()
-})
-$("#previous").live("click", function() {
-	libraryController.playPrevious()
-})
-$(".list-album").live("click", function() {
-	albums.showAlbumDialogue($(this));
-})
-$("#closepopup").live("click", function() {
-	$("#popup").removeClass("popupvisible")
-	$("#popup").html(this);
-})
-$(".db-not-in-db .db-recognize").live("click", function() {
-	albums.recognizeTrack($(this))
-})
-$(".db-in-db .db-recognize").live("click", function() {
-	var song = libraryController.makeSongOutOfTr($(this).parent(".song"))
-	$(this).parent("tr").addClass("in-library").find(".db-status").text(s.inLibrary[language])
-	libraryController.addSong(song, "songs")
-})
-$("#album-recognize-all").live("click", function() {
-	albums.recognizeAll()
-})
-$("#songtable th").live("click", function() {
-	var node = $(this)
-	node.siblings().removeClass("ascending descending sorted");
-	var sort = node.attr("data-sort-key");
-	if (node.hasClass("descending")) {
-		libraryController.sortTable(sort);
-	}
-	else if (node.hasClass("ascending")) {
-		libraryController.drawTable($("#songtable").attr("data-list"))
-	}
-	else {
-		libraryController.sortTable(sort, true)
-	}
-})
-window.updateIcon = function(newState) {
-	if (newState == 0) {
+	//Add a yellow background when clicked.
+	//To play, the user must doubleclick.
+	$(document).on('click', '.recognized', function() {
+		$(".song").removeClass("selected")
+		$(this).addClass("selected")
+	}).on('dblclick', '.recognized', function() {
+		//Remove all other nowplaying classes and give them to this one
+		$(".song").removeClass("nowplaying selected")
+		$(this).addClass("selected nowplaying")
+		//Defining the <tr> and getting attributes
+		var node = $(this)
+		var song = libraryController.makeSongOutOfTr(node);
+		constructor().endQueue = $(this).nextAll(".recognized")
+		libraryController.playSong(song)
+	}).on('click', '#play', function() {
+		ytplayer.playVideo()
+	}).on('click', '#pause', function() {
+		ytplayer.pauseVideo()
+	}).on('click', '#next', function() {
 		libraryController.playNext()
+	}).on('click', '#previous', function() {
+		libraryController.playPrevious()
+	}).on('click', '.list-album', function() {
+		albums.showAlbumDialogue($(this));
+	}).on('click', '#closepopup', function() {
+		$("#popup").removeClass("popupvisible")
+		$("#popup").html(this);
+	}).on('click', '.db-not-in-db .db-recognize', function() {
+		albums.recognizeTrack($(this))
+	}).on('click', '.db-in-db .db-recognize', function() {
+		var song = libraryController.makeSongOutOfTr($(this).parent(".song"))
+		$(this).parent("tr").addClass("in-library").find(".db-status").text(s.inLibrary[language])
+		libraryController.addSong(song, "songs")
+	}).on('click', '#album-recognize-all', function() {
+		albums.recognizeAll()
+	}).on('click', '#songtable th', function() {
+		var node = $(this)
+		node.siblings().removeClass("ascending descending sorted");
+		var sort = node.attr("data-sort-key");
+		if (node.hasClass("descending")) {
+			libraryController.sortTable(sort);
+		}
+		else if (node.hasClass("ascending")) {
+			libraryController.drawTable($("#songtable").attr("data-list"))
+		}
+		else {
+			libraryController.sortTable(sort, true)
+		}
+	});
+
+	window.updateIcon = function(newState) {
+		if (newState == 0) {
+			libraryController.playNext()
+		}
+		if (newState == 0 || newState == 1) {
+			$("#play").hide()
+			$("#pause").show()
+		}
+		else {
+			$("#play").show()
+			$("#pause").hide()
+		}
 	}
-	if (newState == 0 || newState == 1) {
-		$("#play").hide()
-		$("#pause").show()
-	}
-	else {
-		$("#play").show()
-		$("#pause").hide()
-	}
-}
+
+	return {
+		get previousSongs(){
+			return constructor().previousSongs;
+		},
+		get nowPlaying(){
+			return constructor().nowPlaying;
+		},
+		get comingUp(){
+			return constructor().comingUp;
+		},
+		get endQueue(){
+			return constructor().endQueue;
+		}
+	};
 })

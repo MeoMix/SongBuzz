@@ -1,6 +1,6 @@
 //Defines the whole left side song drag-and-drop / recognition area.
-define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder'], 
-    function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder){
+define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder', 'libraryController'], 
+    function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder, libraryController){
     libraryController.start()
     'use strict';
     //Whenever a user drops a song onto the left-hand side drop area

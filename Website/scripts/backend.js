@@ -6,6 +6,8 @@ define(function(){
     var events = {
         onSaveData: 'onSaveData'
     };
+
+    //Public methods:
     return {
         saveData: function(data, prevent){
             var self = this;
