@@ -1,17 +1,6 @@
 define(['albums', 'libraryController'], function(albums, libraryController) {
 	'use strict';
 
-	var constructor = _.once(function(){
-		return {
-			//Setup a played recently array!
-			previousSongs: [],
-			nowPlaying: null,
-			comingUp: [],
-			//Is being used when comingUp is empty
-			endQueue: []
-		};
-	});
-
 	//Add a yellow background when clicked.
 	//To play, the user must doubleclick.
 	$(document).on('click', '.recognized', function() {
@@ -24,7 +13,7 @@ define(['albums', 'libraryController'], function(albums, libraryController) {
 		//Defining the <tr> and getting attributes
 		var node = $(this)
 		var song = libraryController.makeSongOutOfTr(node);
-		constructor().endQueue = $(this).nextAll(".recognized")
+		libraryController.EndQueue = $(this).nextAll(".recognized")
 		libraryController.playSong(song)
 	}).on('click', '#play', function() {
 		ytplayer.playVideo()
@@ -75,19 +64,4 @@ define(['albums', 'libraryController'], function(albums, libraryController) {
 			$("#pause").hide()
 		}
 	}
-
-	return {
-		get previousSongs(){
-			return constructor().previousSongs;
-		},
-		get nowPlaying(){
-			return constructor().nowPlaying;
-		},
-		get comingUp(){
-			return constructor().comingUp;
-		},
-		get endQueue(){
-			return constructor().endQueue;
-		}
-	};
 })

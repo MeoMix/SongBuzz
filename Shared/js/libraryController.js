@@ -1,4 +1,4 @@
-define(['bindings'], function(bindings){
+define([], function(){
 	//method to load *all* songs from the server. This request can be huge, so it is only called the first time
 	var loadAllSongs = function() {
 		//Authkey is being fetched from localStorage. It is needed and personal for every user.
@@ -73,21 +73,22 @@ define(['bindings'], function(bindings){
 	//Gets called when next song is pressed. 
 	//Is needed for making the "previous" button work
 	var addToHistory = function(song) {
-		bindings.previousSongs.push(song);
-		return bindings.previousSongs;
+		console.log(song)
+		constructor().previousSongs.push(song);
+		return constructor().previousSongs;
 	};
 
 	var addToQueue = function(song,where) {
 		//You can specify if you want them at the end of the queue or at the beginning.
 		//This is being used for the previous button!
 		if (where == "end") {
-			bindings.comingUp.push(song)
+			constructor().comingUp.push(song)
 		}
 		else if (where == "start") {
 			//Add the song to the beginning of the queue
-			bindings.comingUp.reverse()
-			bindings.comingUp.push(song)
-			bindings.comingUp.reverse()
+			constructor().comingUp.reverse()
+			constructor().comingUp.push(song)
+			constructor().comingUp.reverse()
 		}
 	};
 
@@ -270,8 +271,8 @@ define(['bindings'], function(bindings){
 		//YouTube global variable
 		if (ytplayerready) {
 			//load into player
-			ytplayer.loadVideoById(song.hosterid)
-			bindings.nowPlaying = song;
+			ytplayer.loadVideoById(song.hosterid);
+			constructor().nowPlaying = song;
 			//remove from every other song which is being stopped
 			$(".song").removeClass("nowplaying")
 			//Add class to current song
@@ -296,8 +297,35 @@ define(['bindings'], function(bindings){
 		})
 		return song;
 	};
-
+	var constructor = _.once(function(){
+		return {
+			//Setup a played recently array!
+			previousSongs: [],
+			nowPlaying: null,
+			comingUp: [],
+			//Is being used when comingUp is empty
+			endQueue: []
+		};
+	});
 	return {
+		get previousSongs(){
+			return constructor().previousSongs;
+		},
+		get nowPlaying(){
+			return constructor().nowPlaying;
+		},
+		get comingUp(){
+			return constructor().comingUp;
+		},
+		get endQueue(){
+			return constructor().endQueue;
+		},
+		set NowPlaying(value) {
+			constructor().nowPlaying = value;
+		},
+		set EndQueue(value) {
+			constructor().endQueue = value
+		},
 		//Gets called when website is opened.
 		start: function() {
 			//No songs saved on the client side? Ok, load them all!
@@ -333,20 +361,20 @@ define(['bindings'], function(bindings){
 		//Move to the next track!
 		playNext: function() {
 			//Add current to history
-			addToHistory(bindings.nowPlaying);
+			addToHistory(constructor().nowPlaying);
 			//If no songs are in the user queue, continue with auto-generated songs
-			if (bindings.comingUp.length == 0) {
+			if (constructor().comingUp.length == 0) {
 				//Remove the first song in the queue and return it
-				var songtoplay = bindings.endQueue.slice(0,1)
+				var songtoplay = constructor().endQueue.slice(0,1)
 				//Make song out of talbe row and play it
 				playSong(makeSongOutOfTr($(songtoplay)));
 				//Autogenerate new songs
-				bindings.endQueue = $(".nowplaying").nextAll(".song")
+				constructor().endQueue = $(".nowplaying").nextAll(".song")
 			}
 			else {
 				//This line removes the first element of the array
 				//and plays it
-				var songtoplay = bindings.comingUp.shift()
+				var songtoplay = constructor().comingUp.shift()
 				playSong(songtoplay);
 
 			}
@@ -354,9 +382,9 @@ define(['bindings'], function(bindings){
 		//Plays the previous song
 		playPrevious: function() {
 			//when pressing forward, the nowplaying song will be played
-			addToQueue(bindings.nowPlaying, "start");
+			addToQueue(constructor().nowPlaying, "start");
 			//This line gets the song to play and takes it from the history
-			var songtoplay = bindings.previousSongs.pop()
+			var songtoplay = constructor().previousSongs.pop()
 			//Turn it up
 			playSong(songtoplay);
 
