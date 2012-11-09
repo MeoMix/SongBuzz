@@ -1,4 +1,4 @@
-require(['jquery', 'jquery-ui', 'playerstates', 'song_builder', 'helpers', 'underscore', 'oauth2'], function(){
+require(['jquery', 'jquery-ui', 'playerstates', 'song_builder', 'helpers', 'underscore', 'oauth2', 'supportedFormats'], function(){
     'use strict';
     $(function(){
     	//If the foreground is opened before the background has had a chance to load, wait for the background.

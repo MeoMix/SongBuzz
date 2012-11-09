@@ -18,6 +18,7 @@ var require = {
     'geoplugin': 'Shared/js/third_party/geoplugin',
     'levenshtein': 'Shared/js/third_party/levenshtein',
     'underscore': 'Shared/js/third_party/underscore.min',
+    'supportedFormats': 'Shared/js/supportedFormats',
     'oauth2': '/oauth2/oauth2'
   }
 };

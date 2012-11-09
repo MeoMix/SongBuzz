@@ -1,4 +1,4 @@
-﻿require(['jquery', 'playerstates', 'youtube-player-api-helper', 'song_validator', 'player', 'song_builder', 'helpers', 'underscore', 'oauth2'], function(){
+﻿require(['jquery', 'playerstates', 'youtube-player-api-helper', 'song_validator', 'player', 'song_builder', 'helpers', 'underscore', 'oauth2', 'supportedFormats'], function(){
 	'use strict';
 
 	//Bypass YouTube's content restrictions by looking like I'm a website.
@@ -17,25 +17,25 @@
     $('<iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
 	$('<iframe id="MusicTester" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
 
-	function onFacebookLogin() {
-		var successURL = 'https://www.facebook.com/connect/login_success.html';
+	// function onFacebookLogin() {
+	// 	var successURL = 'https://www.facebook.com/connect/login_success.html';
 
-		if (!localStorage.accessToken) {
-			chrome.tabs.getAllInWindow(null, function(tabs) {
-				for (var i = 0; i < tabs.length; i++) {
-					if (tabs[i].url.indexOf(successURL) == 0) {
-						var params = tabs[i].url.split('#')[1];
-						console.log("Access token:", params);
-						localStorage.accessToken = params;
-						chrome.tabs.onUpdated.removeListener(onFacebookLogin);
-						return;
-					}
-				}
-			});
-		}
-	}
+	// 	if (!localStorage.accessToken) {
+	// 		chrome.tabs.getAllInWindow(null, function(tabs) {
+	// 			for (var i = 0; i < tabs.length; i++) {
+	// 				if (tabs[i].url.indexOf(successURL) == 0) {
+	// 					var params = tabs[i].url.split('#')[1];
+	// 					console.log("Access token:", params);
+	// 					localStorage.accessToken = params;
+	// 					chrome.tabs.onUpdated.removeListener(onFacebookLogin);
+	// 					return;
+	// 				}
+	// 			}
+	// 		});
+	// 	}
+	// }
 
-	chrome.tabs.onUpdated.addListener(onFacebookLogin);
+	// chrome.tabs.onUpdated.addListener(onFacebookLogin);
 
 
 	//http://stackoverflow.com/questions/5235719/how-to-copy-text-to-clipboard-from-a-google-chrome-extension

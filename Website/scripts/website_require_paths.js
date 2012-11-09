@@ -21,7 +21,8 @@ var require = {
     'albums': 'Website/scripts/albums',
     'contextmaster': 'Website/scripts/contextmaster',
     'underscore': 'Shared/js/third_party/underscore.min',
-    'songDecorator': 'Website/scripts/songDecorator'
+    'songDecorator': 'Website/scripts/songDecorator',
+    'supportedFormats': 'Shared/js/supportedFormats'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

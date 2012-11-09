@@ -30,22 +30,21 @@ define(['ytHelper', 'song_builder', 'recognitionImageBuilder', 'recognitionList'
             $(self).val('');
             // $.each loop? Did I mention that you can add multiple tracks at the same time???
             $.each(urls, function (key, url) {
-                var videoId = ytHelper.parseUrl(url);
-                console.log(videoId)
-                if (videoId == null) {
+                var parsedUrlData = ytHelper.parseUrl(url);
+                if (parsedUrlData == null) {
                     recognitionArea.trigger(events.onLinkNotRecognized);
                 }
-                else if (videoId.hoster == "youtube") {
-                    ytHelper.getVideoInformation(videoId.id, function (videoInformation) {
+                else if (parsedUrlData.format == SupportedFormats.YouTube) {
+                    ytHelper.getVideoInformation(parsedUrlData.videoId, function (videoInformation) {
                         var song = songBuilder.buildSong(videoInformation);
                         recognitionArea.trigger(events.onSongDropped, song);
                     });
                 }
-                else if (videoId.hoster == "spotify") {
-                    ytHelper.recognizeSpotify(videoId.id, function (json) {
-                        recognitionList.addSong(videoId.id)
+                else if (parsedUrlData.format == SupportedFormats.Spotify) {
+                    ytHelper.recognizeSpotify(parsedUrlData.videoId, function (json) {
+                        recognitionList.addSong(parsedUrlData.videoId)
                         var SpotifyImage = recognitionImageBuilder.buildSpotifyMetroImage();
-                        recognitionList.addImageToSong(SpotifyImage, videoId.id);
+                        recognitionList.addImageToSong(SpotifyImage, parsedUrlData.videoId);
                         var track = json.track;
                         var song = {
                             title: track.name,
@@ -55,8 +54,8 @@ define(['ytHelper', 'song_builder', 'recognitionImageBuilder', 'recognitionList'
                         };
 
                         ytHelper.findVideo(song, function (foundVideo) {
-                            songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined, videoId.id, function (song, json) {
-                                recognitionList.showFinishedAnimation(song, videoId.id);
+                            songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined, parsedUrlData.videoId, function (song, json) {
+                                recognitionList.showFinishedAnimation(song, parsedUrlData.videoId);
                                 backend.saveData(song);
                             });
                         });

@@ -1,4 +1,4 @@
-require(['jquery', 'helpers', 'strings', 'underscore'], function () {
+require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats'], function () {
     'use strict';
     $(function () {
         $.each($("[data-lang-id]"), function (key, node) {
