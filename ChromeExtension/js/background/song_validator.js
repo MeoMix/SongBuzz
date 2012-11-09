@@ -11,7 +11,6 @@ define(['player_builder'], function(playerBuilder){
 		var oldVolume = -1;
 
 		var onStateChange = function(playerState){
-			console.log("playerState:", playerState);
 			if(playerState.data === PlayerStates.PLAYING){
 				SongValidator.isPlayable = true;
 				SongValidator.receivedAnswer = true;
@@ -19,8 +18,7 @@ define(['player_builder'], function(playerBuilder){
 		};
 
 		var onPlayerError = function(error){
-			console.log("I hit an error!!", error.message);
-			console.error(error);
+			console.error(error.message, error);
 			SongValidator.isPlayable = false;
 			SongValidator.receivedAnswer = true;
 		};		

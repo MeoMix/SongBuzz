@@ -1,6 +1,8 @@
-require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats'], function () {
+var ytplayer;
+require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats', 'player'], function () {
     'use strict';
     $(function () {
+
         $.each($("[data-lang-id]"), function (key, node) {
             $(node).html(strings[$(node).attr("data-lang-id")][language]);
         });
@@ -13,6 +15,5 @@ require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats'], func
                 fblogin.createLoginButton(loginButton, loginString, accountArea);
             });
         });
-
     });
 });

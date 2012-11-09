@@ -16,13 +16,17 @@ var require = {
     'song_builder': 'Shared/js/song_builder',
     'ytHelper': 'Shared/js/yt_helper',
     'helpers': 'Shared/js/helpers',
-    'libraryController': 'Shared/js/libraryController',
+    'libraryController': 'Website/scripts/libraryController',
     'bindings': 'Website/scripts/bindings',
     'albums': 'Website/scripts/albums',
     'contextmaster': 'Website/scripts/contextmaster',
     'underscore': 'Shared/js/third_party/underscore.min',
     'songDecorator': 'Website/scripts/songDecorator',
-    'supportedFormats': 'Shared/js/supportedFormats'
+    'supportedFormats': 'Shared/js/supportedFormats',
+    'player_builder': 'Shared/js/player_builder',
+    'player': 'Website/scripts/player',
+    'youtube-player-api-helper': 'Shared/js/third_party/youtube-player-api-helper',
+    'onYouTubePlayerAPIReady': 'Shared/js/third_party/onYouTubePlayerAPIReady'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

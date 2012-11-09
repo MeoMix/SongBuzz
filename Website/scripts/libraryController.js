@@ -1,4 +1,4 @@
-define([], function(){
+define(['player'], function(player){
 	//method to load *all* songs from the server. This request can be huge, so it is only called the first time
 	var loadAllSongs = function() {
 		//Authkey is being fetched from localStorage. It is needed and personal for every user.
@@ -268,16 +268,15 @@ define([], function(){
 
 	var playSong = function(song) {
 		$("#now-cover").attr("src", song.cover);
-		//YouTube global variable
-		if (ytplayerready) {
-			//load into player
-			ytplayer.loadVideoById(song.hosterid);
-			constructor().nowPlaying = song;
-			//remove from every other song which is being stopped
-			$(".song").removeClass("nowplaying")
-			//Add class to current song
-			$(".song[data-lastfmid="+song.lastfmid+"]").addClass("nowplaying")
-		}
+		//TODO: is LoadVideo always successfully called?
+		//load into player
+		player.loadVideo(song.hosterid);
+		constructor().nowPlaying = song;
+		//remove from every other song which is being stopped
+		$(".song").removeClass("nowplaying")
+		//Add class to current song
+		$(".song[data-lastfmid="+song.lastfmid+"]").addClass("nowplaying")
+
 		//Add +1 listen to the server!
 		$.ajax({
 			url: "http://songbuzz.host56.com/backend/songs/listen.php",

@@ -101,6 +101,8 @@ define(['geoplugin', 'levenshtein', 'song_builder'], function (geoplugin, levDis
             var relatedVideos = [];
             var deferredRequests = [];
 
+            console.log("songs:", songs);
+
             $.each(songs, function () {
                 var song = this;
 

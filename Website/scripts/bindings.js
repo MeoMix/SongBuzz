@@ -1,4 +1,4 @@
-define(['albums', 'libraryController'], function(albums, libraryController) {
+define(['albums', 'libraryController', 'player'], function(albums, libraryController, player) {
 	'use strict';
 
 	//Add a yellow background when clicked.
@@ -16,9 +16,9 @@ define(['albums', 'libraryController'], function(albums, libraryController) {
 		libraryController.EndQueue = $(this).nextAll(".recognized")
 		libraryController.playSong(song)
 	}).on('click', '#play', function() {
-		ytplayer.playVideo()
+		player.play()
 	}).on('click', '#pause', function() {
-		ytplayer.pauseVideo()
+		player.pause()
 	}).on('click', '#next', function() {
 		libraryController.playNext()
 	}).on('click', '#previous', function() {

@@ -429,7 +429,8 @@ img.fadeandslide.rec-album {
 	background: -webkit-linear-gradient(top, rgba(0,0,0,0.7), black);
 	border-top: 1px solid rgba(255,255,255,0.1);
 }
-#myytplayer {
+
+#MusicHolder {
 	position: absolute;
 	z-index: -2;
 	width: 240px;
