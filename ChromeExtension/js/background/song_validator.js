@@ -2,7 +2,6 @@
 //I do not want to spawn another YT Player every time SongValidator is needed.
 //I do want the foreground to be able to interact with the SongValidator.
 //So, the requireJS model has to be broken to allow for chrome.extension.getBackgroundPage().SongValidator niceness.
-//TODO: Is SongValidator still necessary? I think all pretty much all songs play... a few don't but I only run into maybe 1 in 400+
 var SongValidator = null;
 define(['player_builder'], function(playerBuilder){
 	if(SongValidator === null){
@@ -11,6 +10,7 @@ define(['player_builder'], function(playerBuilder){
 		var oldVolume = -1;
 
 		var onStateChange = function(playerState){
+			console.log("playerState:", playerState);
 			if(playerState.data === PlayerStates.PLAYING){
 				SongValidator.isPlayable = true;
 				SongValidator.receivedAnswer = true;
@@ -18,13 +18,14 @@ define(['player_builder'], function(playerBuilder){
 		};
 
 		var onPlayerError = function(error){
-			console.error(error.message, error);
+			console.log("I hit an error!!", error.message);
+			console.error(error);
 			SongValidator.isPlayable = false;
 			SongValidator.receivedAnswer = true;
 		};		
 
 		//Don't try and pass null in instead of a blank onReady or you'll generate errors.
-	    playerBuilder.buildPlayer('MusicTester', function(){console.log("Song validator is ready!");}, onStateChange, onPlayerError, function(builtPlayer) {
+	    playerBuilder.buildPlayer('MusicTester', function(){}, onStateChange, onPlayerError, function(builtPlayer) {
 	        SongValidator.player = builtPlayer;
 	    });
 	}

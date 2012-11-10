@@ -11,7 +11,13 @@
 </head>
 <body class="preload">
 	<div id="leftbar">
-		<h2 data-lang-id="playlists">Playlists</h2>
+		<div id="upperdiv">
+			<h2 data-lang-id="library">Library</h2>
+			<div class="standardlist selected" data-list-id="songs" data-lang-id="mysongs">My songs</div>
+			<h2 data-lang-id="playlists">Playlists</h2>
+			<div id="playlistlist"></div>
+			<div data-lang-id="addplaylist" id="addplaylist">Add playlist</div>
+		</div>
 		<div id="nowplaying">
 			<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" id="now-cover">
 		</div>
@@ -46,11 +52,26 @@
 	<div id="next"><img src="images/ff.png"></div>
 </div>
 	<div id="songtable"></div>
-	<iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1">
-		You need Flash player 8+ and JavaScript enabled to view this video.
-	</iframe>'
-	<div id="popup">
-		<div id="closepopup">Close</div>
-	</div>
+		<script type="text/javascript" src="../Shared/js/third_party/swfobject.js"></script>
+		  <div id="ytapiplayer">
+  </div>
+  <div id="popup">
+  	<div id="closepopup">Close</div>
+  </div>
+	<script type="text/javascript">
+	ytplayerready = false;
+	function onYouTubePlayerReady(playerId) {
+		ytplayer = document.getElementById("myytplayer");
+		ytplayerready = true;
+		ytplayer.setPlaybackQuality("small")
+		ytplayer.addEventListener("onStateChange", "updateIcon");
+
+	}
+    var params = { allowScriptAccess: "always" };
+    var atts = { id: "myytplayer" };
+    swfobject.embedSWF("http://www.youtube.com/v/dFVxGRekRSg?enablejsapi=1&playerapiid=ytplayer&version=3",
+                       "ytapiplayer", "425", "356", "8", null, null, params, atts);
+
+	</script>
 </body>
 </html>

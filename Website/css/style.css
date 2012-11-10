@@ -8,9 +8,15 @@
 	-webkit-user-select: none;
 	-moz-user-select: none;
 }
-body {
+input {
+	-webkit-user-select: all;
+	-moz-user-select: all;
+	-ms-user-select: all;
+	user-select: all;
+	
+}
+body,html {
 	font-size: 16px;
-	background: #363636;
 	color: white;
 	font-family: "Tahoma", "Helvetica";
 }
@@ -346,6 +352,7 @@ img.fadeandslide.rec-album {
 	z-index: 0;
 	overflow: scroll;
 	height: -webkit-calc(100% - 55px);
+	background: rgb(50,50,50);
 }
 .sorted {
 	background: -webkit-linear-gradient(top, rgb(255, 252, 252), rgb(114, 114, 114)) !important;
@@ -358,13 +365,15 @@ img.fadeandslide.rec-album {
 #thetable {
 	width: 100%;
 	border-collapse: collapse;
+	top: 19px;
+	position: absolute;
 }
 #thetable tr {
 	font-size: 0.7em;
 	font-family: "Lucida Sans";
 	cursor: default;
 }
-#thetable tr:first-child {
+#thetable thead tr:first-child {
 	color: black;
 	background: -webkit-linear-gradient(bottom, silver, white);
 	background: -moz-linear-gradient(bottom, silver, white);
@@ -379,12 +388,8 @@ img.fadeandslide.rec-album {
 #thetable th {
 	text-align: left;
 }
-#thetable tr:nth-child(2n) {
-	background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
-	background: -moz-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
-	background: -o-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
-	background: -ms-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
-	background: linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+#thetable tr:nth-child(2n) td{
+	background: rgb(54,54,54);
 }
 #thetable tr td, #thetable th {
 	text-overflow: ellipsis;
@@ -392,14 +397,24 @@ img.fadeandslide.rec-album {
 	word-wrap: break-word;
 	white-space: nowrap;
 	padding: 3px;
-	opacity: 0.9;
+	/* Leave this .99 - otherwise when you drag a song, the background
+	gets white... wtf */
+	opacity: 0.99;
+}
+tr td {
+	background: rgb(50,50,50);
 }
 .song {
-	color: rgba(255,255,255,0.85);
+	color: rgb(200,200,200);
 }
-.selected {
-	background: rgba(255, 233, 168, 0.82) !important;
-	color: black;
+.selected.song td{
+	background: -webkit-linear-gradient(bottom, black, rgba(0,0,0,0.9)) !important;
+	color: white;
+}
+.selected.playlist, .selected.standardlist {
+	background: -webkit-linear-gradient(bottom, black, rgba(0,0,0,0.8));
+	color: orange;
+	border-top: 1px solid black;
 }
 .descending:after {
 	content: '';
@@ -429,8 +444,7 @@ img.fadeandslide.rec-album {
 	background: -webkit-linear-gradient(top, rgba(0,0,0,0.7), black);
 	border-top: 1px solid rgba(255,255,255,0.1);
 }
-
-#MusicHolder {
+#myytplayer {
 	position: absolute;
 	z-index: -2;
 	width: 240px;
@@ -597,6 +611,62 @@ a {
 	width: 60px;
 	height: 60px;
 }
+.playlist, .standardlist {
+	padding-left: 20px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-size: 0.7em;
+	font-family: "Lucida Sans";
+	opacity: 0.7;
+	cursor: default;
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+}
+.recognized {
+	-webkit-user-drag: element;
+}
+.dragover {
+	background: whitesmoke;
+	color: black;
+}
+thead {
+	position: fixed;
+	z-index: 1;
+	width: 100%;
+	margin-top: -19px;
+}
+tbody {
+	top: 19px;
+}
+#addplaylist {
+	padding-left: 20px;
+	font-size: 0.7em;
+	font-family: "Lucida Sans";
+	cursor: pointer;
+}
+#addplaylist:before {
+	content: "+ ";
+}
+#playlistinput {
+	margin-left: 20px;
+}
+#upperdiv {
+	height: -webkit-calc(100% - 245px);
+	overflow: auto;
+}
+#playlistlist {
+	padding-bottom: 5px;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

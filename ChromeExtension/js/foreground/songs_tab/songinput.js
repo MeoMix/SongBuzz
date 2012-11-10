@@ -43,12 +43,10 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
         var parseUrlInput = function () {
             //Wrapped in a timeout to support 'rightclick->paste' 
             setTimeout(function () {
-                var url = addInput.val();
-                console.log("parsing url", url);
-                var parsedUrlData = ytHelper.parseUrl(url);
-                console.log("parsedUrlData:", parsedUrlData);
+                var videoId = ytHelper.parseUrl(addInput.val());
+
                 //If found a valid YouTube link then just add the video.
-                if (parsedUrlData && parsedUrlData.videoId) {
+                if (videoId) {
                     if(onValidInputEvent){
                         onValidInputEvent();
                     }
@@ -58,13 +56,13 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
                             dialogs.showBannedSongDialog();
                         }
                         else{
-                            chrome.extension.getBackgroundPage().SongValidator.validateSongById(parsedUrlData.videoId, function(playedSuccessfully){
+                            chrome.extension.getBackgroundPage().SongValidator.validateSongById(videoId, function(playedSuccessfully){
                                 if(playedSuccessfully){
-                                    chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(parsedUrlData.videoId);
+                                    chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(videoId);
                                 }
                                 else{
                                    dialogs.showReplacedSongNotification();
-                                    ytHelper.findPlayableByVideoId(parsedUrlData.videoId, function(playableSong){
+                                    ytHelper.findPlayableByVideoId(videoId, function(playableSong){
                                         chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(playableSong.videoId);
                                     });
                                 }
@@ -72,7 +70,7 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
                         }
                     };
 
-                    ytHelper.getVideoInformation(parsedUrlData.videoId, onResponse);
+                    ytHelper.getVideoInformation(videoId, onResponse);
                 }
             });
         };

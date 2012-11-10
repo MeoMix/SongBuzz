@@ -5,7 +5,7 @@ var require = {
   	'playerstates': 'ChromeExtension/js/playerstates',
     'song_validator': 'ChromeExtension/js/background/song_validator',
     'player': 'ChromeExtension/js/background/player',
-    'player_builder': 'Shared/js/player_builder',
+    'player_builder': 'ChromeExtension/js/background/player_builder',
     'playlist': 'ChromeExtension/js/background/playlist',
     'playlists': 'ChromeExtension/js/background/playlists',
     'song_validator': 'ChromeExtension/js/background/song_validator',
@@ -18,7 +18,6 @@ var require = {
     'geoplugin': 'Shared/js/third_party/geoplugin',
     'levenshtein': 'Shared/js/third_party/levenshtein',
     'underscore': 'Shared/js/third_party/underscore.min',
-    'supportedFormats': 'Shared/js/supportedFormats',
     'oauth2': '/oauth2/oauth2'
   }
 };

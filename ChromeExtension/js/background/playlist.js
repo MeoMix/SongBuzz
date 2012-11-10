@@ -14,7 +14,6 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
 
         var save = function () {
             //TODO: LocalStorage has a 5MB storage limit - don't storage playlists in it!
-            console.log("saving playlist", playlist.id);
             localStorage.setItem(playlist.id, JSON.stringify(playlist));
         };
 
@@ -23,12 +22,9 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
             var playlistJson = localStorage.getItem(playlist.id);
             var backupPlaylist = playlist;
 
-            console.log("playlistJson", playlistJson, playlist.id);
-
             try {
                 if (playlistJson){
                     playlist = JSON.parse(playlistJson);
-                    console.log("playlist set to:", playlist);
                 }
             }
             catch(exception){
@@ -38,10 +34,7 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
         }();
 
         var syncRelatedVideos = function(){
-            console.log("playlistSongs:", playlist);
-
             ytHelper.getRelatedVideos(playlist.songs, function(relatedVideos){
-                console.log("relatedVideos:", relatedVideos);
                 playlist.relatedVideos = relatedVideos;
                 save();
             });
@@ -53,10 +46,8 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
             if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
             if(!playlist.songHistory) playlist.songHistory = [];
             if(!playlist.songs) playlist.songs = [];
-            if(!playlist.relatedVideos) playlist.relatedVideos = [];
 
-            if(playlist.relatedVideos.length == 0){
-                console.log("syncingRelatedVideos");
+            if(playlist.relatedVideos == null || playlist.relatedVideos.length == 0){
                 syncRelatedVideos();
             }
 
@@ -139,7 +130,6 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
                 playlist.songHistory.unshift(song);
             },
             getRelatedVideo: function(){
-                console.log("playlist", playlist);
                  return playlist.relatedVideos[Math.floor(Math.random()*playlist.relatedVideos.length)];
             },
             //Takes a song and returns the next song object by index.

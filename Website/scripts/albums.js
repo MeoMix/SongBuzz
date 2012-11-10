@@ -139,7 +139,7 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
 						})
 					}
 				})
-				var songs = libraryController.getSongs()
+				var songs = libraryController.getSongs("songs")
 				$(".db-pending").removeClass("db-pending").addClass("db-not-in-db").find("td.db-status").text(s.notInDataBase[language])
 			}
 		})

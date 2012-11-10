@@ -11,22 +11,19 @@ var require = {
     'recognitionList': 'Website/scripts/recognitionList',
     'strings': 'Website/scripts/strings',
     'jquery': 'Shared/js/third_party/jquery-1.7.2',
+    'jquery-ui': 'Shared/js/third_party/jquery-ui-1.8.21.custom.min',
     'geoplugin': 'Shared/js/third_party/geoplugin',
     'levenshtein': 'Shared/js/third_party/levenshtein',
     'song_builder': 'Shared/js/song_builder',
     'ytHelper': 'Shared/js/yt_helper',
     'helpers': 'Shared/js/helpers',
-    'libraryController': 'Website/scripts/libraryController',
+    'libraryController': 'Shared/js/libraryController',
     'bindings': 'Website/scripts/bindings',
     'albums': 'Website/scripts/albums',
     'contextmaster': 'Website/scripts/contextmaster',
     'underscore': 'Shared/js/third_party/underscore.min',
     'songDecorator': 'Website/scripts/songDecorator',
-    'supportedFormats': 'Shared/js/supportedFormats',
-    'player_builder': 'Shared/js/player_builder',
-    'player': 'Website/scripts/player',
-    'youtube-player-api-helper': 'Shared/js/third_party/youtube-player-api-helper',
-    'onYouTubePlayerAPIReady': 'Shared/js/third_party/onYouTubePlayerAPIReady'
+    'playlists': 'Website/scripts/playlists'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

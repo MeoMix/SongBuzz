@@ -70,6 +70,18 @@ define(function(){
 		recognize: {
 			de: "Erkennen",
 			en: "Recognize"
+		},
+		library: {
+			de: "Bibliothek",
+			en: "Library"
+		},
+		mysongs: {
+			de: "Meine Songs",
+			en: "My songs"
+		},
+		addplaylist: {
+			de: "Neue Playlist",
+			en: "Add playlist"
 		}
 	};
 });

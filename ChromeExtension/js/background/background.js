@@ -1,4 +1,4 @@
-﻿require(['jquery', 'playerstates', 'youtube-player-api-helper', 'song_validator', 'song_builder', 'helpers', 'underscore', 'oauth2', 'supportedFormats'], function(){
+﻿require(['jquery', 'playerstates', 'youtube-player-api-helper', 'song_validator', 'player', 'song_builder', 'helpers', 'underscore', 'oauth2'], function(){
 	'use strict';
 
 	//Bypass YouTube's content restrictions by looking like I'm a website.
@@ -17,61 +17,25 @@
     $('<iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
 	$('<iframe id="MusicTester" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
 
-    //Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
-    //This will prevent an error message 'Unable to post message to http://www.youtube.com'
-    $(window).load( function(){
-    	require(['player'], function(){
-    		console.log("player loaded");
-    	});
-    });
+	function onFacebookLogin() {
+		var successURL = 'https://www.facebook.com/connect/login_success.html';
 
+		if (!localStorage.accessToken) {
+			chrome.tabs.getAllInWindow(null, function(tabs) {
+				for (var i = 0; i < tabs.length; i++) {
+					if (tabs[i].url.indexOf(successURL) == 0) {
+						var params = tabs[i].url.split('#')[1];
+						console.log("Access token:", params);
+						localStorage.accessToken = params;
+						chrome.tabs.onUpdated.removeListener(onFacebookLogin);
+						return;
+					}
+				}
+			});
+		}
+	}
 
-	// function onFacebookLogin() {
-	// 	var successURL = 'https://www.facebook.com/connect/login_success.html';
-
-	// 	if (!localStorage.accessToken) {
-	// 		chrome.tabs.getAllInWindow(null, function(tabs) {
-	// 			for (var i = 0; i < tabs.length; i++) {
-	// 				if (tabs[i].url.indexOf(successURL) == 0) {
-	// 					var params = tabs[i].url.split('#')[1];
-	// 					console.log("Access token:", params);
-	// 					localStorage.accessToken = params;
-	// 					chrome.tabs.onUpdated.removeListener(onFacebookLogin);
-	// 					return;
-	// 				}
-	// 			}
-	// 		});
-	// 	}
-	// }
-
-	// chrome.tabs.onUpdated.addListener(onFacebookLogin);
-
-
-    // $.ajax({
-    //     type: 'POST',
-    //     url: 'http://songbuzz.host56.com/backend/fb/auth.php',
-    //     success: function(a, e){
-    //         var indexOfFirstQuote = a.indexOf('\'');
-    //         var lastIndexOfQuote = a.lastIndexOf('\'');
-    //         var trimmedString = a.substring(indexOfFirstQuote + 1, lastIndexOfQuote);
-
-    //         var facebookAuth = new OAuth2('facebook', {
-    //           client_id: '120407378113997',
-    //           client_secret: '2251642053b3ada76f3688d6e32d2fe9',
-    //           api_scope: 'publish_actions',
-    //           state: Helpers.getUrlParamaterValueByName(trimmedString, "state")
-    //         });
-
-    //         facebookAuth.authorize(function() {
-    //             console.log("authorized");
-    //             // console.log(facebookAuth.getAccessToken());
-    //           // Ready for action, can now make requests with
-    //           //facebookAuth.getAccessToken();
-
-    //           //xhr.setRequestHeader('Authorization', 'OAuth ' + facebookAuth.getAccessToken())
-    //         });
-    //     }
-    // });
+	chrome.tabs.onUpdated.addListener(onFacebookLogin);
 
 
 	//http://stackoverflow.com/questions/5235719/how-to-copy-text-to-clipboard-from-a-google-chrome-extension

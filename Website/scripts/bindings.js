@@ -1,12 +1,43 @@
-define(['albums', 'libraryController', 'player'], function(albums, libraryController, player) {
+define(['albums', 'libraryController', 'playlists'], function(albums, libraryController, playlists) {
 	'use strict';
-
+	var resetSelection = function() {
+		$(".song,.playlist,.standardlist").removeClass("selected")
+	}
 	//Add a yellow background when clicked.
 	//To play, the user must doubleclick.
-	$(document).on('click', '.recognized', function() {
-		$(".song").removeClass("selected")
-		$(this).addClass("selected")
-	}).on('dblclick', '.recognized', function() {
+	$(window).on('resize', function() {
+		libraryController.setTableHeaderWidth();
+	})
+	$(document).on('click', '.recognized,.playlist', function() {
+		resetSelection()
+		$(this).addClass("selected");
+	})
+	.on('click', '#addplaylist', function() {
+		playlists.createPlaylistDialogue();
+	})
+	.on("click", '.standardlist', function() {
+		resetSelection();
+		$(this).addClass("selected");
+		libraryController.drawTable(($(this).attr("data-list-id")).split(","))
+	})
+	.on('drop', '.playlist', function(e) {
+		playlists.addSongToPlaylist($(this).attr("data-playlist-name"), window.nowDragging)
+		$(this).removeClass("dragover")
+	}).on('dragover', '.playlist', function(e) {
+		e.preventDefault()
+		$(this).addClass("dragover")
+	})
+	.on("dragleave", '.playlist', function(e) {
+		$(this).removeClass("dragover")
+	})
+	.on("dragstart", '.recognized', function() {
+		window["nowDragging"] = libraryController.makeSongOutOfTr($(this));
+	})
+	.on('click', '.playlist', function() {
+		var playlistname = $(this).attr("data-playlist-name");
+		libraryController.drawTable(["playlists", playlistname]);
+	})
+	.on('dblclick', '.recognized', function() {
 		//Remove all other nowplaying classes and give them to this one
 		$(".song").removeClass("nowplaying selected")
 		$(this).addClass("selected nowplaying")
@@ -16,9 +47,9 @@ define(['albums', 'libraryController', 'player'], function(albums, libraryContro
 		libraryController.EndQueue = $(this).nextAll(".recognized")
 		libraryController.playSong(song)
 	}).on('click', '#play', function() {
-		player.play()
+		ytplayer.playVideo()
 	}).on('click', '#pause', function() {
-		player.pause()
+		ytplayer.pauseVideo()
 	}).on('click', '#next', function() {
 		libraryController.playNext()
 	}).on('click', '#previous', function() {
@@ -40,14 +71,14 @@ define(['albums', 'libraryController', 'player'], function(albums, libraryContro
 		var node = $(this)
 		node.siblings().removeClass("ascending descending sorted");
 		var sort = node.attr("data-sort-key");
-		if (node.hasClass("descending")) {
-			libraryController.sortTable(sort);
+		if (node.hasClass("ascending")) {
+			libraryController.sortTable(sort, true);
 		}
-		else if (node.hasClass("ascending")) {
-			libraryController.drawTable($("#songtable").attr("data-list"))
+		else if (node.hasClass("descending")) {
+			libraryController.drawTable(($("#songtable").attr("data-list")).split(","))
 		}
 		else {
-			libraryController.sortTable(sort, true)
+			libraryController.sortTable(sort)
 		}
 	});
 

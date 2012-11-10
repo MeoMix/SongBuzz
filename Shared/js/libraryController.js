@@ -1,4 +1,4 @@
-define(['player'], function(player){
+define([], function(){
 	//method to load *all* songs from the server. This request can be huge, so it is only called the first time
 	var loadAllSongs = function() {
 		//Authkey is being fetched from localStorage. It is needed and personal for every user.
@@ -43,6 +43,7 @@ define(['player'], function(player){
 			id: "thetable",
 			border: 0
 		})
+		var thead = $("<thead>")
 		//Make a table header!
 		var th = $("<tr>")
 		//first value is table header label, second is sort value!
@@ -57,17 +58,35 @@ define(['player'], function(player){
 			}
 			td.appendTo(th)
 		})
-		th.appendTo(table)
+		th.appendTo(thead);
+		thead.appendTo(table);
 		//Make a table row to add to the table!
 		$.each(songs, function(key,value) {
 			(buildTableRow(value)).appendTo(table)
 		})
-		//Make it visibleè
-		table.appendTo("#songtable")
+		//Make it visible
+		table.appendTo("#songtable");
+		setTableHeaderWidth()
 	};
-
-	var getSongs = function(list) {
-		return $.parseJSON(localStorage[list]);
+	var setTableHeaderWidth = function() {
+		for (i = 0; i<5; i++) {
+			//Get width and add 6 to fix jQuery padding bug
+			var tableCellWidth = $("#thetable").find("td").eq(i).width() + 6;
+			//Apply to table header
+			$("#thetable thead").find("th").eq(i).width(tableCellWidth)
+		}
+	}
+	var getSongs = function(key) {
+		if (typeof key == "string") {
+			return $.parseJSON(localStorage[key])
+		}
+		else {
+			var list = $.parseJSON(localStorage[key[0]]);
+			if (key.length == 2) {
+				var list = $.parseJSON(list[key[1]])
+			}
+			return list;
+		}
 	};
 
 	//Gets called when next song is pressed. 
@@ -213,7 +232,7 @@ define(['player'], function(player){
 			"data-lastfmid": value.lastfmid,
 			"data-duration": value.duration,
 			"data-plays": value.plays,
-			"data-title": value.title,
+			"data-title": value.title
 		});
 
 		//The cells...
@@ -222,6 +241,11 @@ define(['player'], function(player){
 		$("<td>").text(Helpers.prettyPrintTime(value.duration)).appendTo(tr);
 		$("<td>").text(value.artists).appendTo(tr);
 		$("<td>").addClass("list-album").text(value.album).appendTo(tr);
+		//Add class "nowplaying if needed"
+		var nowplaying = constructor().nowPlaying
+		if (nowplaying != null && nowplaying.lastfmid == value.lastfmid) {
+			tr.addClass("nowplaying");
+		}
 
 		return tr;
 	};
@@ -268,15 +292,16 @@ define(['player'], function(player){
 
 	var playSong = function(song) {
 		$("#now-cover").attr("src", song.cover);
-		//TODO: is LoadVideo always successfully called?
-		//load into player
-		player.loadVideo(song.hosterid);
-		constructor().nowPlaying = song;
-		//remove from every other song which is being stopped
-		$(".song").removeClass("nowplaying")
-		//Add class to current song
-		$(".song[data-lastfmid="+song.lastfmid+"]").addClass("nowplaying")
-
+		//YouTube global variable
+		if (ytplayerready) {
+			//load into player
+			ytplayer.loadVideoById(song.hosterid);
+			constructor().nowPlaying = song;
+			//remove from every other song which is being stopped
+			$(".song").removeClass("nowplaying")
+			//Add class to current song
+			$(".song[data-lastfmid="+song.lastfmid+"]").addClass("nowplaying")
+		}
 		//Add +1 listen to the server!
 		$.ajax({
 			url: "http://songbuzz.host56.com/backend/songs/listen.php",
@@ -307,6 +332,7 @@ define(['player'], function(player){
 		};
 	});
 	return {
+		setTableHeaderWidth: setTableHeaderWidth,
 		get previousSongs(){
 			return constructor().previousSongs;
 		},
@@ -350,7 +376,7 @@ define(['player'], function(player){
 		getSongs: getSongs,
 		//Calls drawTable with exta parameters. Valid values for sort are title, artist*s* and album as well as duration
 		sortTable: function(sort, reverse) {
-			var currentList = $("#songtable").attr("data-list")
+			var currentList = ($("#songtable").attr("data-list")).split(",")
 			drawTable(currentList, sort, reverse)
 		},
 		//Draws the whole song list!
