@@ -85,7 +85,7 @@ define(function(){
 		},
 		hotsongs: {
 			de: "Top-Songs",
-			en: "Hot songs"
+			en: "Discover"
 		},
 		mostlistened: {
 			en: "Most listened",
@@ -94,6 +94,10 @@ define(function(){
 		addasplaylist: {
 			en: "Add as playlist",
 			de: "Als playlist speichern"
+		},
+		randomsongs: {
+			en: "Random songs",
+			de: "Zufällige Songs"
 		}
 	};
 });

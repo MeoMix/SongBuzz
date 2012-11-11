@@ -19,9 +19,15 @@ define(['albums', 'libraryController', 'playlists'], function(albums, libraryCon
 		resetSelection();
 		$(this).addClass("selected");
 		var list = ($(this).attr("data-list-id")).split(",")
-		if (list == "mostlistened"){
+		if (list == "mostlistened") {
 			var domain = "http://songbuzz.host56.com/backend/songs"
 			$.getJSON(domain + "/topsongs.php", function(json) {
+				libraryController.drawTable(json)
+			})
+		}
+		else if (list == "randomsongs") {
+			var domain = "http://songbuzz.host56.com/backend/songs"
+			$.getJSON(domain + "/randomsongs.php", function(json) {
 				libraryController.drawTable(json)
 			})
 		}
