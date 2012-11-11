@@ -53,9 +53,6 @@ define(function () {
         },
         //http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values/
         getUrlParamaterValueByName: function (url, paramaterName) {
-            console.log("name:", name);
-            console.trace();
-
             paramaterName = paramaterName.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regex = new RegExp("[\\?&]" + paramaterName + "=([^&#]*)");
             var results = regex.exec(url);

@@ -1,4 +1,4 @@
-define(['libraryController'], function(libraryController){
+define(['libraryController', 'playlists'], function(libraryController, playlists){
 	var contextmaster = {};
 	contextmaster.settings = {
 		animated: true //Gives a nice fadein/slidein animation
@@ -8,8 +8,12 @@ define(['libraryController'], function(libraryController){
 	//Delete actions you dont want or add your own!
 	contextmaster.config = [
 		{
-			selector: $("tr.recognized"),
-			actions: ["play", "addtoqueue", "remove"]
+			selector: $("tr.in-library"),
+			actions: ["play", "addtoqueue", "removeadd"]
+		},
+		{
+			selector: $(".playlist"),
+			actions: ["deleteplaylist"]
 		}
 	];
 
@@ -32,11 +36,24 @@ define(['libraryController'], function(libraryController){
 				libraryController.addToQueue(libraryController.makeSongOutOfTr($(thing).parent()), "end")
 			}
 		},
-		remove: {
-			title: "Delete",
+		removeadd: {
+			title: "Remove from library",
 			action: function(thing) {
-				var lastfmid = $(thing).parent("tr").attr("data-lastfmid");
-				libraryController.removeSong(lastfmid, "songs")
+				var song = libraryController.makeSongOutOfTr($(thing).parent("tr"));
+				var isInLibrary = libraryController.isInLibrary(song)
+				if (isInLibrary) {
+					libraryController.removeSong(song.lastfmid, "songs")
+				}
+				else {
+					libraryController.addSong(song, "songs")
+				}
+			}
+		},
+		deleteplaylist: {
+			title: "Delete playlist",
+			action: function(thing) {
+				var playlistname = $(thing).attr("data-playlist-name");
+				playlists.deletePlaylist(playlistname)
 			}
 		}
 	};
@@ -67,7 +84,14 @@ define(['libraryController'], function(libraryController){
 					$("<div>").addClass("cm-hr").appendTo(ul);
 				}
 				else {
-					var actiontitle = contextmaster.actions[action].title.replace(/{imagename}/g, e.target.src)
+					var actiontitle = contextmaster.actions[action].title
+					if (actiontitle == "Remove from library") {
+						var isInLibrary = libraryController.isInLibrary(libraryController.makeSongOutOfTr($(e.target).parent("tr")));
+							console.log(isInLibrary)
+						if (!isInLibrary) {
+							actiontitle = "Add to library"
+						}
+					}
 					$("<li>").attr("data-action", actiontitle).html(actiontitle).appendTo(ul).on("click", function() {
 						contextmaster.actions[action].action(e.target);
 					})

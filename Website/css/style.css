@@ -51,6 +51,7 @@ h2 {
 #popup h2 {
 	text-align: left;
 	margin-bottom: 0;
+	margin-top: 30px;
 }
 @-webkit-keyframes rotating {
 	from { -webkit-transform: rotate(0deg) scale(1,1); }
@@ -401,14 +402,14 @@ img.fadeandslide.rec-album {
 	gets white... wtf */
 	opacity: 0.99;
 }
-tr td {
+#thetable tr td {
 	background: rgb(50,50,50);
 }
 .song {
-	color: rgb(200,200,200);
+	color: rgb(230,230,230);
 }
 .selected.song td{
-	background: -webkit-linear-gradient(bottom, black, rgba(0,0,0,0.9)) !important;
+	background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.55)) !important;
 	color: white;
 }
 .selected.playlist, .selected.standardlist {
@@ -587,10 +588,13 @@ tbody {
 a {
 	color: white;
 }
-#album-recognize-all {
+#album-recognize-all, #album-addasplaylist {
 	text-align: right;
 	margin-top: 210px;
 	position: absolute;
+}
+#album-addasplaylist {
+	margin-top: 240px;
 }
 .button {
 	background: rgba(255,255,255,0.09);

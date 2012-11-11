@@ -1,5 +1,5 @@
-define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryController'],
- function (audioScrobbler, backend, ytHelpers, songDecorator, libraryController) {
+define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryController', 'playlists'],
+ function (audioScrobbler, backend, ytHelpers, songDecorator, libraryController, playlists) {
     'use strict';
 
     //Private functions:
@@ -52,6 +52,11 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
 				id: "album-recognize-all",
 				'class': "button",
 				text: s.recognizeAll[language]
+			}).appendTo(popup);
+			$("<div>", {
+				id: "album-addasplaylist",
+				'class': "button",
+				text: s.addasplaylist[language]
 			}).appendTo(popup);
 
 			buildAlbumList(album.tracks.track);
@@ -140,7 +145,8 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
 					}
 				})
 				var songs = libraryController.getSongs("songs")
-				$(".db-pending").removeClass("db-pending").addClass("db-not-in-db").find("td.db-status").text(s.notInDataBase[language])
+				$(".db-pending").removeClass("db-pending").addClass("db-not-in-db").find("td.db-status").text(s.notInDataBase[language]);
+				recognizeAll()
 			}
 		})
 	};
@@ -151,11 +157,20 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
             $(node).attr("data-" + a, b)
         });
     };
-
+    var recognizeAll = function() {
+			$(".db-not-in-db .db-recognize").click();
+	}
    	//Public methods
     return {
-		recognizeAll: function() {
-			$(".db-not-in-db .db-recognize").click();
+		recognizeAll: recognizeAll,
+		addAlbumAsPlaylist: function() {
+			var playlistname = $("#popup h3").text() + " - " + $("#popup h2").text()
+			playlists.addPlaylist(playlistname);
+			var songs = $("#popup .recognized");
+			$.each(songs, function(k, songdiv) {
+				var song = libraryController.makeSongOutOfTr(songdiv)
+				playlists.addSongToPlaylist(playlistname, song)
+			})
 		},
     	showAlbumDialogue: function (node) {
 			//Pop up popup

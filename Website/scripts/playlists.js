@@ -104,6 +104,7 @@ define(function() {
 				}
 			},
 			addPlaylist: addPlaylist,
-			drawPlaylists: drawPlaylists
+			drawPlaylists: drawPlaylists,
+			deletePlaylist: deletePlaylist
 		}
 })

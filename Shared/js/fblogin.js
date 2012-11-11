@@ -17,7 +17,6 @@ define(function () {
             });
             //Receive Facebook callback and push to localStorage
             var name = Helpers.getUrlParamaterValueByName(url, "name");
-            console.log("Name:", name);
             if (name != "") {
                 var user = {
                     name: name,

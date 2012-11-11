@@ -82,6 +82,18 @@ define(function(){
 		addplaylist: {
 			de: "Neue Playlist",
 			en: "Add playlist"
+		},
+		hotsongs: {
+			de: "Top-Songs",
+			en: "Hot songs"
+		},
+		mostlistened: {
+			en: "Most listened",
+			de: "Am meisten gehört"
+		},
+		addasplaylist: {
+			en: "Add as playlist",
+			de: "Als playlist speichern"
 		}
 	};
 });

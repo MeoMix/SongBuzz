@@ -18,7 +18,16 @@ define(['albums', 'libraryController', 'playlists'], function(albums, libraryCon
 	.on("click", '.standardlist', function() {
 		resetSelection();
 		$(this).addClass("selected");
-		libraryController.drawTable(($(this).attr("data-list-id")).split(","))
+		var list = ($(this).attr("data-list-id")).split(",")
+		if (list == "mostlistened"){
+			var domain = "http://songbuzz.host56.com/backend/songs"
+			$.getJSON(domain + "/topsongs.php", function(json) {
+				libraryController.drawTable(json)
+			})
+		}
+		else {
+			libraryController.drawTable(list);
+		}
 	})
 	.on('drop', '.playlist', function(e) {
 		playlists.addSongToPlaylist($(this).attr("data-playlist-name"), window.nowDragging)
@@ -67,7 +76,10 @@ define(['albums', 'libraryController', 'playlists'], function(albums, libraryCon
 		libraryController.addSong(song, "songs")
 	}).on('click', '#album-recognize-all', function() {
 		albums.recognizeAll()
-	}).on('click', '#songtable th', function() {
+	}).on('click', '#album-addasplaylist', function() {
+		albums.addAlbumAsPlaylist()
+	})
+	.on('click', '#songtable th', function() {
 		var node = $(this)
 		node.siblings().removeClass("ascending descending sorted");
 		var sort = node.attr("data-sort-key");
@@ -75,7 +87,7 @@ define(['albums', 'libraryController', 'playlists'], function(albums, libraryCon
 			libraryController.sortTable(sort, true);
 		}
 		else if (node.hasClass("descending")) {
-			libraryController.drawTable(($("#songtable").attr("data-list")).split(","))
+			libraryController.drawTable(libraryController.createList($("#songtable").attr("data-list")))
 		}
 		else {
 			libraryController.sortTable(sort)

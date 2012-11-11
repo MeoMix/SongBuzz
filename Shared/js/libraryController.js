@@ -26,13 +26,18 @@ define([], function(){
 
 	var drawTable = function(list, sort, reverse) {
 		//First, clear the table and add the list name to it
-		$("#songtable").html("").attr("data-list", list);
-		//Get daaa songs!
-		var songs = getSongs(list);
+		if (typeof list == "object" && list.length > 2) {
+			var songs = list;
+			$("#songtable").html("").attr("data-list", JSON.stringify(songs));
+		}
+		else {
+			var songs = getSongs(list);
+			$("#songtable").html("").attr("data-list", list);
+		}
 		//If it should sort, sort it!
 		if (sort) {
 			//Underscore FTW!
-			var songs = _.sortBy(getSongs(list), function(song) {return song[sort]})
+			var songs = _.sortBy(songs, function(song) {return song[sort]})
 		}
 		//Descending? Reverse the array!
 		if (reverse) {
@@ -123,7 +128,10 @@ define([], function(){
 			array.push(song);
 			localStorage.songs = JSON.stringify(array);
 			//Update the table!
-			updateTable(list)
+			if (list == $("#songtable").attr("data-list")) {
+				updateTable(list)
+			}
+			
 		}
 	};
 
@@ -192,7 +200,9 @@ define([], function(){
 		//...and save it!
 		localStorage.songs = JSON.stringify(array);
 		//Update th table!
-		updateTable(list);
+		if (list == $("#songtable").attr("data-list")) {
+			$("tr[data-lastfmid=" + lastfmid + "]").remove()
+		}
 		//Wait... did we forget something?
 		//Remove the song on the server too!
 		var data = {
@@ -234,7 +244,6 @@ define([], function(){
 			"data-plays": value.plays,
 			"data-title": value.title
 		});
-
 		//The cells...
 		$("<td>").addClass("playing-indicator").appendTo(tr);
 		$("<td>").text(value.title).appendTo(tr);
@@ -250,6 +259,16 @@ define([], function(){
 		return tr;
 	};
 
+	var isInLibrary = function(song) {
+		var songs = getSongs("songs");
+		var isInLibrary = false;
+		$.each(songs, function(k,v) {
+			if (v.lastfmid == song.lastfmid) {
+				isInLibrary = true;
+			}
+		})
+		return isInLibrary;
+	}
 	//Does not redraw the table, only updates it!
 	//Currently does not work with sorting
 	var updateTable = function(list) {
@@ -312,12 +331,21 @@ define([], function(){
 			}
 		})
 	};
-
+	var createList = function(list) {
+		//Function checks if it is an array or object
+		if (list.substr(0, 2) == "[{") {
+			var currentList = $.parseJSON(list)
+		}
+		else {
+			var currentList = list.split(",")
+		}
+		return currentList;
+	}
 	var makeSongOutOfTr = function(node) {
 		var attrs = ["album", "albumid", "artists", "artistsid", "countries", "cover", "duration", "hoster", "hosterid", "lastfmid", "title"]
 		var song = {}
 		$.each(attrs, function(key, value) {
-			song[value] = node.attr("data-" + value);
+			song[value] = $(node).attr("data-" + value);
 		})
 		return song;
 	};
@@ -376,7 +404,9 @@ define([], function(){
 		getSongs: getSongs,
 		//Calls drawTable with exta parameters. Valid values for sort are title, artist*s* and album as well as duration
 		sortTable: function(sort, reverse) {
-			var currentList = ($("#songtable").attr("data-list")).split(",")
+			var list = $("#songtable").attr("data-list")
+			//If it is a JSON, parse it!
+			currentList = createList(list)
 			drawTable(currentList, sort, reverse)
 		},
 		//Draws the whole song list!
@@ -415,6 +445,8 @@ define([], function(){
 
 		},
 		//Makes a song object out of the metadata saved in the DOM
-		makeSongOutOfTr: makeSongOutOfTr
+		makeSongOutOfTr: makeSongOutOfTr,
+		createList: createList,
+		isInLibrary: isInLibrary
 	};
 });
