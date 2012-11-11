@@ -1,10 +1,10 @@
 //The songs tab header. Users may add songs by clicking on Add Songs or click-and-holding on Add Songs.
 //Clicking Add Songs will allow the user to either search w/ auto-complete suggestions, or to paste youtube URLs into the input.
 //Alternatively, the user can click-and-hold on the button which will cause all open tabs to be parsed for songs.
-define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
+define(['yt_helper', 'dialogs'], function (ytHelper, dialogs) {
     'use strict';
 
-    var initialize = function(onValidInputEvent){
+    var initialize = function (onValidInputEvent) {
         var addInput = $('#CurrentSongDisplay .addInput').attr('placeholder', 'Search or Enter YouTube URL');
 
         //Provides the drop-down suggestions and song suggestions.
@@ -14,25 +14,25 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
             position: {
                 my: "left top",
                 at: "left bottom"
-            } ,
+            },
             minLength: 0, //minLength: 0 allows empty search triggers for updating source display.
-            focus: function(){
+            focus: function () {
                 //Don't change the input as the user changes selections.
                 return false;
             },
             select: function (event, ui) {
                 event.preventDefault(); //Don't change the text when user clicks their song selection.
-                if(onValidInputEvent){
+                if (onValidInputEvent) {
                     onValidInputEvent();
                 }
 
-                chrome.extension.getBackgroundPage().SongValidator.validateSongById(ui.item.value.videoId, function(isPlayable){
-                    if(isPlayable){
+                chrome.extension.getBackgroundPage().SongValidator.validateSongById(ui.item.value.videoId, function (isPlayable) {
+                    if (isPlayable) {
                         chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(ui.item.value.videoId);
                     }
-                    else{
+                    else {
                         dialogs.showReplacedSongNotification();
-                        ytHelper.findPlayableByVideoId(ui.item.value.videoId, function(playableSong){
+                        ytHelper.findPlayableByVideoId(ui.item.value.videoId, function (playableSong) {
                             chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(playableSong.videoId);
                         });
                     }
@@ -43,26 +43,28 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
         var parseUrlInput = function () {
             //Wrapped in a timeout to support 'rightclick->paste' 
             setTimeout(function () {
-                var videoId = ytHelper.parseUrl(addInput.val());
-
+                var url = addInput.val();
+                console.log("parsing url", url);
+                var parsedUrlData = ytHelper.parseUrl(url);
+                console.log("parsedUrlData:", parsedUrlData);
                 //If found a valid YouTube link then just add the video.
-                if (videoId) {
-                    if(onValidInputEvent){
+                if (parsedUrlData && parsedUrlData.videoId) {
+                    if (onValidInputEvent) {
                         onValidInputEvent();
                     }
 
-                    var onResponse = function(videoInformation){
-                        if(typeof videoInformation === "undefined"){
+                    var onResponse = function (videoInformation) {
+                        if (typeof videoInformation === "undefined") {
                             dialogs.showBannedSongDialog();
                         }
-                        else{
-                            chrome.extension.getBackgroundPage().SongValidator.validateSongById(videoId, function(playedSuccessfully){
-                                if(playedSuccessfully){
-                                    chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(videoId);
+                        else {
+                            chrome.extension.getBackgroundPage().SongValidator.validateSongById(parsedUrlData.videoId, function (playedSuccessfully) {
+                                if (playedSuccessfully) {
+                                    chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(parsedUrlData.videoId);
                                 }
-                                else{
-                                   dialogs.showReplacedSongNotification();
-                                    ytHelper.findPlayableByVideoId(videoId, function(playableSong){
+                                else {
+                                    dialogs.showReplacedSongNotification();
+                                    ytHelper.findPlayableByVideoId(parsedUrlData.videoId, function (playableSong) {
                                         chrome.extension.getBackgroundPage().YoutubePlayer.addSongByVideoId(playableSong.videoId);
                                     });
                                 }
@@ -70,12 +72,12 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
                         }
                     };
 
-                    ytHelper.getVideoInformation(videoId, onResponse);
+                    ytHelper.getVideoInformation(parsedUrlData.videoId, onResponse);
                 }
             });
         };
 
-        var handleInputEvents = function(){
+        var handleInputEvents = function () {
             var userIsTyping = false;
             var typingTimeout = null;
 
@@ -88,20 +90,20 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
                 clearTimeout(typingTimeout);
                 var usersText = $(this).val();
 
-                typingTimeout = setTimeout(function(){
+                typingTimeout = setTimeout(function () {
                     userIsTyping = false;
                     //User can navigate suggestions with up/down. 
                     if (code !== $.ui.keyCode.UP && code !== $.ui.keyCode.DOWN) {
-                        if(usersText === ''){
+                        if (usersText === '') {
                             addInput.autocomplete("option", "source", []);
                         }
-                        else{
+                        else {
                             showSongSuggestions(usersText);
                         }
                     }
                 }, 100);
 
-            }).keydown(function(){
+            }).keydown(function () {
                 userIsTyping = true;
                 clearTimeout(typingTimeout);
             }).bind('paste drop', function () {
@@ -111,12 +113,12 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
             //Searches youtube for song results based on the given text.
             var showSongSuggestions = function (text) {
                 ytHelper.search(text, function (videos) {
-                    if(!userIsTyping){
+                    if (!userIsTyping) {
                         var songTitles = [];
-                        $(videos).each(function(){
+                        $(videos).each(function () {
                             //I wanted the label to be duration | title to help delinate between typing suggestions and actual songs.
                             var label = Helpers.prettyPrintTime(this.duration) + " | " + this.title;
-                            songTitles.push({ label: label, value: this});
+                            songTitles.push({ label: label, value: this });
                         });
 
                         //Show songs found instead of suggestions.
@@ -125,10 +127,10 @@ define(['yt_helper', 'dialogs'], function(ytHelper, dialogs){
                     }
                 });
             };
-        }();
+        } ();
     };
 
     return {
         initialize: initialize
-    }
+    };
 });

@@ -1,4 +1,4 @@
-require(['jquery', 'helpers', 'strings', 'underscore', 'jquery-ui'], function () {
+require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats', 'player', 'jquery-ui'], function () {
     'use strict';
     $(function () {
         $.each($("[data-lang-id]"), function (key, node) {
@@ -6,8 +6,8 @@ require(['jquery', 'helpers', 'strings', 'underscore', 'jquery-ui'], function ()
         });
         require(['playlists'], function (playlists) {
             playlists.drawPlaylists();
-            playlists.addPlaylist("Cool music")
-        })
+            playlists.addPlaylist("Cool music");
+        });
         require(['bindings', 'recognition', 'contextmaster'], function () {
             require(['fblogin'], function (fblogin) {
                 var loginButton = $('#login-button');

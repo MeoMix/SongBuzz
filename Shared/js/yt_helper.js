@@ -88,8 +88,8 @@ define(['geoplugin', 'levenshtein', 'song_builder'], function (geoplugin, levDis
 
     //Takes a videoId which is presumed to have content restrictions and looks through YouTube
     //for a song with a similiar name that might be the right song to play.
-    var findPlayableByVideoId = function(videoId, callback) {
-        this.getVideoInformation(videoId, function(videoInformation) {
+    var findPlayableByVideoId = function (videoId, callback) {
+        this.getVideoInformation(videoId, function (videoInformation) {
             if (videoInformation) {
                 findPlayableWithVideoInformation(videoInformation, callback);
             }
@@ -100,6 +100,8 @@ define(['geoplugin', 'levenshtein', 'song_builder'], function (geoplugin, levDis
         getRelatedVideos: function (songs, callback) {
             var relatedVideos = [];
             var deferredRequests = [];
+
+            console.log("songs:", songs);
 
             $.each(songs, function () {
                 var song = this;
@@ -124,33 +126,33 @@ define(['geoplugin', 'levenshtein', 'song_builder'], function (geoplugin, levDis
 
         search: search,
         findPlayableByVideoId: findPlayableByVideoId,
-        //Takes a URL and returns a videoId if found inside of the URL.
+        //Takes a URL and returns parsed URL information such as schema and song id if found inside of the URL.
         parseUrl: function (url) {
-            var hostersscheme = {
-                "youtube": "youtube.com/watch?v=",
-                "spotify": "open.spotify.com/track/"
+            var parsedUrlData = null
+
+            var urlFormats = {
+                //Meo: I tried a couple of URLs and the regexp seems fine. Could you please list some URLs which
+                //return a value in match[2] that has a length of 11 and is not a youtube URL?
+                youTube: /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/,
+                spotify: 'open.spotify.com/track/'
             }
-            var song = null
-            $.each(hostersscheme, function (hoster, scheme) {
-                if (url.indexOf(scheme) != -1) {
-                    var id = url.substr(url.indexOf(scheme) + scheme.length);
-                    id = id.substr(0, id.indexOf("&"));
-                    song = {
-                        hoster: hoster,
-                        id: id
-                    }
+
+            var match = url.match(urlFormats.youTube);
+            if (match && match[2].length === 11) {
+                parsedUrlData = {
+                    format: SupportedFormats.YouTube,
+                    videoId: match[2]
                 }
+            }
 
-                //TODO: Does this regExp really match a lot of stuff?
-                //                    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
-                //                    var match = url.match(regExp);
-                //                    console.log("match:", match);
-                //                    if (match && match[2].length === 11) {
-                //                        console.log(match[2]);
-                //                    }
+            if (url.indexOf(urlFormats.spotify) != -1) {
+                parsedUrlData = {
+                    hoster: SupportedFormats.Spotify,
+                    videoId: url.substr(url.indexOf(scheme) + scheme.length)
+                };
+            }
 
-            })
-            return song;
+            return parsedUrlData;
         },
 
         parseUrlForPlaylistId: function (url) {
