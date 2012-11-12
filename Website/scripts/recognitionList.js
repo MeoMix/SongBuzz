@@ -1,29 +1,28 @@
-define(function(){
+define(function() {
     'use strict';
     var recognitionList = $('#recognitionlist');
     var currentSong = null;
 
     return {
-        addNotice: function(noticeDomElement){
+        addNotice: function(noticeDomElement) {
             recognitionList.append(noticeDomElement);
         },
-        addSong: function(id){
+        addSong: function(id) {
             var songDiv = $('<div>', {
                 id: id
             });
 
             recognitionList.append(songDiv);
         },
-        addImageToSong: function(imageElement, id){
-            $("#"+id).append(imageElement);
+        addImageToSong: function(imageElement, id) {
+            $("#" + id).append(imageElement);
         },
-        showFinishedAnimation: function(data, id){
+        showFinishedAnimation: function(data, id) {
             if (id != undefined) {
-                    var id = id
-                }
-                else {
-                    var id = data.hosterid
-                }
+                var id = id;
+            } else {
+                var id = data.hosterid;
+            }
             var track = $('<div>', {
                 'class': 'finishedrecognized',
                 'data-recognized-id': id
@@ -53,21 +52,20 @@ define(function(){
                 text: Helpers.prettyPrintTime(data.duration)
             }).appendTo(track);
 
-            setTimeout( function() {
-                var currentSong = $("#" +id)
-                
-                currentSong.animate({"opacity": 0}, 2000);
+            setTimeout(function() {
+                var currentSong = $("#" + id);
+                currentSong.animate({ "opacity": 0 }, 2000);
                 track.insertAfter(currentSong).fadeIn();
                 setTimeout(function() {
                     $('<div>', {
                         'class': 'spark',
-                        'data-recognized-id': id 
+                        'data-recognized-id': id
                     }).insertAfter(currentSong);
                 }, 1000);
                 setTimeout(function() {
-                    $("[data-recognized-id="+id+"]").slideUp()
-                    currentSong.slideUp()
-                }, 8000)
+                    $("[data-recognized-id=" + id + "]").slideUp();
+                    currentSong.slideUp();
+                }, 8000);
             }, 1000);
         }
     };

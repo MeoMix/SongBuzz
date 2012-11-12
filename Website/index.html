@@ -1,66 +1,66 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
-<head>
-	<meta charset="UTF-8">
-	<title>SongBuzz</title>
+    <head>
+        <meta charset="UTF-8">
+        <title>SongBuzz</title>
 
-	<script src="scripts/website_require_paths.js"></script>
-	<script data-main="main" src="../Shared/js/third_party/require.min.js"></script>
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/contextmaster.css">
-</head>
-<body>
-	<div id="leftbar">
-		<div id="upperdiv">
-			<h2 data-lang-id="library">Library</h2>
-			<div class="standardlist selected" data-list-id="songs" data-lang-id="mysongs">My songs</div>
-			<h2 data-lang-id="playlists">Playlists</h2>
-			<div id="playlistlist"></div>
-			<div data-lang-id="addplaylist" id="addplaylist">Add playlist</div>
-			<h2 data-lang-id="hotsongs">Hot songs</h2>
-			<div id="hotsongs">
-				<div class="standardlist" data-lang-id="mostlistened" data-list-id="mostlistened">Most listened</div>
-				<div class="standardlist" data-lang-id="randomsongs" data-list-id="randomsongs">Random songs</div>
-			</div>
-		</div>
-		<div id="nowplaying">
-			<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" id="now-cover">
-		</div>
-	</div>
-	<div id="sidebar">
-		<div id="backend"></div>
-		<div class="spark"></div>
-		<h2 data-lang-id="addMusic">Add Music</h2>
-		<div id="recognition-area">
-			<div id="drag-area">
-				<img src="images/youtube.png" alt="Drop YouTube links!">
-				<img src="images/spotify.png" alt="Drop YouTube links!">
-			</div>
-			<textarea name="" id="" cols="30" rows="10"></textarea>
-			<div id="drop-music" data-lang-id="dropMusic">Drop your<br>music here</div>
-			<div class="hr"></div>
-		</div>
-		<h2 data-lang-id="recognition">Recognition</h2>
-		<div id="recognitionlist">			
-		</div>
-		<br>
-		<div class="hr"></div>
-		<h2 id="login-string">Login</h2>
-		<div id="account-area">
-			<button id="login-button" class="sidebar-button">Loading...</button>
-		</div>
-	</div>
-<div id="controls">
-	<div id="previous"><img src="images/rewind.png"></div>
-	<div id="play"><img src="images/play.png"></div>
-	<div id="pause" style="display: none;"><img src="images/pause.png"></div>
-	<div id="next"><img src="images/ff.png"></div>
-</div>
-	<div id="songtable"></div>
-	<iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1">
-		You need Flash player 8+ and JavaScript enabled to view this video.
-	</iframe>'
-  <div id="popup">
-  	<div id="closepopup">Close</div>
-  </div>
+        <script src="scripts/requirePaths.js"></script>
+        <script data-main="main" src="../Shared/js/thirdParty/require.js"></script>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/contextmaster.css">
+    </head>
+    <body>
+    <div id="leftbar">
+        <div id="upperdiv">
+            <h2 data-lang-id="library">Library</h2>
+            <div class="standardlist selected" data-list-id="songs" data-lang-id="mysongs">My songs</div>
+            <h2 data-lang-id="playlists">Playlists</h2>
+            <div id="playlistlist"></div>
+            <div data-lang-id="addplaylist" id="addplaylist">Add playlist</div>
+            <h2 data-lang-id="hotsongs">Hot songs</h2>
+            <div id="hotsongs">
+                <div class="standardlist" data-lang-id="mostlistened" data-list-id="mostlistened">Most listened</div>
+                <div class="standardlist" data-lang-id="randomsongs" data-list-id="randomsongs">Random songs</div>
+            </div>
+        </div>
+        <div id="nowplaying">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" id="now-cover">
+        </div>
+    </div>
+    <div id="sidebar">
+        <div id="backend"></div>
+        <div class="spark"></div>
+        <h2 data-lang-id="addMusic">Add Music</h2>
+        <div id="recognition-area">
+            <div id="drag-area">
+                <img src="images/youtube.png" alt="Drop YouTube links!">
+                <img src="images/spotify.png" alt="Drop YouTube links!">
+            </div>
+            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <div id="drop-music" data-lang-id="dropMusic">Drop your<br>music here</div>
+            <div class="hr"></div>
+        </div>
+        <h2 data-lang-id="recognition">Recognition</h2>
+        <div id="recognitionlist">			
+        </div>
+        <br>
+        <div class="hr"></div>
+        <h2 id="login-string">Login</h2>
+        <div id="account-area">
+            <button id="login-button" class="sidebar-button">Loading...</button>
+        </div>
+    </div>
+    <div id="controls">
+        <div id="previous"><img src="images/rewind.png"></div>
+        <div id="play"><img src="images/play.png"></div>
+        <div id="pause" style="display: none;"><img src="images/pause.png"></div>
+        <div id="next"><img src="images/ff.png"></div>
+    </div>
+    <div id="songtable"></div>
+    <iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1">
+        You need Flash player 8+ and JavaScript enabled to view this video.
+    </iframe>'
+    <div id="popup">
+        <div id="closepopup">Close</div>
+    </div>
 </html>

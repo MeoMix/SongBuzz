@@ -1,9 +1,12 @@
-require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats', 'player', 'jquery-ui'], function () {
+require(['jquery', 'jqueryUi', 'helpers', 'strings', 'underscore', 'supportedFormats', 'ytPlayerApiHelper'], function () {
     'use strict';
     $(function () {
         $.each($("[data-lang-id]"), function (key, node) {
             $(node).html(strings[$(node).attr("data-lang-id")][language]);
         });
+        //TODO: Multiple requires like this does not make sense.
+        require(['player'], function () {});
+
         require(['playlists'], function (playlists) {
             playlists.drawPlaylists();
             playlists.addPlaylist("Cool music");
@@ -16,6 +19,5 @@ require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats', 'play
                 fblogin.createLoginButton(loginButton, loginString, accountArea);
             });
         });
-
     });
 });

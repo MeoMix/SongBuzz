@@ -1,47 +1,39 @@
-define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
-    //Maintains a list of song objects as an array and exposes methods to affect those objects to Player.
-    return function(id, name) {
-        "use strict";
-        var playlist = {
-            id: id ? id : Helpers.generateGuid(),
-            title: name ? name : "New Playlist",
+//Constructor for a Playlist object. The Playlist object maintains a list of Song objects as an array and
+//provides methods to affect the Song collection.
+define(['ytHelper', 'songBuilder'], function(ytHelper, songBuilder) {
+    'use strict';
+    return function(config) {
+        var playlist = $.extend({
+            id: Helpers.generateGuid(),
+            title: "New Playlist",
             selected: false,
             shuffledSongs: [],
             songHistory: [],
             relatedVideos: [],
             songs: []
-        };
+        }, config);
 
-        var save = function () {
+        var save = function() {
             //TODO: LocalStorage has a 5MB storage limit - don't storage playlists in it!
-            console.log("saving playlist", playlist.id);
             localStorage.setItem(playlist.id, JSON.stringify(playlist));
         };
 
-        var loadPlaylist = function(){
-            //Methods are unable to be serized to localStorage.
+        //Check localStorage for a playlist with the current playlists ID.
+        //If found, load the saved JSON data into our playlist.
+        (function () {
             var playlistJson = localStorage.getItem(playlist.id);
-            var backupPlaylist = playlist;
-
-            console.log("playlistJson", playlistJson, playlist.id);
 
             try {
-                if (playlistJson){
+                if (playlistJson) {
                     playlist = JSON.parse(playlistJson);
-                    console.log("playlist set to:", playlist);
                 }
-            }
-            catch(exception){
+            } catch(exception) {
                 console.error(exception);
-                playlist = backupPlaylist;
             }
-        }();
+        }());
 
-        var syncRelatedVideos = function(){
-            console.log("playlistSongs:", playlist);
-
-            ytHelper.getRelatedVideos(playlist.songs, function(relatedVideos){
-                console.log("relatedVideos:", relatedVideos);
+        var syncRelatedVideos = function() {
+            ytHelper.getRelatedVideos(playlist.songs, function(relatedVideos) {
                 playlist.relatedVideos = relatedVideos;
                 save();
             });
@@ -49,38 +41,37 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
 
         //Make sure a playlist and its songs always have the current versions properties.
         //If a user has an old version of a playlist stored in localStorage -- things could go awry.
-        var legacySupport = function(){
-            if(!playlist.shuffledSongs) playlist.shuffledSongs = [];
-            if(!playlist.songHistory) playlist.songHistory = [];
-            if(!playlist.songs) playlist.songs = [];
-            if(!playlist.relatedVideos) playlist.relatedVideos = [];
+        (function () {
+            if (!playlist.shuffledSongs) playlist.shuffledSongs = [];
+            if (!playlist.songHistory) playlist.songHistory = [];
+            if (!playlist.songs) playlist.songs = [];
+            if (!playlist.relatedVideos) playlist.relatedVideos = [];
 
-            if(playlist.relatedVideos.length == 0){
-                console.log("syncingRelatedVideos");
+            if (playlist.relatedVideos.length == 0) {
                 syncRelatedVideos();
             }
 
             //Changed to match YouTube properties more closely.
-            $.each(playlist.songs, function(){
-                if(this.name){
+            $.each(playlist.songs, function() {
+                if (this.name) {
                     this.title = this.name;
                     delete this.name;
                 }
 
-                if(this.totalTime){
+                if (this.totalTime) {
                     this.duration = this.totalTime;
                     delete this.totalTime;
                 }
             });
-        }();
+        }());
 
-        var loadShuffledSongs = function(){
+        var loadShuffledSongs = function() {
             $.extend(playlist.shuffledSongs, playlist.songs);
             playlist.shuffledSongs = _.shuffle(playlist.shuffledSongs);
-        }
+        };
 
         //Takes a song's UID and returns the index of that song in the playlist if found.
-        var getSongIndexById = function (songs, id) {
+        var getSongIndexById = function(songs, id) {
             var songIndex = -1;
             for (var i = 0; i < songs.length; i++) {
                 if (songs[i] && songs[i].id === id) {
@@ -88,25 +79,25 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
                     break;
                 }
             }
-            
+
             return songIndex;
         };
 
         return {
-            get id(){
+            get id() {
                 return playlist.id;
             },
-            get title(){
+            get title() {
                 return playlist.title;
             },
-            set title(value){
+            set title(value) {
                 playlist.title = value;
                 save();
             },
-            get isSelected(){
+            get isSelected() {
                 return playlist.selected;
             },
-            set isSelected(value){
+            set isSelected(value) {
                 playlist.selected = value;
                 save();
             },
@@ -116,63 +107,56 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
             get songs() {
                 return playlist.songs;
             },
-            loadData: function(data){
-                playlist = data;
-                save();
-            },
-            syncShuffledSongs: function(id){
-                playlist.shuffledSongs = _.reject(playlist.shuffledSongs, function(s) {return s.id === id; });
+            syncShuffledSongs: function(id) {
+                playlist.shuffledSongs = _.reject(playlist.shuffledSongs, function(s) { return s.id === id; });
 
-                if(playlist.shuffledSongs.length == 0){
+                if (playlist.shuffledSongs.length == 0) {
                     loadShuffledSongs();
                 }
             },
-            clear: function(){
+            clear: function() {
                 playlist.songs = [];
                 save();
             },
             //Takes a song's UID and returns the full song object if found.
-            getSongById: function (id) {
-                return _.find(playlist.songs, function(s){ return s.id === id; });
+            getSongById: function(id) {
+                return _.find(playlist.songs, function(s) { return s.id === id; });
             },
-            addSongToHistory: function(song){
+            addSongToHistory: function(song) {
                 playlist.songHistory.unshift(song);
             },
-            getRelatedVideo: function(){
-                console.log("playlist", playlist);
-                 return playlist.relatedVideos[Math.floor(Math.random()*playlist.relatedVideos.length)];
+            getRelatedVideo: function() {
+                var randomIndex = Math.floor(Math.random() * playlist.relatedVideos.length);
+                return playlist.relatedVideos[randomIndex];
             },
             //Takes a song and returns the next song object by index.
-            getNextSong: function () {
+            getNextSong: function() {
                 var nextSong = null;
 
                 var isShuffleEnabled = JSON.parse(localStorage.getItem('isShuffleEnabled')) || false;
 
-                if(isShuffleEnabled === true){
+                if (isShuffleEnabled === true) {
                     nextSong = playlist.shuffledSongs[0];
-                }
-                else{
+                } else {
                     var currentSong = playlist.songHistory[0];
 
-                    if(currentSong){
+                    if (currentSong) {
                         var currentSongIndex = getSongIndexById(playlist.songs, currentSong.id);
                         var nextSongIndex = currentSongIndex + 1;
 
                         //Loop back to the front if at end. Should make this togglable in the future.
-                        if (playlist.songs.length <= nextSongIndex){
+                        if (playlist.songs.length <= nextSongIndex) {
                             nextSongIndex = 0;
                             nextSong = playlist.songs[nextSongIndex];
-                        }
-                        else{
+                        } else {
                             nextSong = playlist.songs[nextSongIndex];
                         }
                     }
-
-                }                
+                }
 
                 return nextSong;
             },
-            getPreviousSong: function () {
+            getPreviousSong: function() {
                 //Move the currently playing song out of songHistory and into the front of shuffledSongs so that if
                 //a user clicks 'next' or plays forward the song that was ahead will still be ahead instead of random song.
                 var currentSong = playlist.songHistory.shift();
@@ -181,11 +165,11 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
                 //Get the previous song by history if possible.
                 var previousSong = playlist.songHistory.shift();
                 //If no previous song was found in the history, then just go back one song by index.
-                if(!previousSong){
+                if (!previousSong) {
                     var previousSongIndex = getSongIndexById(playlist.songs, currentSong.id) - 1;
 
                     // Goes to the end of the current playlist.
-                    if (previousSongIndex < 0){
+                    if (previousSongIndex < 0) {
                         previousSongIndex = playlist.songs.length - 1;
                     }
 
@@ -194,44 +178,34 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
 
                 return previousSong;
             },
-            addSongs: function(songs){
-                _.each(songs, function(song){
-                    playlist.songs.push(song);
-                    playlist.shuffledSongs.push(song);
-                })
-
-                playlist.shuffledSongs = _.shuffle(playlist.shuffledSongs);
-                syncRelatedVideos();
-                save();
-            },
-            addSong: function(song){ 
+            addSong: function(song) {
                 playlist.songs.push(song);
                 playlist.shuffledSongs.push(song);
                 playlist.shuffledSongs = _.shuffle(playlist.shuffledSongs);
                 syncRelatedVideos();
                 save();
             },
-            addSongByVideoId: function (videoId, callback) {
+            addSongByVideoId: function(videoId, callback) {
                 var self = this;
-                ytHelper.getVideoInformation(videoId, function(videoInformation){
+                ytHelper.getVideoInformation(videoId, function(videoInformation) {
                     var song = songBuilder.buildSong(videoInformation);
                     self.addSong(song);
                     callback(song);
-                })
+                });
             },
-            removeSongById: function (id) {
+            removeSongById: function(id) {
                 syncRelatedVideos();
                 this.syncShuffledSongs(id);
-                playlist.songs = _.reject(playlist.songs, function(s) {return s.id === id; });
+                playlist.songs = _.reject(playlist.songs, function(s) { return s.id === id; });
                 save();
             },
             //Naieve implementation
             //Sync is used to ensure proper song order after the user drag-and-drops a song on the playlist. 
-            sync: function (ids) {
+            sync: function(ids) {
                 var syncedSongs = [];
 
                 var self = this;
-                $(ids).each(function(){
+                $(ids).each(function() {
                     var song = self.getSongById(this);
                     syncedSongs.push(song);
                 });
@@ -240,10 +214,10 @@ define(['yt_helper', 'song_builder'], function(ytHelper, songBuilder){
                 save();
             },
             //Randomizes the playlist and then saves it.
-            shuffle: function(){
+            shuffle: function() {
                 playlist.songs = _.shuffle(playlist.songs);
                 save();
             }
         };
-    }
+    };
 });

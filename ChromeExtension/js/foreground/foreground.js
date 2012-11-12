@@ -1,4 +1,4 @@
-﻿define(['uielements', 'fblogin'], function (uiElements, fblogin) {
+﻿define(['uiElements'], function (uiElements) {
     'use strict';
     //Background's player object will notify the foreground whenever its state changes.
     chrome.extension.onConnect.addListener(function (port) {

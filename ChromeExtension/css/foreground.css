@@ -554,14 +554,6 @@
   content:'♫ ';
 }
 
-#ConfirmSearchDialog{
-  display: none;
-}
-
-#ReplacedSongDialog{
-  display: none;
-}
-
 #ContextMenu {
     display: none;        
     position: absolute;

@@ -1,6 +1,5 @@
-﻿require(['jquery', 'playerstates', 'youtube-player-api-helper', 'song_validator', 'song_builder', 'helpers', 'underscore', 'oauth2', 'supportedFormats'], function () {
+﻿require(['jquery', 'playerStates', 'ytPlayerApiHelper', 'songBuilder', 'helpers', 'underscore', 'oauth2', 'supportedFormats'], function () {
     'use strict';
-
     //Bypass YouTube's content restrictions by looking like I'm a website.
     chrome.webRequest.onBeforeSendHeaders.addListener(function (info) {
         info.requestHeaders.push({
@@ -11,20 +10,20 @@
     }, {
         urls: ["<all_urls>"]
     },
-    ["blocking", "requestHeaders"]);
+        ["blocking", "requestHeaders"]
+    );
 
     //Build iframe AFTER onBeforeSendHeaders listener. You can't put this shit in the HTML.
     $('<iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
-    $('<iframe id="MusicTester" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1"></iframe>').appendTo('body');
 
     //Use window.load to allow the IFrame to be fully in place before starting up the YouTube API.
     //This will prevent an error message 'Unable to post message to http://www.youtube.com'
     $(window).load(function () {
+        console.log("loading player");
         require(['player'], function () {
             console.log("player loaded");
         });
     });
-
 
     // function onFacebookLogin() {
     // 	var successURL = 'https://www.facebook.com/connect/login_success.html';

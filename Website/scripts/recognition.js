@@ -1,12 +1,13 @@
 //Defines the whole left side song drag-and-drop / recognition area.
-define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder', 'libraryController'], 
-    function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder, libraryController){
-    libraryController.start()
+define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder', 'libraryController'],
+    function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder, libraryController) {
     'use strict';
+
+    libraryController.start();
     //Whenever a user drops a song onto the left-hand side drop area
     //and it is a viable song to add -- add it to the recognition list
     //by getting its meta data. Show some images to the user to indicate success. 
-    recognitionArea.onSongDropped(function(event, song){
+    recognitionArea.onSongDropped(function(event, song) {
         //Need a base song div element to attach any data to -- so add that to the page.
         recognitionList.addSong(song.videoId);
 
@@ -23,14 +24,14 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
             song.title = song.title.replace(regex, "");
         });
         //Remove brackets
-		//TODO: Need to be able to detext/identify/handle remixes.
-		song.title = cropuntil(song.title, "(")
-		song.title = cropuntil(song.title, "[")
+        //TODO: Need to be able to detext/identify/handle remixes.
+        song.title = cropuntil(song.title, "(");
+        song.title = cropuntil(song.title, "[");
         searchMetaData(song);
     });
 
     //If its not the right type of link (doesn't match regexp) then let the user know
-    recognitionArea.onLinkNotRecognized(function(){
+    recognitionArea.onLinkNotRecognized(function() {
         var unrecognizedLinkNotice = $('<p>', {
             'class': 'fadeandslide',
             text: strings.linkNotRecognized[window.language]
@@ -38,25 +39,26 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
 
         recognitionList.addNotice(unrecognizedLinkNotice);
     });
-	
-	//Whenever we successfully save to the server -- reflect that to the user
-	//by showing the song's duration and showing a nice animation.
-	backend.onSaveData(function(event, data){
-        console.log(data)
-		recognitionList.showFinishedAnimation(data, data.hosterid);
+
+    //Whenever we successfully save to the server -- reflect that to the user
+    //by showing the song's duration and showing a nice animation.
+    backend.onSaveData(function(event, data) {
+        console.log(data);
+        recognitionList.showFinishedAnimation(data, data.hosterid);
         //Also, we add it to the users library!
         //Option to prevent adding to the library
         if (data.prevent == undefined) {
-           backend.userLibrary("add", {"song": data.lastfmid, "list": "songs", "authkey": localStorage['authkey']});
-           //Finally, add it to the DOM!
-           libraryController.addSong(data, "songs"); 
+            backend.userLibrary("add", { "song": data.lastfmid, "list": "songs", "authkey": localStorage['authkey'] });
+            //Finally, add it to the DOM!
+            libraryController.addSong(data, "songs");
         }
-	});
+    });
 
     //Go out to audioscrobbler and ask it for metadata information
     //Metadata information includes artist/song/album/album cover art.
-    function searchMetaData(song){
-        audioScrobbler.getData(song.title, function(json){
+
+    function searchMetaData(song) {
+        audioScrobbler.getData(song.title, function(json) {
             var totalResults = parseInt(json.results["opensearch:totalResults"], 10);
 
             if (totalResults !== 0) {
@@ -65,10 +67,10 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                 var thumbnailImage = recognitionImageBuilder.buildThumbnailImage(song);
                 recognitionList.addImageToSong(thumbnailImage, song.videoId);
 
-                audioScrobbler.getAlbum(track.name, track.artist, function(json){
+                audioScrobbler.getAlbum(track.name, track.artist, function(json) {
                     var track = json.track;
                     var album = track.album;
-                  
+
                     if (album === undefined) {
                         album = {
                             title: "Unknown",
@@ -81,9 +83,9 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
                     var albumImage = recognitionImageBuilder.buildAlbumImage(album);
                     recognitionList.addImageToSong(albumImage, song.videoId);
 
-					var songDurationDiv = recognitionImageBuilder.buildSongDurationDiv(song);
-					recognitionList.addImageToSong(songDurationDiv, song.videoId);
-                    console.log("song", song, "track", track)
+                    var songDurationDiv = recognitionImageBuilder.buildSongDurationDiv(song);
+                    recognitionList.addImageToSong(songDurationDiv, song.videoId);
+                    console.log("song", song, "track", track);
                     backend.saveData({
                         hoster: "youtube",
                         hosterid: song.videoId,
@@ -106,7 +108,7 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
     function cropuntil(input, slice) {
         var croppedValue = input;
 
-        if(input.indexOf(slice) !== -1) {
+        if (input.indexOf(slice) !== -1) {
             croppedValue = input.substr(0, input.indexOf(slice));
         }
 

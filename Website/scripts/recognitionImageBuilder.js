@@ -1,21 +1,21 @@
-define(function(){
+define(function() {
     'use strict';
     return {
-        buildThumbnailImage: function(song){
+        buildThumbnailImage: function(song) {
             var thumbnailImage = $('<img>', {
                 'class': 'fadeandslide rec-thumb',
                 src: song.thumbnailUrl
             });
             return thumbnailImage;
         },
-        buildAlbumImage: function(album){
+        buildAlbumImage: function(album) {
             var albumImage = $('<img>', {
                 'class': 'fadeandslide rec-album',
                 'src': album.image
             });
             return albumImage;
         },
-        buildYoutubeMetroImage: function(){
+        buildYoutubeMetroImage: function() {
             var youtubeMetroImage = $('<img>', {
                 'class': 'fadeandslide',
                 src: 'images/youtube-metro.png'
@@ -29,7 +29,7 @@ define(function(){
             });
             return spotifyMetroImage;
         },
-        buildSongDurationDiv: function(song){
+        buildSongDurationDiv: function(song) {
             var songDurationDiv = $('<div>', {
                 text: Helpers.prettyPrintTime(song.duration),
                 'class': 'fadeandslide rec-check'

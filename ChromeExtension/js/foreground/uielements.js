@@ -1,5 +1,5 @@
 //Load mousewheel here because it isn't needed in foreground and is not wrapped in a require block (so it might get loaded before jQuery if put in foreground)
-define(['player_controls', 'header', 'settings', 'songs_tab', 'playlists_tab', 'time_display', 'progress_bar', 'content_buttons'],
+define(['playerControls', 'header', 'settings', 'songsTab', 'playlistsTab', 'timeDisplay', 'progressBar', 'contentButtons'],
  function(playerControls, header, settings, songsTab, playlistsTab, timeDisplay, progressBar){
     'use strict';
     progressBar.selector.bind('manualTimeChange', timeDisplay.update);
@@ -14,7 +14,7 @@ define(['player_controls', 'header', 'settings', 'songs_tab', 'playlists_tab', '
         playerControls.refreshControls();
         header.updateTitle();
         songsTab.reload();
-        playlistsTab.reload();   
+        playlistsTab.reload();
     })();
 
     return {

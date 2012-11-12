@@ -1,15 +1,15 @@
-define(function(){
+define(function() {
     'use strict';
-    var domain = 'http://songbuzz.host56.com/'
+    var domain = 'http://songbuzz.host56.com/';
     var url = domain + 'backend/songs/add.php';
-    
+
     var events = {
         onSaveData: 'onSaveData'
     };
 
     //Public methods:
     return {
-        saveData: function(data, prevent){
+        saveData: function(data, prevent) {
             var self = this;
             $.ajax({
                 url: url,
@@ -21,7 +21,7 @@ define(function(){
                 success: function(json) {
                     if (json.success === "true") {
                         if (prevent != undefined) {
-                            data.prevent = prevent
+                            data.prevent = prevent;
                         }
                         $(self).trigger(events.onSaveData, data);
                     }
@@ -39,24 +39,19 @@ define(function(){
                 data: data,
                 dataType: "json",
                 success: function(json) {
-                    var status = json["status_code"]
+                    var status = json["status_code"];
                     if (status == "0") {
-                        console.log("Song added to users library successfully.")
+                        console.log("Song added to users library successfully.");
+                    } else if (status == "1") {
+                        console.log("Song not added to user library. Backend error.");
+                    } else if (status == "2") {
+                        console.log("Song not added to user library. Database error.");
+                    } else if (status == "3") {
+                        console.log("Song was already in list.");
                     }
-                    else if (status == "1") {
-                        console.log("Song not added to user library. Backend error.")
-                    }
-                    else if (status == "2") {
-                        console.log("Song not added to user library. Database error.")
-                    }
-                    else if (status == "3") {
-                        console.log("Song was already in list.")
-                    }
-
                 }
             });
-
-        }   
+        }
     };
 });
 

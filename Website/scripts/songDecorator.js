@@ -1,9 +1,8 @@
-﻿define(['audioScrobbler', 'recognitionImageBuilder', 'recognitionList'], 
-    function (audioScrobbler, recognitionImageBuilder, recognitionList) {
+﻿define(['audioScrobbler', 'recognitionImageBuilder', 'recognitionList'], function(audioScrobbler, recognitionImageBuilder, recognitionList) {
     'use strict';
 
     return {
-        decorateWithYouTubeInformation: function (video, song, id, callback) {
+        decorateWithYouTubeInformation: function(video, song, id, callback) {
             song.hoster = "youtube";
             song.hosterid = video.id.$t.substr(video.id.$t.indexOf("videos/") + 7);
             song.duration = video.media$group.yt$duration.seconds;
@@ -14,7 +13,7 @@
                 recognitionList.addImageToSong(thumbnailImage, id);
             }
             //One last request just for the lastfmid ..
-            audioScrobbler.getAlbum(song.title, song.artists, function (json) {
+            audioScrobbler.getAlbum(song.title, song.artists, function(json) {
                 var track = json.track;
                 if (track.album) {
                     song.albumid = track.album.mbid;
@@ -30,9 +29,9 @@
                     }
                     recognitionList.addImageToSong(recognitionImageBuilder.buildSongDurationDiv(song), id);
                 }
-                
-                    callback(song, json);
-                
+
+                callback(song, json);
+
 
             });
         }
