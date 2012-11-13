@@ -1,4 +1,4 @@
-define(['albums', 'libraryController', 'playlists', 'player'], function(albums, libraryController, playlists, player) {
+define(['albums', 'libraryController', 'playlists', 'player', 'navigation'], function(albums, libraryController, playlists, player, navigation) {
     'use strict';
     var resetSelection = function() {
         $(".song,.playlist,.standardlist").removeClass("selected");
@@ -15,22 +15,9 @@ define(['albums', 'libraryController', 'playlists', 'player'], function(albums, 
         .on('click', '#addplaylist', function() {
             playlists.createPlaylistDialogue();
         })
-        .on("click", '.standardlist', function() {
-            resetSelection();
-            $(this).addClass("selected");
-            var list = ($(this).attr("data-list-id")).split(",");
-            var domain = "http://songbuzz.host56.com/backend/songs";
-            if (list == "mostlistened") {
-                $.getJSON(domain + "/topsongs.php", function(json) {
-                    libraryController.drawTable(json);
-                });
-            } else if (list == "randomsongs") {
-                $.getJSON(domain + "/randomsongs.php", function(json) {
-                    libraryController.drawTable(json);
-                });
-            } else {
-                libraryController.drawTable(list);
-            }
+        .on("click", '[data-navigate]', function() {
+            var list = $(this).attr("data-navigate");
+            navigation.to(list)
         })
         .on('drop', '.playlist', function() {
             playlists.addSongToPlaylist($(this).attr("data-playlist-name"), window.nowDragging);
@@ -45,11 +32,6 @@ define(['albums', 'libraryController', 'playlists', 'player'], function(albums, 
         .on("dragstart", '.recognized', function() {
             window["nowDragging"] = libraryController.makeSongOutOfTr($(this));
         })
-        .on('click', '.playlist', function() {
-            var playlistname = $(this).attr("data-playlist-name");
-            console.log("drawing table with", playlistname);
-            libraryController.drawTable(["playlists", playlistname]);
-        })
         .on('dblclick', '.recognized', function() {
             //Remove all other nowplaying classes and give them to this one
             $(".song").removeClass("nowplaying selected");
@@ -60,9 +42,9 @@ define(['albums', 'libraryController', 'playlists', 'player'], function(albums, 
             libraryController.EndQueue = $(this).nextAll(".recognized");
             libraryController.playSong(song);
         }).on('click', '#play', function() {
-            player.playVideo();
+            player.play();
         }).on('click', '#pause', function() {
-            player.pauseVideo();
+            player.pause();
         }).on('click', '#next', function() {
             libraryController.playNext();
         }).on('click', '#previous', function() {
@@ -96,7 +78,8 @@ define(['albums', 'libraryController', 'playlists', 'player'], function(albums, 
             }
         });
 
-    window.updateIcon = function(newState) {
+    window.updateIcon = function() {
+        var newState = ytplayer.getPlayerState()
         if (newState == 0) {
             libraryController.playNext();
         }

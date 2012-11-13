@@ -1,16 +1,16 @@
 ﻿//TODO: This shouldn't be global, need to refactor so that it is possible.
-var player;
+var ytplayer;
 define(['playerBuilder'], function (playerBuilder) {
     'use strict';
 
     var onReady = function () {
-        console.log("Ready");
+        $("#songtable").removeClass("notready")
     };
 
     var onStateChange = function () {
         //TODO: Remove global variable.
-        if(window.updateIcon) {
-            window.updateIcon();
+        if(updateIcon) {
+            updateIcon();
         }
     };
 
@@ -21,19 +21,20 @@ define(['playerBuilder'], function (playerBuilder) {
     console.log("calling buildPlayer");
     //Create YT player iframe.
     playerBuilder.buildPlayer('MusicHolder', onReady, onStateChange, onPlayerError, function (builtPlayer) {
-        console.log("builtPlayer");
-        player = builtPlayer;
+        ytplayer = builtPlayer;
     });
-
     return {
         play: function () {
-            player.playVideo();
+            ytplayer.playVideo();
         },
         pause: function () {
-            player.pauseVideo();
+            ytplayer.pauseVideo();
         },
         loadVideo: function (videoId) {
-            player.loadVideoById(videoId);
+            if (ytplayer) {
+                ytplayer.loadVideoById(videoId);
+            }
+            
         }
     };
 });

@@ -18,6 +18,7 @@ define(['ytHelper', 'songBuilder', 'recognitionImageBuilder', 'recognitionList',
         dragAreaSelector.removeClass("fileover");
         dropMusicSelector.removeClass("fileover-text");
     }).on('drop', 'textarea', function(e) {
+        $("#recognition-container").slideDown();
         dragAreaSelector.removeClass("fileover");
         dropMusicSelector.removeClass("fileover-text");
 

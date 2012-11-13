@@ -40,7 +40,8 @@ define(function() {
         $.each(getPlaylists(), function(name, songs) {
             $("<div>", {
                 class: "playlist",
-                "data-playlist-name": name
+                "data-playlist-name": name,
+                "data-navigate": "Playlists/" + name
             })
                 .text(name)
                 .appendTo(playlistsdiv);

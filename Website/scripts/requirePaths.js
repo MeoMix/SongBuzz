@@ -28,7 +28,8 @@ var require = {
     'player': 'Website/scripts/player',
     'ytPlayerApiHelper': 'Shared/js/thirdParty/ytPlayerApiHelper',
     'onYouTubePlayerApiReady': 'Shared/js/thirdParty/onYouTubePlayerApiReady',
-    'playlists': 'Website/scripts/playlists'
+    'playlists': 'Website/scripts/playlists',
+    'navigation': 'Website/scripts/navigation'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

@@ -13,14 +13,14 @@
     <div id="leftbar">
         <div id="upperdiv">
             <h2 data-lang-id="library">Library</h2>
-            <div class="standardlist selected" data-list-id="songs" data-lang-id="mysongs">My songs</div>
+            <div class="standardlist selected" data-list-id="songs" data-lang-id="mysongs" data-navigate="Library/Songs">My songs</div>
             <h2 data-lang-id="playlists">Playlists</h2>
             <div id="playlistlist"></div>
             <div data-lang-id="addplaylist" id="addplaylist">Add playlist</div>
             <h2 data-lang-id="hotsongs">Hot songs</h2>
             <div id="hotsongs">
-                <div class="standardlist" data-lang-id="mostlistened" data-list-id="mostlistened">Most listened</div>
-                <div class="standardlist" data-lang-id="randomsongs" data-list-id="randomsongs">Random songs</div>
+                <div class="standardlist" data-lang-id="mostlistened" data-list-id="mostlistened" data-navigate="Feeds/Top songs">Most listened</div>
+                <div class="standardlist" data-lang-id="randomsongs" data-list-id="randomsongs" data-navigate="Feeds/Random songs">Random songs</div>
             </div>
         </div>
         <div id="nowplaying">
@@ -40,11 +40,13 @@
             <div id="drop-music" data-lang-id="dropMusic">Drop your<br>music here</div>
             <div class="hr"></div>
         </div>
-        <h2 data-lang-id="recognition">Recognition</h2>
-        <div id="recognitionlist">			
+        <div id="recognition-container">
+            <h2 data-lang-id="recognition">Recognition</h2>
+            <div id="recognitionlist">            
+            </div>
+            <br>
+            <div class="hr"></div>
         </div>
-        <br>
-        <div class="hr"></div>
         <h2 id="login-string">Login</h2>
         <div id="account-area">
             <button id="login-button" class="sidebar-button">Loading...</button>
@@ -56,7 +58,7 @@
         <div id="pause" style="display: none;"><img src="images/pause.png"></div>
         <div id="next"><img src="images/ff.png"></div>
     </div>
-    <div id="songtable"></div>
+    <div id="songtable" class="notready"></div>
     <iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1">
         You need Flash player 8+ and JavaScript enabled to view this video.
     </iframe>'

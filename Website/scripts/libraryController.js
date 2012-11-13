@@ -32,7 +32,6 @@
             songs = list;
             $("#songtable").html("").attr("data-list", JSON.stringify(songs));
         } else {
-            console.log("getting songs");
             songs = getSongs(list);
             $("#songtable").html("").attr("data-list", list);
         }
@@ -68,21 +67,20 @@
         th.appendTo(thead);
         thead.appendTo(table);
 
-        console.log("Songs:", songs);
-
         //Make a table row to add to the table!
         $.each(songs, function(key, value) {
             (buildTableRow(value)).appendTo(table);
         });
         //Make it visible
         table.appendTo("#songtable");
-        setTableHeaderWidth();
+        //Need to do this, otherwise in like 25% of the cases it doesn't work... bug or not?
+        setTimeout(setTableHeaderWidth, 1);
     };
 
     var setTableHeaderWidth = function() {
         for (var i = 0; i < 5; i++) {
             //Get width and add 6 to fix jQuery padding bug
-            var tableCellWidth = $("#thetable").find("td").eq(i).width() + 6;
+            var tableCellWidth = $("#thetable").find("td").eq(i).width() + 8;
             //Apply to table header
             $("#thetable thead").find("th").eq(i).width(tableCellWidth);
         }
