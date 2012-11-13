@@ -1,7 +1,6 @@
 backend/import.php
 *.min.js
 Website/scripts/recognition.min.js
-sftp-config.json
 Website/sftp-config.json
 obj/
 bin/
@@ -9,3 +8,4 @@ Properties/
 SongBuzz.csproj
 SongBuzz.csproj.user
 SongBuzz.suo
+sftp-config.json
