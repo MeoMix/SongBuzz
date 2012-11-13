@@ -41,8 +41,10 @@ define(['playlists', 'libraryController'], function(playlists, libraryController
 			//Need to find a more elegant way to do this
 			$("#songtable").removeClass("albumlist")
 			$("[data-navigate]").removeClass("menuselected")
-			$("#leftbar [data-navigate='" + to + "']").addClass("menuselected")
-
+			$("#leftbar [data-navigate='" + to + "']").addClass("menuselected");
+			//Change window URL
+			var stateObj = { scheme: to };
+			history.pushState(stateObj, null, "/" + to);
 		}
 	}
 })

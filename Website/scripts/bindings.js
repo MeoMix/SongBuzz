@@ -64,6 +64,8 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation'], fun
             albums.recognizeAll();
         }).on('click', '#album-addasplaylist', function() {
             albums.addAlbumAsPlaylist();
+        }).on('popstate', window, function() {
+            console.log(history.state)
         })
         .on('click', '#songtable th', function() {
             var node = $(this);
@@ -77,7 +79,9 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation'], fun
                 libraryController.sortTable(sort);
             }
         });
-
+    window.onpopstate = function() {
+        navigation.to(history.state.scheme)
+    }
     window.updateIcon = function() {
         var newState = ytplayer.getPlayerState()
         if (newState == 0) {
