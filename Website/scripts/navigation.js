@@ -1,6 +1,6 @@
 //This file handles all navigation and is capable of making a site hierarchy
 
-define(['playlists', 'libraryController'], function(playlists, libraryController) {
+define(['playlists', 'libraryController', 'audioScrobbler', 'albums'], function(playlists, libraryController, audioScrobbler, albums) {
 	var menu = {
 		"Playlists": function(name) {
 			//Just draw the table and pass in the playlist name
@@ -20,6 +20,21 @@ define(['playlists', 'libraryController'], function(playlists, libraryController
 			$.getJSON(domain + "/" + name + ".php", function(json) {
 				libraryController.drawTable(json)
 			})
+		},
+		"Album": function(name) {
+			var popup = $("#songtable").addClass("albumlist").html("")
+        	var format = "json"
+        	var apiKey = "29c1ce9127061d03c0770b857b3cb741"
+        	//Let's do it like this: If the string contains a _, then it is meant as album
+        	//and artist, if not, then as mbid
+        	if (name.indexOf("_") != -1) {
+        		var album = name.substr(0,name.indexOf("_")),
+        			artist = name.substr(name.indexOf("_")+1)
+        	    audioScrobbler.getAlbumInfo("", albums.asCallback, album, artist);
+        	}
+        	else {
+        	    audioScrobbler.getAlbumInfo(name, albums.asCallback);
+        	}
 		}
 	}
 	var formatstring = function(name) {
@@ -36,15 +51,20 @@ define(['playlists', 'libraryController'], function(playlists, libraryController
 			for (i=0;i<array.length-1;i++) {
 				obj = obj[array[i]]
 			}
-			//Execute it!
-			obj(array[array.length-1]);
 			//Need to find a more elegant way to do this
 			$("#songtable").removeClass("albumlist")
+			$("#autocomplete").fadeOut()
 			$("[data-navigate]").removeClass("menuselected")
-			$("#leftbar [data-navigate='" + to + "']").addClass("menuselected");
+			$("#leftbar[data-navigate='" + to + "']:not(#autocomplete)").addClass("menuselected");
+			//Execute it!
+			obj(array[array.length-1]);
 			//Change window URL
-			var stateObj = { scheme: to };
-			history.pushState(stateObj, null, "/" + to);
+			//Important: Only when not already so!
+			if (history.state == null || history.state.scheme != to) {
+				var stateObj = { scheme: to };
+				history.pushState(stateObj, null, "/" + to);
+			}
+			
 		}
 	}
 })

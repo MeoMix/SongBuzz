@@ -54,6 +54,21 @@ define(function () {
                 dataType: dataType,
                 success: callback
             });
+        },
+        searchAlbum: function(query, callback) {
+            var data = {
+                "method": "album.search",
+                "format": format,
+                "api_key": apiKey,
+                "album": query,
+                "limit": 3
+            }
+            $.ajax({
+                url: url,
+                data: data,
+                dataType: dataType,
+                success: callback
+            })
         }
     };
 });

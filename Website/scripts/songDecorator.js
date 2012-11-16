@@ -21,7 +21,7 @@
                     var album = { image: track.album.image[0]['#text'] };
                 }
                 song.lastfmid = track.id;
-                song.mbid = track.id;
+                song.mbid = track.mbid;
                 song.artistsid = track.artist.mbid;
                 if (id != undefined) {
                     if (track.album) {

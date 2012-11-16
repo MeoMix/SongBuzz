@@ -53,7 +53,7 @@ define(['ytHelper', 'songBuilder', 'recognitionImageBuilder', 'recognitionList',
                         };
 
                         ytHelper.findVideo(song, function(foundVideo) {
-                            songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined, parsedUrlData.videoId, function(song, json) {
+                            songDecorator.decorateWithYouTubeInformation(foundVideo, song, parsedUrlData.videoId, function(song, json) {
                                 recognitionList.showFinishedAnimation(song, parsedUrlData.videoId);
                                 backend.saveData(song);
                             });

@@ -63,19 +63,6 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
             buildAlbumList(album.tracks.track);
         }
     };
-
-    var drawPopup = function (mbid, album, artist) {
-        var popup = $("#songtable.albumlist").html("")
-        var format = "json"
-        var apiKey = "29c1ce9127061d03c0770b857b3cb741"
-        if (mbid == "" || mbid == undefined) {
-            audioScrobbler.getAlbumInfo("", asCallback, album, artist);
-        }
-        else {
-            audioScrobbler.getAlbumInfo(mbid, asCallback);
-        }
-    };
-
     var buildAlbumTableRow = function(key,track) {
         var songs = libraryController.getSongs("songs");
         var albumTableRow = $("<tr>", {
@@ -125,7 +112,10 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
             if (v.mbid == "") {
                 $(".db-pending").eq(k).removeClass("db-pending").addClass("db-not-in-db").find("td.db-status").text(s.notInDataBase[language]);
             }
-            array.push(v.mbid)
+            else {
+                array.push(v.mbid)
+            }
+            
         });
 
         $.ajax({
@@ -159,10 +149,11 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
         });
     };
     var recognizeAll = function() {
-            $(".db-not-in-db .db-recognize").click();
+        $(".db-not-in-db .db-recognize").click();
     }
     //Public methods
     return {
+        asCallback: asCallback,
         recognizeAll: recognizeAll,
         addAlbumAsPlaylist: function() {
             var playlistname = $("#songtable.albumlist h3").text() + " - " + $("#songtable.albumlist h2").text()
@@ -173,17 +164,8 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 playlists.addSongToPlaylist(playlistname, song)
             })
         },
-        showAlbumDialogue: function (node) {
-            //Pop up popup
-            $("#songtable").addClass("albumlist")
-            var mbid = $(node).parent("tr").attr("data-albumid");
-            var album = $(node).parent("tr").attr("data-album");
-            var artist = $(node).parent("tr").attr("data-artists");
-            drawPopup(mbid, album, artist);
-        },
         recognizeTrack: function (node) {
-            var nodeParent = node.parent();
-
+            var nodeParent = ($(node).parent("tr"))[0];
             var song = {
                 hoster: "youtube",
                 duration: parseFloat($(nodeParent).attr("data-duration")),
@@ -195,7 +177,6 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 albumid: $("#songtable.albumlist h2").attr("data-mbid"),
                 artistsid: $("#songtable.albumlist h3").attr("data-mbid")
             };
-
             ytHelpers.findVideo(song, function (foundVideo) {
                 songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined,function(song, json) {
                     if (json.error != undefined) {
@@ -204,7 +185,6 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
 
                     song.lastfmid = json.track.id;
                     song.artistsid = json.track.artist.mbid;
-
                     backend.saveData(song, true);
                     bindTrackToDOM(song, nodeParent);
                     $(nodeParent).find(".db-status").text(s.inDatabase[language]);

@@ -18,14 +18,14 @@ define(function() {
         buildYoutubeMetroImage: function() {
             var youtubeMetroImage = $('<img>', {
                 'class': 'fadeandslide',
-                src: 'images/youtube-metro.png'
+                src: '/Website/images/youtube-metro.png'
             });
             return youtubeMetroImage;
         },
         buildSpotifyMetroImage: function() {
             var spotifyMetroImage = $('<img>', {
                 'class': 'fadeandslide',
-                src: 'images/spotify-metro.png'
+                src: '/Website/images/spotify-metro.png'
             });
             return spotifyMetroImage;
         },

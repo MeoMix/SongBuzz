@@ -354,7 +354,7 @@ img.fadeandslide.rec-album {
 	left: 0;
 	z-index: 0;
 	overflow: scroll;
-	height: -webkit-calc(100% - 55px);
+	height: -webkit-calc(100% - 70px);
 	background: rgb(50,50,50);
 }
 .sorted {
@@ -368,7 +368,7 @@ img.fadeandslide.rec-album {
 #thetable {
 	width: 100%;
 	border-collapse: collapse;
-	top: 21px;
+	top: 25px;
 	position: absolute;
 }
 #thetable tr {
@@ -399,7 +399,7 @@ tr td, th {
 	overflow: hidden;
 	word-wrap: break-word;
 	white-space: nowrap;
-	padding: 4px;
+	padding: 6px;
 	/* Leave this .99 - otherwise when you drag a song, the background
 	gets white... wtf */
 	opacity: 0.99;
@@ -531,7 +531,7 @@ td.list-album:hover {
 	border-collapse: collapse;
 }
 #songtable.albumlist td {
-	padding: 3px;
+	padding: 6px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -585,8 +585,8 @@ a {
 }
 .playlist, .standardlist {
 	padding-left: 20px;
-	padding-bottom: 3px;
-	padding-top: 3px;
+	padding-bottom: 6px;
+	padding-top: 6px;
 	font-size: 0.7em;
 	font-family: "Lucida Sans", Helvetica, Arial;
 	opacity: 0.7;
@@ -605,7 +605,7 @@ thead {
 	position: fixed;
 	z-index: 1;
 	width: 100%;
-	margin-top: -21px;
+	margin-top: -25px;
 }
 tbody {
 	top: 19px;
@@ -638,20 +638,83 @@ tbody {
 }
 .notready:after {
 	position: fixed;
-	content: "";
+	content: "Loading...";
+	background: black;
+	opacity: 0.6;
+	height: 60px;
+	width: 100px;
+	left: 50%;
+	margin-left: -50px;
+	top: 50%;
+	border-radius: 8px;
+	margin-top: -50px;
 	text-align: center;
-	background: rgba(0,0,0,0.7);
-	height: 100%;
-	width: 100%;
-	padding-top: 100px;
-	margin-right: 263px;
-	-webkit-transition: 0.3s;
+	padding-top: 40px;
+	font-size: 16px;
 }
-
-
-
-
-
+.list-duration {
+	min-width: 100px;
+}
+input#searchinput {
+	border: 1px solid rgba(255,255,255,0.2);
+	background: rgba(255,255,255,0.7);
+	border-radius: 15px;
+	margin-left: 20px;
+	height: 25px;
+	width: 200px;
+	outline: none;
+	padding-left: 23px;
+}
+input#searchinput:focus {
+	background: white;
+	border: 1px solid #ffb63f;
+}
+.inputimage {
+	position: absolute;
+	margin-left: 24px;
+	margin-top: 4px;
+	opacity: 0.6;
+}
+#autocomplete {
+	position: fixed;
+	background: white;
+	background: rgba(255,255,255,1);
+	top: 68px;
+	left: 250px;
+	z-index: 0;
+	width: 250px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	border: 1px solid silver;
+	color: rgba(0,0,0,0.7);
+}
+.searchresult {
+	clear: both;
+	height: 34px;
+}
+.searchresult:hover {
+	background: rgba(0,0,0,0.1);
+	cursor: default
+}
+.searchresult img {
+	float: left;
+	margin-right: 10px;
+	height: 34px;
+}
+.searchresult .search-title {
+	font-size: 0.8em;
+	color: black;
+	padding-top: 2px;
+	overflow: hidden;
+	left: 48px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.searchresult .search-subtitle {
+	font-size: 0.67em;
+}
+#autocomplete {
+	display: none;
+}
 
 
 

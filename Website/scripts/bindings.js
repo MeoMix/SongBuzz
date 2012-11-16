@@ -1,4 +1,4 @@
-define(['albums', 'libraryController', 'playlists', 'player', 'navigation'], function(albums, libraryController, playlists, player, navigation) {
+define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'search'], function(albums, libraryController, playlists, player, navigation, search) {
     'use strict';
     var resetSelection = function() {
         $(".song,.playlist,.standardlist").removeClass("selected");
@@ -49,13 +49,8 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation'], fun
             libraryController.playNext();
         }).on('click', '#previous', function() {
             libraryController.playPrevious();
-        }).on('click', '.list-album', function() {
-            albums.showAlbumDialogue($(this));
-        }).on('click', '#closepopup', function() {
-            $("#popup").removeClass("popupvisible");
-            $("#popup").html(this);
         }).on('click', '.db-not-in-db .db-recognize', function() {
-            albums.recognizeTrack($(this));
+            albums.recognizeTrack(this);
         }).on('click', '.db-in-db .db-recognize', function() {
             var song = libraryController.makeSongOutOfTr($(this).parent(".song"));
             $(this).parent("tr").addClass("in-library").find(".db-status").text(s.inLibrary[language]);
@@ -66,6 +61,8 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation'], fun
             albums.addAlbumAsPlaylist();
         }).on('popstate', window, function() {
             console.log(history.state)
+        }).on('keyup', '#searchinput', function() {
+            search.buildQuery("hi")
         })
         .on('click', '#songtable th', function() {
             var node = $(this);

@@ -130,8 +130,8 @@ define(['geoplugin', 'levenshtein', 'songBuilder'], function (geoplugin, levDist
 
             if (url.indexOf(urlFormats.spotify) != -1) {
                 parsedUrlData = {
-                    hoster: SupportedFormats.Spotify,
-                    videoId: url.substr(url.indexOf(scheme) + scheme.length)
+                    format: SupportedFormats.Spotify,
+                    videoId: url.substr(url.indexOf(urlFormats.spotify) + urlFormats.spotify.length)
                 };
             }
 

@@ -74,13 +74,13 @@
         //Make it visible
         table.appendTo("#songtable");
         //Need to do this, otherwise in like 25% of the cases it doesn't work... bug or not?
-        setTimeout(setTableHeaderWidth, 1);
+        setTableHeaderWidth()
     };
 
     var setTableHeaderWidth = function() {
         for (var i = 0; i < 5; i++) {
-            //Get width and add 6 to fix jQuery padding bug
-            var tableCellWidth = $("#thetable").find("td").eq(i).width() + 8;
+            //Get width and add 12 to fix jQuery padding bug
+            var tableCellWidth = $("#thetable").find("td").eq(i).width() + 12;
             //Apply to table header
             $("#thetable thead").find("th").eq(i).width(tableCellWidth);
         }
@@ -247,10 +247,17 @@
 
         //The cells...
         $("<td>").addClass("playing-indicator").appendTo(tr);
-        $("<td>").text(value.title).appendTo(tr);
-        $("<td>").text(Helpers.prettyPrintTime(value.duration)).appendTo(tr);
-        $("<td>").text(value.artists).appendTo(tr);
-        $("<td>").addClass("list-album").text(value.album).appendTo(tr);
+        $("<td>").addClass("list-title").text(value.title).appendTo(tr);
+        $("<td>").addClass("list-duration").text(Helpers.prettyPrintTime(value.duration)).appendTo(tr);
+        $("<td>").addClass("list-artist").text(value.artists).appendTo(tr);
+        var albumtd = $("<td>").addClass("list-album").text(value.album);
+        if (value.albumid == "" || value.albumid == undefined) {
+            albumtd.attr("data-navigate", "Album/" + value.album + "_" + value.artists);
+        }
+        else {
+            albumtd.attr("data-navigate", "Album/" + value.albumid);
+        }
+        albumtd.appendTo(tr);
         //Add class "nowplaying if needed"
         var nowplaying = constructor().nowPlaying;
         if (nowplaying != null && nowplaying.lastfmid == value.lastfmid) {

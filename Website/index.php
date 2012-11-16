@@ -4,14 +4,22 @@
         <meta charset="UTF-8">
         <title>SongBuzz</title>
 
-        <script src="scripts/requirePaths.js"></script>
-        <script data-main="main" src="../Shared/js/thirdParty/require.js"></script>
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/contextmaster.css">
+        <script src="/Website/scripts/requirePaths.js"></script>
+        <script data-main="main" src="/Shared/js/thirdParty/require.js"></script>
+        <link rel="stylesheet" href="/Website/css/style.css">
+        <link rel="stylesheet" href="/Website/css/contextmaster.css">
     </head>
     <body>
     <div id="leftbar">
         <div id="upperdiv">
+            <h2>Search</h2> 
+            <img src="/Website/images/search.png" class="inputimage">
+            <input type="text" id="searchinput" placeholder="Tracks, artists, albums">
+            <div id="autocomplete">
+                <div id="auto-title"></div>
+                <div id="auto-artist"></div>
+                <div id="auto-albums"></div>
+            </div>
             <h2 data-lang-id="library">Library</h2>
             <div class="standardlist selected" data-list-id="songs" data-lang-id="mysongs" data-navigate="Library/Songs">My songs</div>
             <h2 data-lang-id="playlists">Playlists</h2>
@@ -29,12 +37,11 @@
     </div>
     <div id="sidebar">
         <div id="backend"></div>
-        <div class="spark"></div>
         <h2 data-lang-id="addMusic">Add Music</h2>
         <div id="recognition-area">
             <div id="drag-area">
-                <img src="images/youtube.png" alt="Drop YouTube links!">
-                <img src="images/spotify.png" alt="Drop YouTube links!">
+                <img src="/Website/images/youtube.png" alt="Drop YouTube links!">
+                <img src="/Website/images/spotify.png" alt="Drop YouTube links!">
             </div>
             <textarea name="" id="" cols="30" rows="10"></textarea>
             <div id="drop-music" data-lang-id="dropMusic">Drop your<br>music here</div>
@@ -53,10 +60,10 @@
         </div>
     </div>
     <div id="controls">
-        <div id="previous"><img src="images/rewind.png"></div>
-        <div id="play"><img src="images/play.png"></div>
-        <div id="pause" style="display: none;"><img src="images/pause.png"></div>
-        <div id="next"><img src="images/ff.png"></div>
+        <div id="previous"><img src="/Website/images/rewind.png"></div>
+        <div id="play"><img src="/Website/images/play.png"></div>
+        <div id="pause" style="display: none;"><img src="/Website/images/pause.png"></div>
+        <div id="next"><img src="/Website/images/ff.png"></div>
     </div>
     <div id="songtable" class="notready"></div>
     <iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1">
