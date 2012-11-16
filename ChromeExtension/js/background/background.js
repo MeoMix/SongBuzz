@@ -85,4 +85,32 @@
         //Cleanup
         sendResponse({});
     });
+
+    chrome.commands.onCommand.addListener(function(command) {
+        console.log("command:", command);
+        switch(command){
+            case 'nextSong':
+                YoutubePlayer.skipSong("next");
+                break;
+            case 'previousSong':
+                YoutubePlayer.skipSong("previous");
+            break;
+            case 'toggleSong':
+                YoutubePlayer.toggleSong();
+        }
+    });
+
+    chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+        switch(request.method){
+            case 'getPlaylists':
+                sendResponse({playlists: YoutubePlayer.playlists});
+            break;
+            case 'addVideoByIdToPlaylist':
+                YoutubePlayer.addSongToPlaylist(request.videoId, request.playlistId);
+            break;
+            default:
+                console.error("Unhandled request method:", request.method);
+            break;
+        }
+    });
 });

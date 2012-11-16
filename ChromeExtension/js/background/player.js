@@ -10,14 +10,14 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
         //A communication port to the foreground. Needs to be re-established everytime foreground opens.
         var port = null;
         //The currently loaded playlist.
-        var playlist = playlistManager.selectedPlaylist;
+        var activePlaylist = playlistManager.activePlaylist;
 
         //Initialize the player
         (function () {
             var onReady = function() {
                 //If there is a song to cue might as well have it ready to go.
-                if (playlist.songCount > 0) {
-                    cueSongById(playlist.songs[0].id);
+                if (activePlaylist.songCount > 0) {
+                    cueSongById(activePlaylist.songs[0].id);
                 }
                 refreshUI();
             };
@@ -30,12 +30,12 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
                     var isRadioModeEnabled = JSON.parse(localStorage.getItem('isRadioModeEnabled')) || false;
                     var nextSong;
                     if (isRadioModeEnabled) {
-                        nextSong = playlist.getRelatedVideo();
-                        playlist.addSong(nextSong);
+                        nextSong = activePlaylist.getRelatedVideo();
+                        activePlaylist.addSong(nextSong);
                         loadSongById(nextSong.id);
                     } else {
-                        if (playlist.songCount > 1) {
-                            nextSong = playlist.getNextSong();
+                        if (activePlaylist.songCount > 1) {
+                            nextSong = activePlaylist.getNextSong();
                             loadSongById(nextSong.id);
                         }
                     }
@@ -86,22 +86,22 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
         };
 
         var cueSongById = function(id) {
-            currentSong = playlist.getSongById(id);
+            currentSong = activePlaylist.getSongById(id);
             player.cueVideoById(currentSong.videoId);
-            playlist.addSongToHistory(currentSong);
-            playlist.syncShuffledSongs(id);
+            activePlaylist.addSongToHistory(currentSong);
+            activePlaylist.syncShuffledSongs(id);
         };
 
         var loadSongById = function(id) {
-            currentSong = playlist.getSongById(id);
+            currentSong = activePlaylist.getSongById(id);
             player.loadVideoById(currentSong.videoId);
-            playlist.addSongToHistory(currentSong);
-            playlist.syncShuffledSongs(id);
+            activePlaylist.addSongToHistory(currentSong);
+            activePlaylist.syncShuffledSongs(id);
         };
 
         var addSongByVideoId = function(videoId, callback) {
-            playlist.addSongByVideoId(videoId, function(song) {
-                if (playlist.songCount === 1) {
+            activePlaylist.addSongByVideoId(videoId, function(song) {
+                if (activePlaylist.songCount === 1) {
                     cueSongById(song.id);
                 }
 
@@ -116,7 +116,7 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
         var removeSongById = function(id) {
             if (currentSong && currentSong.id === id) {
                 //Get nextSong before removing currentSong because the position of currentSong is important.
-                var nextSong = playlist.getNextSong();
+                var nextSong = activePlaylist.getNextSong();
 
                 currentSong = null;
                 player.pauseVideo();
@@ -127,7 +127,7 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
                 }
             }
 
-            playlist.removeSongById(id);
+            activePlaylist.removeSongById(id);
             refreshUI();
         };
 
@@ -135,10 +135,10 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
             isSeeking: false,
             wasPlayingBeforeSeek: false,
             get playlistTitle() {
-                return playlist.title;
+                return activePlaylist.title;
             },
             set playlistTitle(value) {
-                playlist.title = value;
+                activePlaylist.title = value;
                 refreshUI();
             },
             get playlists() {
@@ -148,7 +148,7 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
                 return (player && player.getPlayerState) ? player.getPlayerState() : PlayerStates.UNSTARTED;
             },
             get songs() {
-                return playlist.songs;
+                return activePlaylist.songs;
             },
             get currentSong() {
                 return currentSong;
@@ -180,14 +180,14 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
                 });
             },
             selectPlaylist: function(playlistId) {
-                if (playlist.id !== playlistId) {
+                if (activePlaylist.id !== playlistId) {
                     this.pause();
-                    playlist = playlistManager.getPlaylistById(playlistId);
-                    playlistManager.selectedPlaylist = playlist;
+                    activePlaylist = playlistManager.getPlaylistById(playlistId);
+                    playlistManager.activePlaylist = activePlaylist;
 
                     //If the newly loaded playlist has a song to play cue it to replace the currently loaded song.
-                    if (playlist.songCount > 0) {
-                        cueSongById(playlist.songs[0].id);
+                    if (activePlaylist.songCount > 0) {
+                        cueSongById(activePlaylist.songs[0].id);
                     } else {
                         currentSong = null;
                     }
@@ -202,19 +202,23 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
             removePlaylistById: function(playlistId) {
                 //Don't allow removing of active playlist.
                 //TODO: Perhaps just don't allow deleting the last playlist? More difficult.
-                if (playlist.id !== playlistId) {
+                if (activePlaylist.id !== playlistId) {
                     playlistManager.removePlaylistById(playlistId);
                     refreshUI();
                 }
             },
+            addSongToPlaylist: function(videoId, playlistId){
+                var playlist = playlistManager.getPlaylistById(playlistId);
+                playlist.addSongByVideoId(videoId);
+            },
             getSongById: function(id) {
-                return playlist.getSongById(id);
+                return activePlaylist.getSongById(id);
             },
             setCurrentSongById: function(id) {
-                currentSong = playlist.getSongById(id);
+                currentSong = activePlaylist.getSongById(id);
             },
             sync: function(ids) {
-                playlist.sync(ids);
+                activePlaylist.sync(ids);
             },
             //Called when the user clicks mousedown on the progress bar dragger.
             seekStart: function() {
@@ -241,13 +245,21 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
                 }
             },
             removeSongById: removeSongById,
-            //Adds a song to the playlist. If it is the first song in the playlist, that song is loaded as the current song.
+            //Adds a song to the activePlaylist. If it is the first song in the activePlaylist, that song is loaded as the current song.
             addSongByVideoId: addSongByVideoId,
             play: function() {
                 player.playVideo();
             },
             pause: function() {
                 player.pauseVideo();
+            },
+            toggleSong: function(){
+                if(player.getPlayerState() === PlayerStates.PLAYING){
+                    this.pause();
+                }
+                else{
+                    this.play();
+                }
             },
             loadSongById: function(id) {
                 loadSongById(id);
@@ -264,13 +276,13 @@ define(['playlistManager', 'playerBuilder', 'ytHelper'], function(playlistManage
                     var isRadioModeEnabled = JSON.parse(localStorage.getItem('isRadioModeEnabled')) || false;
 
                     if (isRadioModeEnabled) {
-                        nextSong = playlist.getRelatedVideo();
-                        playlist.addSong(nextSong);
+                        nextSong = activePlaylist.getRelatedVideo();
+                        activePlaylist.addSong(nextSong);
                     } else {
-                        nextSong = playlist.getNextSong();
+                        nextSong = activePlaylist.getNextSong();
                     }
                 } else if (where == "previous") {
-                    nextSong = playlist.getPreviousSong();
+                    nextSong = activePlaylist.getPreviousSong();
                 }
 
                 if (this.playerState === PlayerStates.PLAYING) {

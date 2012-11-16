@@ -42,7 +42,7 @@ define(['playlist', 'playlistDataProvider'], function(Playlist, playlistDataProv
         get playlists() {
             return playlists;
         },
-        get selectedPlaylist() {
+        get activePlaylist() {
             return _.find(playlists, function(p) { return p.isSelected; });
         },
         set selectedPlaylist(value) {

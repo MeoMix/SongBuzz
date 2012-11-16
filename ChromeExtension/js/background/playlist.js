@@ -190,7 +190,9 @@ define(['ytHelper', 'songBuilder'], function(ytHelper, songBuilder) {
                 ytHelper.getVideoInformation(videoId, function(videoInformation) {
                     var song = songBuilder.buildSong(videoInformation);
                     self.addSong(song);
-                    callback(song);
+                    if(callback){
+                        callback(song);
+                    }
                 });
             },
             removeSongById: function(id) {

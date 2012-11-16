@@ -1,0 +1,21 @@
+#SongBuzzContextMenu {
+    background: #fff;
+    border-radius: 5px;
+    padding: 5px 0;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.3);
+    z-index: 100;
+}
+#SongBuzzContextMenu a {
+    display: block;
+    padding: 4px 8px;
+    font: 12px/1 sans-serif;
+    color: #000;
+    text-decoration: none;
+}
+#SongBuzzContextMenu a:hover {
+    background: #efefef;
+}
+#SongBuzzContextMenu a:active {
+    background: rgb(36,109,149);
+    color: #fff;
+}
