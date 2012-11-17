@@ -1,6 +1,9 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
-    <?php $feed = ($_GET["feed"]) ?>
+    <?php 
+    $feed = substr($_GET["feed"], 1); 
+    echo "<script>window.originalState = '$feed'</script>"
+    ?>
     <head>
         <meta charset="UTF-8">
         <title>SongBuzz</title>

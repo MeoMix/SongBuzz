@@ -49,8 +49,7 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists']
 	var formatstring = function(name) {
 		return name.replace(/ /g, "").toLowerCase()
 	}
-	return {
-		to: function(to) {
+	var to = function(to) {
 			//TODO: method fails when album name contains a /. F.e: "One Day / Reckoning song"
 			console.log("Navigated to:", to)
 			//Split the navigation into a hierarchy. f.e.: "Playlists/Cool music" into ["Playlist", "Cool music"]
@@ -76,5 +75,26 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists']
 			}
 			
 		}
+	return {
+		to: to,
+		start: function() {
+            //No songs saved on the client side? Ok, load them all!
+            if (localStorage.songs == "null" || localStorage.songs == null) {
+                //Create array in localStorage
+                localStorage.songs = "[]";
+                libraryController.loadAllSongs();
+            }
+                //First, check for new songs/deleted songs, then draw the table
+            else {
+                libraryController.compareSongs("songs");
+                if (originalState == "") {
+                	to("Library/Songs")
+                }
+                else {
+                	to(originalState)
+                }
+                
+            }
+        }
 	}
 })

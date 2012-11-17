@@ -380,20 +380,6 @@
         set EndQueue(value) {
             constructor().endQueue = value;
         },
-        //Gets called when website is opened.
-        start: function() {
-            //No songs saved on the client side? Ok, load them all!
-            if (localStorage.songs == "null" || localStorage.songs == null) {
-                //Create array in localStorage
-                localStorage.songs = "[]";
-                loadAllSongs();
-            }
-                //First, check for new songs/deleted songs, then draw the table
-            else {
-                compareSongs("songs");
-                drawTable("songs");
-            }
-        },
         //Right-click to add to the queue. 
         //Queue songs are always played first, then the auto-generated songs will be played
         addToQueue: addToQueue,
@@ -445,6 +431,7 @@
         //Makes a song object out of the metadata saved in the DOM
         makeSongOutOfTr: makeSongOutOfTr,
         createList: createList,
-        isInLibrary: isInLibrary
+        isInLibrary: isInLibrary,
+        compareSongs: compareSongs
     };
 });

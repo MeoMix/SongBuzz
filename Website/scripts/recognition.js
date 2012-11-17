@@ -1,9 +1,9 @@
 //Defines the whole left side song drag-and-drop / recognition area.
-define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder', 'libraryController'],
-    function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder, libraryController) {
+define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'recognitionImageBuilder', 'libraryController', 'navigation'],
+    function(recognitionArea, audioScrobbler, recognitionList, backend, recognitionImageBuilder, libraryController, navigation) {
     'use strict';
-
-    libraryController.start();
+    //The big journey starts here...
+    navigation.start();
     //Whenever a user drops a song onto the left-hand side drop area
     //and it is a viable song to add -- add it to the recognition list
     //by getting its meta data. Show some images to the user to indicate success. 

@@ -55,9 +55,7 @@ define(["libraryController", "audioScrobbler", "albums"], function(libraryContro
 				artistdiv.appendTo("#songtable")
 				audioScrobbler.getTopAlbums(parameter, function(json) {
 					//Draw album list
-					if (json.topalbums != undefined) {
-						console.log(json.topalbums)
-						$.each(json.topalbums.album, function(k,album) {
+					var loopAlbum = function(k,album) {
 						//Only draw 5 albums
 						if (k < 5) {
 							var mbid = album.mbid,
@@ -82,7 +80,16 @@ define(["libraryController", "audioScrobbler", "albums"], function(libraryContro
 								audioScrobbler.getAlbumInfo(albumListCallback, "", albums.asCallback, title, artist);
 							}
 						}
-						})
+						}
+					if (json.topalbums != undefined) {
+						//1 album or multiple?
+						if (json.topalbums.album.length == undefined) {
+							loopAlbum(0, json.topalbums.album)
+						}
+						else {
+							$.each(json.topalbums.album, loopAlbum)
+						}
+						
 					}
 				})
 			})
