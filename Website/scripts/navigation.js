@@ -1,6 +1,6 @@
 //This file handles all navigation and is capable of making a site hierarchy
 
-define(['playlists', 'libraryController', 'audioScrobbler', 'albums'], function(playlists, libraryController, audioScrobbler, albums) {
+define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists'], function(playlists, libraryController, audioScrobbler, albums, artists) {
 	var menu = {
 		"Playlists": function(name) {
 			//Just draw the table and pass in the playlist name
@@ -27,14 +27,23 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums'], function(
         	var apiKey = "29c1ce9127061d03c0770b857b3cb741"
         	//Let's do it like this: If the string contains a _, then it is meant as album
         	//and artist, if not, then as mbid
+        	var drawTable = function(table, tracks, popup) { 
+        	    console.log(table)
+        	    table.appendTo(popup);
+        		albums.checkIfInDataBase(tracks);
+        	}
         	if (name.indexOf("_") != -1) {
         		var album = name.substr(0,name.indexOf("_")),
         			artist = name.substr(name.indexOf("_")+1)
-        	    audioScrobbler.getAlbumInfo("", albums.asCallback, album, artist);
+        	    audioScrobbler.getAlbumInfo(drawTable, "", albums.asCallback, album, artist);
         	}
         	else {
-        	    audioScrobbler.getAlbumInfo(name, albums.asCallback);
+        	    audioScrobbler.getAlbumInfo(drawTable, name, albums.asCallback);
         	}
+		},
+		"Artist": function(name) {
+			$("#songtable").html("").addClass("artistpage")
+			artists.drawPage(name)
 		}
 	}
 	var formatstring = function(name) {
@@ -42,6 +51,7 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums'], function(
 	}
 	return {
 		to: function(to) {
+			//TODO: method fails when album name contains a /. F.e: "One Day / Reckoning song"
 			console.log("Navigated to:", to)
 			//Split the navigation into a hierarchy. f.e.: "Playlists/Cool music" into ["Playlist", "Cool music"]
 			var array = to.split("/");
@@ -52,10 +62,10 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums'], function(
 				obj = obj[array[i]]
 			}
 			//Need to find a more elegant way to do this
-			$("#songtable").removeClass("albumlist")
+			$("#songtable").removeClass("albumlist artistpage")
 			$("#autocomplete").fadeOut()
 			$("[data-navigate]").removeClass("menuselected")
-			$("#leftbar[data-navigate='" + to + "']:not(#autocomplete)").addClass("menuselected");
+			$("#leftbar [data-navigate='"+escape(to)+"']").addClass("menuselected");
 			//Execute it!
 			obj(array[array.length-1]);
 			//Change window URL

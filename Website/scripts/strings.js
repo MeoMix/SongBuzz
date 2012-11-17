@@ -98,6 +98,10 @@ define(function() {
         randomsongs: {
             en: "Random songs",
             de: "Zufällige Songs"
+        },
+        similarartists: {
+            en: "Similar artists",
+            de: "Ähnliche Künstler"
         }
     };
 });

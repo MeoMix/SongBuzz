@@ -1,5 +1,6 @@
 <?php 
-$mbids = "'".implode("', '", (explode(",", $_GET['mbids'])))."'";
+header('Content-type: text/json');
+$mbids = "'".implode("', '", (explode(",", $_POST['mbids'])))."'";
 header('Access-Control-Allow-Origin: *');
 //Connect to databse
 include("../import.php");

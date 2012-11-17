@@ -5,9 +5,6 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'sea
     };
     //Add a yellow background when clicked.
     //To play, the user must doubleclick.
-    $(window).on('resize', function() {
-        libraryController.setTableHeaderWidth();
-    });
     $(document).on('click', '.recognized,.playlist', function() {
         resetSelection();
         $(this).addClass("selected");
@@ -77,7 +74,13 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'sea
             }
         });
     window.onpopstate = function() {
-        navigation.to(history.state.scheme)
+        if (history.state == null) {
+            navigation.to("Library/Songs")
+        }
+        else {
+            navigation.to(history.state.scheme)
+        }
+        
     }
     window.updateIcon = function() {
         var newState = ytplayer.getPlayerState()

@@ -3,10 +3,13 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
     'use strict';
 
     //Private functions:
-    var buildAlbumList = function(tracks) {
+    var buildAlbumList = function(tracks, callback) {
         var table = $("<table>");
         var popup = $("#songtable")
-        if (tracks.length == undefined) {
+        if (tracks == undefined) {
+            //TODO: Do error handling here
+        }
+        else if (tracks.length == undefined) {
             var albumTableRow = buildAlbumTableRow(0, tracks);
             albumTableRow.appendTo(table);
         }
@@ -16,11 +19,12 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 albumTableRow.appendTo(table)
             })
         }
-        table.appendTo(popup);
-        checkIfInDataBase(tracks);
+        if (callback) {
+            callback(table, tracks, popup)
+        }
     };
 
-    var asCallback = function(json, mbid) {
+    var asCallback = function(json, endcallback) {
         var popup = $("#songtable.albumlist")
         if (json.error != undefined) {
             $("<h2>", {
@@ -32,7 +36,7 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
             
             $("<h2>", {
                 text: album.name,
-                'data-mbid': mbid
+                'data-mbid': album.mbid
             }).appendTo(popup);
 
             $("<h3>", {
@@ -60,7 +64,7 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 text: s.addasplaylist[language]
             }).appendTo(popup);
 
-            buildAlbumList(album.tracks.track);
+            buildAlbumList(album.tracks.track, endcallback);
         }
     };
     var buildAlbumTableRow = function(key,track) {
@@ -124,6 +128,7 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 "mbids": array.join(",")
             },
             dataType: "json",
+            type: "POST",
             success: function(json) {
                 $.each(json, function(k,v) {
                     if (v.mbid != "") {
@@ -153,6 +158,7 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
     }
     //Public methods
     return {
+        checkIfInDataBase: checkIfInDataBase,
         asCallback: asCallback,
         recognizeAll: recognizeAll,
         addAlbumAsPlaylist: function() {

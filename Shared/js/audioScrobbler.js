@@ -34,7 +34,7 @@ define(function () {
                 success: callback
             });
         },
-        getAlbumInfo: function (mbid, callback, album, artist) {
+        getAlbumInfo: function (endcallback, mbid, callback, album, artist) {
             //[Jonny] There should be the ability to pass in artist and album too!
             var data = {
                 "method": "album.getInfo",
@@ -52,7 +52,9 @@ define(function () {
                 url: url,
                 data: data,
                 dataType: dataType,
-                success: callback
+                success: function(json) {
+                    callback(json, endcallback)
+                }
             });
         },
         searchAlbum: function(query, callback) {
@@ -65,6 +67,47 @@ define(function () {
             }
             $.ajax({
                 url: url,
+                data: data,
+                dataType: dataType,
+                success: callback
+            })
+        },
+        searchArtist: function(query, callback) {
+            var data = {
+                "method": "artist.search",
+                "format": format,
+                "api_key": apiKey,
+                "artist": query,
+                "limit": 3
+            }
+            $.ajax({
+                url: url,
+                data: data,
+                dataType: dataType,
+                success: callback
+            })
+        },
+        searchArtistInfo: function(parameter, callback) {
+            var data = {
+                "method": "artist.getInfo",
+                "format": format,
+                "api_key": apiKey,
+            }
+            $.ajax({
+                url: url + parameter,
+                data: data,
+                dataType: dataType,
+                success: callback
+            })
+        },
+        getTopAlbums: function(parameter, callback) {
+            var data = {
+                "method": "artist.gettopalbums",
+                "format": format,
+                "api_key": apiKey
+            }
+            $.ajax({
+                url: url + parameter,
                 data: data,
                 dataType: dataType,
                 success: callback

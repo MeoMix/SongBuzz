@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
+    <?php $feed = ($_GET["feed"]) ?>
     <head>
         <meta charset="UTF-8">
         <title>SongBuzz</title>
@@ -17,7 +18,9 @@
             <input type="text" id="searchinput" placeholder="Tracks, artists, albums">
             <div id="autocomplete">
                 <div id="auto-title"></div>
-                <div id="auto-artist"></div>
+                <div class="autocompletespacer" data-lang-ig="artists">Artists</div>
+                <div id="auto-artists"></div>
+                <div class="autocompletespacer" data-lang-id="album">album</div>
                 <div id="auto-albums"></div>
             </div>
             <h2 data-lang-id="library">Library</h2>
@@ -66,7 +69,7 @@
         <div id="next"><img src="/Website/images/ff.png"></div>
     </div>
     <div id="songtable" class="notready"></div>
-    <iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/dummy?enablejsapi=1">
+    <iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/DeumyOzKqgI?enablejsapi=1">
         You need Flash player 8+ and JavaScript enabled to view this video.
     </iframe>'
     <div id="popup">

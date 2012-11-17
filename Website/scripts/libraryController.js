@@ -73,19 +73,7 @@
         });
         //Make it visible
         table.appendTo("#songtable");
-        //Need to do this, otherwise in like 25% of the cases it doesn't work... bug or not?
-        setTableHeaderWidth()
     };
-
-    var setTableHeaderWidth = function() {
-        for (var i = 0; i < 5; i++) {
-            //Get width and add 12 to fix jQuery padding bug
-            var tableCellWidth = $("#thetable").find("td").eq(i).width() + 12;
-            //Apply to table header
-            $("#thetable thead").find("th").eq(i).width(tableCellWidth);
-        }
-    };
-
     var getSongs = function(key) {
         if (typeof key == "string") {
             return $.parseJSON(localStorage[key]);
@@ -249,7 +237,13 @@
         $("<td>").addClass("playing-indicator").appendTo(tr);
         $("<td>").addClass("list-title").text(value.title).appendTo(tr);
         $("<td>").addClass("list-duration").text(Helpers.prettyPrintTime(value.duration)).appendTo(tr);
-        $("<td>").addClass("list-artist").text(value.artists).appendTo(tr);
+        var artiststd = $("<td>").addClass("list-artist").text(value.artists).appendTo(tr);
+        if (value.artistsid == "" || value.artistsid == undefined) {
+            artiststd.attr("data-navigate", "Artist/" + value.artists)
+        }
+        else {
+            artiststd.attr("data-navigate", "Artist/" + "mbid-" + value.artistsid)
+        }
         var albumtd = $("<td>").addClass("list-album").text(value.album);
         if (value.albumid == "" || value.albumid == undefined) {
             albumtd.attr("data-navigate", "Album/" + value.album + "_" + value.artists);
@@ -320,7 +314,6 @@
 
     var playSong = function(song) {
         $("#now-cover").attr("src", song.cover);
-        //TODO: is LoadVideo always successfully called?
         player.loadVideo(song.hosterid);
         constructor().nowPlaying = song;
         //remove from every other song which is being stopped
@@ -369,7 +362,6 @@
         };
     });
     return {
-        setTableHeaderWidth: setTableHeaderWidth,
         get previousSongs() {
             return constructor().previousSongs;
         },

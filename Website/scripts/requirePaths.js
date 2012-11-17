@@ -30,7 +30,8 @@ var require = {
     'onYouTubePlayerApiReady': '/Shared/js/thirdParty/onYouTubePlayerApiReady',
     'playlists': '/Website/scripts/playlists',
     'navigation': '/Website/scripts/navigation',
-    'search': '/Website/scripts/search'
+    'search': '/Website/scripts/search',
+    'artists': '/Website/scripts/artists'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };
