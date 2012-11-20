@@ -1,4 +1,4 @@
-require(['jquery', 'jqueryUi', 'helpers', 'strings', 'underscore', 'supportedFormats', 'ytPlayerApiHelper'], function () {
+require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats', 'ytPlayerApiHelper'], function () {
     'use strict';
     $(function () {
         $.each($("[data-lang-id]"), function (key, node) {

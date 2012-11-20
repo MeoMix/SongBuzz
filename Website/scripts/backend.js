@@ -17,7 +17,8 @@ define(function() {
                 dataType: "json",
                 // [Meo] TODO: This function is called success, yet it checks the result of success. Why?
                 // [Jonny] It checks if there was a database error.
-                // [Meo] If a DB error occurs, why is success called? 
+                // [Meo] If a DB error occurs, why is success called?
+                // [Jonny] If a DB error occurs, success === "false" is the case. The function is a standard jQuery name
                 success: function(json) {
                     if (json.success === "true") {
                         if (prevent != undefined) {

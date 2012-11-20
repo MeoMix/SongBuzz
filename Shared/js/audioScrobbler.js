@@ -35,7 +35,6 @@ define(function () {
             });
         },
         getAlbumInfo: function (endcallback, mbid, callback, album, artist) {
-            //[Jonny] There should be the ability to pass in artist and album too!
             var data = {
                 "method": "album.getInfo",
                 "format": format,
@@ -53,6 +52,7 @@ define(function () {
                 data: data,
                 dataType: dataType,
                 success: function(json) {
+                    //Call back with the data, the final callback and the tracks
                     callback(json, endcallback)
                 }
             });

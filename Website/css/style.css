@@ -495,7 +495,7 @@ tr td {
 tr[data-album=Unknown] td.list-album {
 	color: rgba(0,0,0,0);
 }
-td.list-album:hover, td.list-artist:hover {
+td.list-album:hover, td.list-artist:hover, .link:hover {
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -525,7 +525,8 @@ td.list-album:hover, td.list-artist:hover {
 	margin-right: 20px;
 }
 #songtable.albumlist table {
-	width: 560px;
+	width: -webkit-calc(100% - 240px);
+	width: -moz-calc(100% - 240px);
 	margin-left: 20px;
 	font-size: 0.7em;
 	font-family: Helvetica;
@@ -867,4 +868,21 @@ thead tr [data-sort-key=album] {
 	padding: 5px;
 	background: -webkit-linear-gradient(bottom, rgb(180,180,180), rgb(200,200,200));
 }
-
+.albumtable tbody tr td:first-child {
+	width: 5%;
+}
+.albumtable tbody tr td:nth-child(2) {
+	width: 5%;
+}
+.albumtable tbody tr td:nth-child(3) {
+	width: 40%;
+}
+.albumtable tbody tr td:nth-child(4) {
+	width: 10%;
+}
+.albumtable tbody tr td:nth-child(5) {
+	width: 20%;
+}
+.albumtable tbody tr td:nth-child(6) {
+	width: 20%;
+}

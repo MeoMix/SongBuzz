@@ -3,19 +3,21 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
     'use strict';
 
     //Private functions:
-    var buildAlbumList = function(tracks, callback) {
-        var table = $("<table>");
+    var buildAlbumList = function(tracks, callback, album) {
+        var table = $("<table>", {
+            class: "albumtable"
+        });
         var popup = $("#songtable")
         if (tracks == undefined) {
             //TODO: Do error handling here
         }
         else if (tracks.length == undefined) {
-            var albumTableRow = buildAlbumTableRow(0, tracks);
+            var albumTableRow = buildAlbumTableRow(0, tracks, album);
             albumTableRow.appendTo(table);
         }
         else {
             $.each(tracks, function(key,track) {
-                var albumTableRow = buildAlbumTableRow(key, track)
+                var albumTableRow = buildAlbumTableRow(key, track, album)
                 albumTableRow.appendTo(table)
             })
         }
@@ -36,11 +38,15 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
             
             $("<h2>", {
                 text: album.name,
-                'data-mbid': album.mbid
+                'data-mbid': album.mbid,
+                "data-source-album": album.name
             }).appendTo(popup);
 
             $("<h3>", {
-                text: album.artist
+                text: album.artist,
+                "data-navigate": "Artist/" + album.artist,
+                class: "link",
+                "data-source-artist": album.artist
             }).appendTo(popup);
 
             $("<p>", {
@@ -50,7 +56,8 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
             var albumcover = album.image.length > 3 ? album.image[3]['#text'] : album.image[length-1]['#text'];
             $("<img>", {
                 src: albumcover,
-                'class': "album"
+                'class': "album",
+                "data-source-img": albumcover
             }).appendTo(popup);
 
             $("<div>", {
@@ -64,15 +71,20 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 text: s.addasplaylist[language]
             }).appendTo(popup);
 
-            buildAlbumList(album.tracks.track, endcallback);
+            buildAlbumList(album.tracks.track, endcallback, album);
         }
     };
-    var buildAlbumTableRow = function(key,track) {
+    var buildAlbumTableRow = function(key,track, album) {
+        console.log(album)
         var songs = libraryController.getSongs("songs");
         var albumTableRow = $("<tr>", {
             'class': 'song db-pending ' + 'mbid-' + track.mbid,
             'data-duration': track.duration,
-            'data-mbid': track.mbid
+            'data-mbid': track.mbid,
+            'data-artists': track.artist.name,
+            'data-album': album.name,
+            'data-albumid': album.mbid,
+            'data-cover': (_.last(album.image))['#text']
         });
 
         $("<td>").appendTo(albumTableRow);
@@ -110,11 +122,11 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
         return albumTableRow;
     };
 
-    var checkIfInDataBase = function(tracks) {
+    var checkIfInDataBase = function(table, tracks) {
         var array = []
         $.each(tracks, function(k,v) {
             if (v.mbid == "") {
-                $(".db-pending").eq(k).removeClass("db-pending").addClass("db-not-in-db").find("td.db-status").text(s.notInDataBase[language]);
+                $(table).find(".db-pending").eq(k).removeClass("db-pending").addClass("db-not-in-db").find("td.db-status").text(s.notInDataBase[language]);
             }
             else {
                 array.push(v.mbid)
@@ -142,7 +154,7 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 })
                 var songs = libraryController.getSongs("songs")
                 $(".db-pending").removeClass("db-pending").addClass("db-not-in-db").find("td.db-status").text(s.notInDataBase[language]);
-                recognizeAll()
+                recognizeAll(table)
             }
         })
     };
@@ -153,8 +165,48 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
             $(node).attr("data-" + a, b)
         });
     };
-    var recognizeAll = function() {
-        $(".db-not-in-db .db-recognize").click();
+    var recognizeTrack = function (node, callback) {
+            var nodeParent = ($(node).parent("tr"))[0];
+            console.log(node)
+            var song = {
+                hoster: "youtube",
+                duration: parseFloat($(nodeParent).attr("data-duration")),
+                title: $(nodeParent).find(".album-list-title").text(),
+                artists: $(nodeParent).attr("data-artists"),
+                album: $(nodeParent).attr("data-album"),
+                cover: $(nodeParent).attr("data-cover"),
+                mbid: $(nodeParent).attr("data-mbid"),
+                albumid: $(nodeParent).attr("data-albumid")
+            };
+            console.log(song)
+            ytHelpers.findVideo(song, function (foundVideo) {
+                songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined,function(song, json) {
+                    if (json.error != undefined) {
+                        $(nodeParent).find(".db-recognize").text("Track not found");
+                    }
+
+                    song.lastfmid = json.track.id;
+                    song.artistsid = json.track.artist.mbid;
+                    backend.saveData(song, true);
+                    bindTrackToDOM(song, nodeParent);
+                    $(nodeParent).find(".db-status").text(s.inDatabase[language]);
+                    $(nodeParent).find(".db-recognize").text(s.addToLibrary[language]);
+                    if (callback) {
+                        callback()
+                    }
+                    
+                });
+            });
+        }
+    var recognizeAll = function(table) {
+        var tracks = $(table).find(".db-not-in-db .db-recognize");
+        //Repeat functions until everything is recognized
+        if (tracks.length > 0) {
+            recognizeTrack(tracks[0], function() {
+                recognizeAll(table)
+            })
+        }
+        
     }
     //Public methods
     return {
@@ -170,33 +222,6 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
                 playlists.addSongToPlaylist(playlistname, song)
             })
         },
-        recognizeTrack: function (node) {
-            var nodeParent = ($(node).parent("tr"))[0];
-            var song = {
-                hoster: "youtube",
-                duration: parseFloat($(nodeParent).attr("data-duration")),
-                title: $(nodeParent).find(".album-list-title").text(),
-                artists: $("#songtable.albumlist h3").text(),
-                album: $("#songtable.albumlist h2").text(),
-                cover: $("#songtable.albumlist img").attr("src"),
-                mbid: $(nodeParent).attr("data-mbid"),
-                albumid: $("#songtable.albumlist h2").attr("data-mbid"),
-                artistsid: $("#songtable.albumlist h3").attr("data-mbid")
-            };
-            ytHelpers.findVideo(song, function (foundVideo) {
-                songDecorator.decorateWithYouTubeInformation(foundVideo, song, undefined,function(song, json) {
-                    if (json.error != undefined) {
-                        $(nodeParent).find(".db-recognize").text("Track not found");
-                    }
-
-                    song.lastfmid = json.track.id;
-                    song.artistsid = json.track.artist.mbid;
-                    backend.saveData(song, true);
-                    bindTrackToDOM(song, nodeParent);
-                    $(nodeParent).find(".db-status").text(s.inDatabase[language]);
-                    $(nodeParent).find(".db-recognize").text(s.addToLibrary[language]);
-                });
-            });
-        }
+        recognizeTrack: recognizeTrack
     };
 })

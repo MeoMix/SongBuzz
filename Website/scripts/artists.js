@@ -61,17 +61,22 @@ define(["libraryController", "audioScrobbler", "albums"], function(libraryContro
 							var mbid = album.mbid,
 								title = album.name,
 								artist = album.artist.name
-							var albumListCallback = function(table) {
+							var albumListCallback = function(table, tracks, popup) {
 								var albumdiv = $("<div>", {
 									class: "artistpage-album"
 								})
-								$("<h2>").text(title).appendTo(albumdiv)
+								var albumstring = (mbid == "") ? title + "_" + artist : mbid;
+								$("<h2>", {
+									"data-navigate": "Album/" + albumstring,
+									class: "link"
+								}).text(title).appendTo(albumdiv)
 								$("<img>", {
 									src: (_.last(album.image))['#text'],
 									class: 'artistpage-cover'
 								}).appendTo(albumdiv)
 								$(table).appendTo(albumdiv)
 								albumdiv.appendTo(artistdiv)
+								albums.checkIfInDataBase(table, tracks)
 							}
 							if (mbid != "") {
 								audioScrobbler.getAlbumInfo(albumListCallback, mbid, albums.asCallback);

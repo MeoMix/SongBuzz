@@ -11,7 +11,6 @@ var require = {
     'recognitionList': '/Website/scripts/recognitionList',
     'strings': '/Website/scripts/strings',
     'jquery': '/Shared/js/thirdParty/jquery',
-    'jqueryUi': '/Shared/js/thirdParty/jqueryUi',
     'geoplugin': '/Shared/js/thirdParty/geoplugin',
     'levenshtein': '/Shared/js/thirdParty/levenshtein',
     'songBuilder': '/Shared/js/songBuilder',

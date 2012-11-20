@@ -7,7 +7,7 @@
     <head>
         <meta charset="UTF-8">
         <title>SongBuzz</title>
-
+        <script src="https://www.youtube.com/player_api"></script>
         <script src="/Website/scripts/requirePaths.js"></script>
         <script data-main="main" src="/Shared/js/thirdParty/require.js"></script>
         <link rel="stylesheet" href="/Website/css/style.css">
@@ -72,9 +72,40 @@
         <div id="next"><img src="/Website/images/ff.png"></div>
     </div>
     <div id="songtable" class="notready"></div>
-    <iframe id="MusicHolder" width="640" height="390" src="http://www.youtube.com/embed/DeumyOzKqgI?enablejsapi=1">
-        You need Flash player 8+ and JavaScript enabled to view this video.
-    </iframe>'
+<div id="ytplayer"></div>
+
+<script>
+  // Replace the 'ytplayer' element with an <iframe> and
+  // YouTube player after the API code downloads.
+  var ytplayer;
+  function onYouTubePlayerAPIReady() {
+    ytplayer = new YT.Player('ytplayer', {
+      height: '390',
+      width: '640',
+      videoId: 'u1zgFlCw8Aw'
+    });
+    ytplayer.addEventListener("onStateChange", function() {
+        var newState = ytplayer.getPlayerState()
+        if (newState == 0) {
+            require(["libraryController"], function(libraryController) {
+                libraryController.playNext();
+            })
+            
+        }
+        if (newState == 0 || newState == 1) {
+            $("#play").hide();
+            $("#pause").show();
+        } else {
+            $("#play").show();
+            $("#pause").hide();
+        }
+    })
+    //Remove class "notready"
+    var ele = document.getElementById("songtable")
+    var reg = new RegExp('(\\s|^)'+"notready"+'(\\s|$)');
+    ele.className=ele.className.replace(reg,' ');
+  }
+</script>
     <div id="popup">
         <div id="closepopup">Close</div>
     </div>

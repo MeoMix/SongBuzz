@@ -28,9 +28,8 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists']
         	//Let's do it like this: If the string contains a _, then it is meant as album
         	//and artist, if not, then as mbid
         	var drawTable = function(table, tracks, popup) { 
-        	    console.log(table)
         	    table.appendTo(popup);
-        		albums.checkIfInDataBase(tracks);
+        		albums.checkIfInDataBase(table, tracks);
         	}
         	if (name.indexOf("_") != -1) {
         		var album = name.substr(0,name.indexOf("_")),

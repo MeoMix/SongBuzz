@@ -4,6 +4,7 @@
     return {
         decorateWithYouTubeInformation: function(video, song, id, callback) {
             song.hoster = "youtube";
+            //TODO: Handle errors when video not found 
             song.hosterid = video.id.$t.substr(video.id.$t.indexOf("videos/") + 7);
             song.duration = video.media$group.yt$duration.seconds;
             song.countries = video.media$group.media$restriction ? video.media$group.media$restriction.$t : "none";
@@ -14,6 +15,7 @@
             }
             //One last request just for the lastfmid ..
             audioScrobbler.getAlbum(song.title, song.artists, function(json) {
+                console.log(json)
                 var track = json.track;
                 if (track.album) {
                     song.albumid = track.album.mbid;

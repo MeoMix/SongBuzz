@@ -43,7 +43,6 @@ define(['recognitionArea', 'audioScrobbler', 'recognitionList', 'backend', 'reco
     //Whenever we successfully save to the server -- reflect that to the user
     //by showing the song's duration and showing a nice animation.
     backend.onSaveData(function(event, data) {
-        console.log(data);
         recognitionList.showFinishedAnimation(data, data.hosterid);
         //Also, we add it to the users library!
         //Option to prevent adding to the library

@@ -82,17 +82,4 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'sea
         }
         
     }
-    window.updateIcon = function() {
-        var newState = ytplayer.getPlayerState()
-        if (newState == 0) {
-            libraryController.playNext();
-        }
-        if (newState == 0 || newState == 1) {
-            $("#play").hide();
-            $("#pause").show();
-        } else {
-            $("#play").show();
-            $("#pause").hide();
-        }
-    };
 })
