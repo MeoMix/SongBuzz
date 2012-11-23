@@ -63,7 +63,7 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists']
 			$("#songtable").removeClass("albumlist artistpage")
 			$("#autocomplete").fadeOut()
 			$("[data-navigate]").removeClass("menuselected")
-			$("#leftbar [data-navigate='"+escape(to)+"']").addClass("menuselected");
+			$("#leftbar [data-navigate='"+to+"']").addClass("menuselected");
 			//Execute it!
 			obj(array[array.length-1]);
 			//Change window URL
@@ -81,6 +81,7 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists']
             if (localStorage.songs == "null" || localStorage.songs == null) {
                 //Create array in localStorage
                 localStorage.songs = "[]";
+                console.log(libraryController)
                 libraryController.loadAllSongs();
             }
                 //First, check for new songs/deleted songs, then draw the table

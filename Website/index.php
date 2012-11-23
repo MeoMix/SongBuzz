@@ -7,7 +7,6 @@
     <head>
         <meta charset="UTF-8">
         <title>SongBuzz</title>
-        <script src="https://www.youtube.com/player_api"></script>
         <script src="/Website/scripts/requirePaths.js"></script>
         <script data-main="main" src="/Shared/js/thirdParty/require.js"></script>
         <link rel="stylesheet" href="/Website/css/style.css">
@@ -70,10 +69,12 @@
         <div id="play"><img src="/Website/images/play.png"></div>
         <div id="pause" style="display: none;"><img src="/Website/images/pause.png"></div>
         <div id="next"><img src="/Website/images/ff.png"></div>
+        <div id="scrubber"></div>
     </div>
-    <div id="songtable" class="notready"></div>
+    <div id="songtable"></div>
+    <div class="notready" id="loadingscreen"><div class="spinner"></div><p>Loading songs</p></div>
 <div id="ytplayer"></div>
-
+<script src="https://www.youtube.com/player_api"></script>
 <script>
   // Replace the 'ytplayer' element with an <iframe> and
   // YouTube player after the API code downloads.
@@ -93,20 +94,17 @@
             
         }
         if (newState == 0 || newState == 1) {
-            $("#play").hide();
-            $("#pause").show();
+            document.getElementById("play").style.display = "none"
+            document.getElementById("pause").style.display = "block"
         } else {
-            $("#play").show();
-            $("#pause").hide();
+            document.getElementById("play").style.display = "block"
+            document.getElementById("pause").style.display = "none"
         }
     })
     //Remove class "notready"
-    var ele = document.getElementById("songtable")
+    var ele = document.getElementById("loadingscreen")
     var reg = new RegExp('(\\s|^)'+"notready"+'(\\s|$)');
     ele.className=ele.className.replace(reg,' ');
   }
 </script>
-    <div id="popup">
-        <div id="closepopup">Close</div>
-    </div>
 </html>

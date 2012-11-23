@@ -313,7 +313,13 @@
     };
 
     var playSong = function(song) {
-        $("#now-cover").attr("src", song.cover);
+        if (song.cover == "") {
+            $("#now-cover").attr("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==")
+        }
+        else {
+            $("#now-cover").attr("src", song.cover);
+        }
+        
         player.loadVideo(song.hosterid);
         constructor().nowPlaying = song;
         //remove from every other song which is being stopped
@@ -430,6 +436,7 @@
         },
         //Makes a song object out of the metadata saved in the DOM
         makeSongOutOfTr: makeSongOutOfTr,
+        loadAllSongs: loadAllSongs,
         createList: createList,
         isInLibrary: isInLibrary,
         compareSongs: compareSongs

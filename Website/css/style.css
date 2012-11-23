@@ -474,7 +474,7 @@ tr td {
 	position: absolute;
 	height: 1px;
 }
-#controls div {
+#controls div:not(#scrubber) {
 	float: left;
 	bottom: 12px;
 	margin-top: 20px;
@@ -490,7 +490,7 @@ tr td {
 }
 .nowplaying {
 	font-weight: bold;
-	border-left: 5px solid orange;
+	border-left: 5px solid rgba(245,184,0,1) !important;
 }
 tr[data-album=Unknown] td.list-album {
 	color: rgba(0,0,0,0);
@@ -498,6 +498,12 @@ tr[data-album=Unknown] td.list-album {
 td.list-album:hover, td.list-artist:hover, .link:hover {
 	text-decoration: underline;
 	cursor: pointer;
+}
+.albumlist tr {
+	border-left: 5px solid gray
+}
+#thetable {
+	z-index: 0;
 }
 #songtable.albumlist {
 	padding-left: 260px;
@@ -640,22 +646,47 @@ tbody {
 	outline: none;
 	color: rgba(255,255,255,0.7)
 }
-.notready:after {
+@-webkit-keyframes spinning {
+	from {
+		-webkit-transform: rotate(0deg);
+	}
+	to {
+		-webkit-transform: rotate(359deg);
+	}
+}
+.notready {
 	position: fixed;
-	content: "Loading...";
-	background: black;
-	opacity: 0.6;
-	height: 60px;
+	background: url(/Website/images/dvsup.png);
+	width: 100%;
+	height: 100%;
+	z-index: 5;
+	top: 0;
+	padding-top: 30%;
+	left: 0;
+}
+
+.notready .spinner {
 	width: 100px;
+	height: 100px;
+	border: 10px solid rgba(245,184,0,1);
+	border-radius: 50px;
+	box-shadow: 0 0 5px rgba(245,184,0,1), inset 0 0 5px rgba(245,184,0,1);
+	-webkit-mask-image: -webkit-linear-gradient(top, transparent 50%, black 50%);
+	opacity: 0.8;
+	position: relative;
 	left: 50%;
 	margin-left: -50px;
-	top: 50%;
-	border-radius: 8px;
-	margin-top: -50px;
+	-webkit-animation: spinning 3s infinite linear;
+}			
+.notready p {
+	letter-spacing: 0.05em;
+	color: #333;
+	-webkit-mask-image: -webkit-linear-gradient(top, gray, rgba(0,0,0,0.6));
+	font-size: 1.5em;
+	text-shadow: 0 -1px 1px black, 0 1px 1px #333;
+	font-family: "Arial";
 	text-align: center;
-	padding-top: 40px;
-	font-size: 16px;
-}
+}			
 .list-duration {
 	min-width: 100px;
 }
@@ -778,6 +809,9 @@ thead tr [data-sort-key=album] {
 	width: 30%;
 	left: 70%;
 }
+.artistpage {
+	padding-bottom: 20px;
+}
 .artistspage-headerimage {
 	position: absolute;
 	top: 130px;
@@ -808,8 +842,13 @@ thead tr [data-sort-key=album] {
 #artistheader {
 	height: 130px;
 	width: 100%;
+	width: -webkit-calc(100% - 242px);
 	background: -webkit-linear-gradient(bottom, rgba(220,220,220,1), rgba(165,165,165,1));
-	border-bottom: 2px solid black
+	border-bottom: 2px solid black;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	padding-right: 242px;
 }
 .artistpage p {
 	position: absolute;
@@ -827,10 +866,10 @@ thead tr [data-sort-key=album] {
 }
 .tag {
 	float: left;
-	border-left: 2px solid black;
+	border-left: 2px solid gray;
 	margin-right: 10px;
-	padding: 3px;
-	padding-left: 3px;
+	padding: 6px;
+	cursor: default;
 	font-size: 0.7em;
 	font-weight: bold;
 	background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.05));
@@ -843,6 +882,7 @@ thead tr [data-sort-key=album] {
 	margin-left: 20px;
 	clear: both;
 	padding-top: 20px;
+	margin-top: 100px;
 }
 .artistpage-cover {
 	float: left;
@@ -886,3 +926,85 @@ thead tr [data-sort-key=album] {
 .albumtable tbody tr td:nth-child(6) {
 	width: 20%;
 }
+#scrubber {
+	width: -webkit-calc(100% - 300px);
+	height: 10px;
+	border: 1px solid rgba(255,255,255,0.6);
+	bottom: 29px !important;
+	position: absolute;
+	left: 170px;
+}
+#scrubber a {
+	outline: none;
+	opacity: 0.6;
+}
+.ui-slider-handle {
+	background: white;
+	width: 8px;
+	height:8px;
+}
+/* JQUERY UI */
+.ui-slider {
+    position: relative;
+    text-align: left;
+}
+
+.ui-slider .ui-slider-handle {
+    position: absolute;
+    z-index: 2;
+    cursor: default;
+}
+
+.ui-slider .ui-slider-range {
+    position: absolute;
+    z-index: 1;
+    font-size: .7em;
+    display: block;
+    border: 0;
+    background-position: 0 0;
+}
+
+.ui-slider-horizontal {
+    height: .4em;
+}
+
+.ui-slider-horizontal .ui-slider-range {
+    top: 0;
+    height: 100%;
+}
+
+.ui-slider-horizontal .ui-slider-range-min {
+    left: 0;
+}
+
+.ui-slider-horizontal .ui-slider-range-max {
+    right: 0;
+}
+
+.ui-slider-vertical {
+    width: .8em;
+    height: 100px;
+}
+
+.ui-slider-vertical .ui-slider-handle {
+    left: -.3em;
+    margin-left: 0;
+    margin-bottom: -.6em;
+}
+
+.ui-slider-vertical .ui-slider-range {
+    left: 0;
+    width: 100%;
+}
+
+.ui-slider-vertical .ui-slider-range-min {
+    bottom: 0;
+}
+
+.ui-slider-vertical .ui-slider-range-max {
+    top: 0;
+}
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { -moz-border-radius-topleft: 4px/*{cornerRadius}*/; -webkit-border-top-left-radius: 4px/*{cornerRadius}*/; -khtml-border-top-left-radius: 4px/*{cornerRadius}*/; border-top-left-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr { -moz-border-radius-topright: 4px/*{cornerRadius}*/; -webkit-border-top-right-radius: 4px/*{cornerRadius}*/; -khtml-border-top-right-radius: 4px/*{cornerRadius}*/; border-top-right-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { -moz-border-radius-bottomleft: 4px/*{cornerRadius}*/; -webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/; -khtml-border-bottom-left-radius: 4px/*{cornerRadius}*/; border-bottom-left-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { -moz-border-radius-bottomright: 4px/*{cornerRadius}*/; -webkit-border-bottom-right-radius: 4px/*{cornerRadius}*/; -khtml-border-bottom-right-radius: 4px/*{cornerRadius}*/; border-bottom-right-radius: 4px/*{cornerRadius}*/; } 

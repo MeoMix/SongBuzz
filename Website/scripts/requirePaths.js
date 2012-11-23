@@ -30,7 +30,8 @@ var require = {
     'playlists': '/Website/scripts/playlists',
     'navigation': '/Website/scripts/navigation',
     'search': '/Website/scripts/search',
-    'artists': '/Website/scripts/artists'
+    'artists': '/Website/scripts/artists',
+    'jquerySlider': '/Shared/js/thirdParty/jquerySlider'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

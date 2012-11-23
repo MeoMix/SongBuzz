@@ -1,8 +1,5 @@
 define(["libraryController", "audioScrobbler"], function(libraryController, audioScrobbler) {
 	"use strict";
-	var searchLastFm = function() {
-
-	}
 	return {
 		buildQuery: function() {
 			var query = $("#searchinput").val();
@@ -40,7 +37,7 @@ define(["libraryController", "audioScrobbler"], function(libraryController, audi
 					$("#autocomplete").show()
 					if (typeof json.results.artistmatches != "string") {
 						$("#auto-artists").html("")
-						$.each(json.results.artistmatches.artist, function(key, artist) {
+						var callback = function(key, artist) {
 							if (artist.image != undefined)
 							var image = artist.image[0]["#text"];
 							var artistname = artist.name;
@@ -58,7 +55,15 @@ define(["libraryController", "audioScrobbler"], function(libraryController, audi
 								class: 'search-title'
 							}).text(artistname).appendTo(artistdiv)
 							$("#auto-artists").append(artistdiv)
-						})
+						}
+						console.log(json.results.artistmatches.artist[0])
+						if (json.results.artistmatches.artist[0] == undefined) {
+							callback(0, json.results.artistmatches.artist)
+						}
+						else {
+							$.each(json.results.artistmatches.artist, callback)
+						}
+						
 					}
 				})
 			}

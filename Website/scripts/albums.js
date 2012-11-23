@@ -9,7 +9,8 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
         });
         var popup = $("#songtable")
         if (tracks == undefined) {
-            //TODO: Do error handling here
+            //TODO: Sweet error handling
+            table.append("No tracks found in this album.")
         }
         else if (tracks.length == undefined) {
             var albumTableRow = buildAlbumTableRow(0, tracks, album);
@@ -75,7 +76,6 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
         }
     };
     var buildAlbumTableRow = function(key,track, album) {
-        console.log(album)
         var songs = libraryController.getSongs("songs");
         var albumTableRow = $("<tr>", {
             'class': 'song db-pending ' + 'mbid-' + track.mbid,
