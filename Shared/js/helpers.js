@@ -56,7 +56,6 @@ define(function () {
             paramaterName = paramaterName.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regex = new RegExp("[\\?&]" + paramaterName + "=([^&#]*)");
             var results = regex.exec(url);
-            
             //TODO: Maybe I can just call match here?
 
             var returnValue = "";

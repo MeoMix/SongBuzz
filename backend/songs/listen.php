@@ -6,7 +6,7 @@ include("../import.php");
 	   $json = array("error" => "Could not connect to database");
 	}
 	else {
-		mysql_select_db("a3205977_songs", $con);
+		mysql_select_db("songbuzz_songs", $con);
 		$songid = $_GET['songid'];
 		$result = mysql_query("UPDATE song_table SET plays = plays + 1 WHERE lastfmid = '".$songid."'");
 		$result2 = mysql_query("SELECT * FROM song_table WHERE lastfmid = '".$songid."'");

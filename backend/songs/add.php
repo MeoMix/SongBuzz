@@ -21,7 +21,7 @@ if (!$con) {
    $json = array("error" => "Could not connect to database", "success" => "false");
 }
 else {
-	mysql_select_db("a3205977_songs", $con);
+	mysql_select_db("songbuzz_songs", $con);
 	//Test if already there
 	$check = mysql_query("SELECT * FROM song_table WHERE `lastfmid` ='$lastfmid'");
 	//Must be "> 1"! Do not change!

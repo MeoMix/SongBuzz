@@ -16,7 +16,7 @@ header('Access-Control-Allow-Origin: *');
 		}
 		else {
 			//Select database
-			mysql_select_db("a3205977_songs", $con);
+			mysql_select_db("songbuzz_songs", $con);
 			//
 			$check = mysql_query("SELECT * FROM song_users WHERE `authkey` ='$authkey'");
 			while ($row = mysql_fetch_array($check)) {

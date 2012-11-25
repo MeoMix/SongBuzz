@@ -9,7 +9,7 @@ if (!$con) {
 }
 else {
 	//Access the table
-	mysql_select_db("a3205977_songs", $con);
+	mysql_select_db("songbuzz_songs", $con);
 	//SQL query
 	$result = mysql_query("SELECT * FROM  `song_users` WHERE  `authkey` LIKE CONVERT( _utf8 '$authkey' USING latin1 ) COLLATE latin1_general_ci");
 	//Loop through results

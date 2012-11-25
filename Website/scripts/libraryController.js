@@ -6,7 +6,7 @@
             authkey: localStorage['authkey']
         };
         //Make the AJAX request!
-        var url = "http://songbuzz.host56.com/backend/fb/loadSongs.php";
+        var url = "http://songbuzzapp.com/backend/fb/loadSongs.php";
         $.ajax({
             url: url,
             data: data,
@@ -155,7 +155,7 @@
         var authkey = localStorage["authkey"];
         //Make daaaa request!
         $.ajax({
-            url: "http://songbuzz.host56.com/backend/fb/compareSongs.php?authkey=" + authkey + "&list=" + list,
+            url: "http://songbuzzapp.com/backend/fb/compareSongs.php?authkey=" + authkey + "&list=" + list,
             dataType: "json",
             data: { "songs": joinedsongs },
             type: 'POST',
@@ -201,7 +201,7 @@
         };
         //Make the request to the server!
         $.ajax({
-            url: "http://songbuzz.host56.com/backend/fb/removeSong.php",
+            url: "http://songbuzzapp.com/backend/fb/removeSong.php",
             data: data,
             dataType: "json",
             success: function() {
@@ -329,7 +329,7 @@
 
         //Add +1 listen to the server!
         $.ajax({
-            url: "http://songbuzz.host56.com/backend/songs/listen.php",
+            url: "http://songbuzzapp.com/backend/songs/listen.php",
             data: { "songid": song.lastfmid },
             dataType: "json",
             success: function() {

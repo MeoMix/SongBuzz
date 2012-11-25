@@ -135,7 +135,7 @@ define(['audioScrobbler', 'backend', 'ytHelper', 'songDecorator', 'libraryContro
         });
 
         $.ajax({
-            url: "http://songbuzz.host56.com/backend/songs/checkmbid.php",
+            url: "http://songbuzzapp.com/backend/songs/checkmbid.php",
             data: {
                 "mbids": array.join(",")
             },

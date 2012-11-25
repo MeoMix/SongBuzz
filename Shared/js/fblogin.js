@@ -1,4 +1,4 @@
-define(function () {
+define(["libraryController"], function (libraryController) {
     'use strict';
 
     var logout = function() {
@@ -17,6 +17,7 @@ define(function () {
             });
             //Receive Facebook callback and push to localStorage
             var name = Helpers.getUrlParamaterValueByName(url, "name");
+            console.log(name)
             if (name != "") {
                 var user = {
                     name: name,
@@ -26,8 +27,10 @@ define(function () {
                 };
                 $.each(user, function (k, v) {
                     localStorage[k] = v;
+                    console.log(localStorage[k])
                 });
                 history.pushState(null, "SongBuzz", "/Website");
+                libraryController.loadAllSongs()
             }
 
             if (localStorage['name'] != null) {

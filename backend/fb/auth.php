@@ -57,7 +57,7 @@
    			$json = json_encode(array("status_code" => "3"));
 		}
 		else {
-			mysql_select_db("a3205977_songs", $con);
+			mysql_select_db("songbuzz_songs", $con);
 			$check = mysql_query("SELECT * FROM song_users WHERE `id` ='$id'");
 			if (count(mysql_fetch_array($check)) > 1) {
 				//User already registered!
@@ -70,7 +70,7 @@
 				mysql_query("INSERT INTO song_users (id,name,prename,songs,favorites,access_token,expires,authkey) VALUES ('$id', '$name', '$prename', '[]', '[]','$access_token', '$expires', '$authkey')");
 				mysql_close($con);
 			}
-      echo("<script> top.location.href='" . "http://songbuzz.host56.com/Website?name=$name&prename=$prename&id=$id&authkey=$authkey" . "'</script>");
+      echo("<script> top.location.href='" . "http://songbuzzapp.com/Website?name=$name&prename=$prename&id=$id&authkey=$authkey" . "'</script>");
 			$json = json_encode(array("status_code" => "0", "user_info" => array("name" => $name, "prename" => $prename, "id" => $id, "authkey" => $authkey)));
 		}
 

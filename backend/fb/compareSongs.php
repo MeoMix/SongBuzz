@@ -15,7 +15,7 @@ header('Access-Control-Allow-Origin: *');
    			$json = json_encode(array("status_code" => "2"));
 		}
 		else {
-			mysql_select_db("a3205977_songs", $con);
+			mysql_select_db("songbuzz_songs", $con);
 			//Get users list
 			$usersongs = explode(",", $_POST['songs']);
 			//Get database list

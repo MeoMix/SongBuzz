@@ -48,7 +48,7 @@
 
     // $.ajax({
     //     type: 'POST',
-    //     url: 'http://songbuzz.host56.com/backend/fb/auth.php',
+    //     url: 'http://songbuzzapp.com/backend/fb/auth.php',
     //     success: function(a, e){
     //         var indexOfFirstQuote = a.indexOf('\'');
     //         var lastIndexOfQuote = a.lastIndexOf('\'');

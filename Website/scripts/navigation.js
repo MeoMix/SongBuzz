@@ -15,7 +15,7 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists']
 			name = formatstring(name)
 			//Remove spaces and make it lowercase
 			//Fetch the feed from the server
-			var domain = "http://songbuzz.host56.com/backend/songs";
+			var domain = "http://songbuzzapp.com/backend/songs";
 			//Make the request and draw the table
 			$.getJSON(domain + "/" + name + ".php", function(json) {
 				libraryController.drawTable(json)
@@ -81,16 +81,22 @@ define(['playlists', 'libraryController', 'audioScrobbler', 'albums', 'artists']
             if (localStorage.songs == "null" || localStorage.songs == null) {
                 //Create array in localStorage
                 localStorage.songs = "[]";
-                console.log(libraryController)
-                libraryController.loadAllSongs();
+                if (localStorage.authkey != undefined) {
+                	libraryController.loadAllSongs();
+                }
+                
             }
                 //First, check for new songs/deleted songs, then draw the table
             else {
-                libraryController.compareSongs("songs");
-                if (originalState == "") {
+                if (originalState == "" && Helpers.getUrlParamaterValueByName(window.location.href, "name") == "") {
+                	libraryController.compareSongs("songs");
                 	to("Library/Songs")
                 }
+                else if (Helpers.getUrlParamaterValueByName(window.location.href, "name") != "") {
+                	//If FB credentials passed, do nothing!!
+                }
                 else {
+                	libraryController.compareSongs("songs");
                 	to(originalState)
                 }
                 

@@ -1,6 +1,6 @@
 define(function() {
     'use strict';
-    var domain = 'http://songbuzz.host56.com/';
+    var domain = 'http://songbuzzapp.com/';
     var url = domain + 'backend/songs/add.php';
 
     var events = {

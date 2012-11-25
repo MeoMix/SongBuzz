@@ -8,7 +8,7 @@ if (!$con) {
 }
 else {
 	//Access the table
-	mysql_select_db("a3205977_songs", $con);
+	mysql_select_db("songbuzz_songs", $con);
 	//SQL query
 	$result = mysql_query("SELECT * FROM song_table ORDER BY RAND() LIMIT 0,50");
 	//Loop through results
