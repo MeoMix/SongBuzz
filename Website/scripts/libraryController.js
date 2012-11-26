@@ -314,14 +314,17 @@
 
     var playSong = function(song) {
         if (song.cover == "") {
-            $("#now-cover").attr("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==")
+            $("#now-cover").attr("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
+            $("link[rel=icon]").attr("href", "/Website/images/favicon.ico");
         }
         else {
             $("#now-cover").attr("src", song.cover);
+            $("link[rel=icon]").attr("href", song.cover);
         }
         
         player.loadVideo(song.hosterid);
         constructor().nowPlaying = song;
+        $("title").text(song.title + " - " + song.artists + " | SongBuzz");
         //remove from every other song which is being stopped
         $(".song").removeClass("nowplaying");
         //Add class to current song

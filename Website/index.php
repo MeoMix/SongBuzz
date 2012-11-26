@@ -11,6 +11,7 @@
         <script data-main="main" src="/Shared/js/thirdParty/require.js"></script>
         <link rel="stylesheet" href="/Website/css/style.css">
         <link rel="stylesheet" href="/Website/css/contextmaster.css">
+        <link rel="icon" href="/Website/images/favicon.ico" type="image/x-icon">
     </head>
     <body>
     <div id="leftbar">
