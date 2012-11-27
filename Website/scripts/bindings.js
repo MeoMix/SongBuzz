@@ -106,7 +106,7 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'sea
             101: s.videoNotEmbeddable[language]
         }
         notifications.show({
-            text: youtubeerrors[error.data] + s.kippingTrack[language]
+            text: youtubeerrors[error.data] + s.skippingTrack[language]
         })
         libraryController.playNext()
     })
