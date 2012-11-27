@@ -1,4 +1,4 @@
-define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'search'], function(albums, libraryController, playlists, player, navigation, search) {
+define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'search', 'notifications'], function(albums, libraryController, playlists, player, navigation, search, notifications) {
     'use strict';
     var resetSelection = function() {
         $(".song,.playlist,.standardlist").removeClass("selected");
@@ -60,6 +60,23 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'sea
             console.log(history.state)
         }).on('keyup', '#searchinput', function() {
             search.buildQuery("hi")
+        }).on('hover', '[data-tooltip]', function() {
+            var original = this,
+                text = $(original).attr("data-tooltip"),
+                randomid = Math.floor(Math.random()*100000)
+            var tooltip = $("<div>", {
+                class: "tooltip",
+                "data-toolid": randomid
+            }).text(text).css({
+                "top": ($(original).offset()).top + $(original).height(),
+                "left": ($(original).offset()).left
+            })
+            tooltip.appendTo("body")
+            var difference = (tooltip.width() - $(original).width());
+            tooltip.css("left", "+=" + (0-(difference/2)))
+        })
+        .on('mouseleave', '[data-tooltip]', function() {
+           $(".tooltip").remove()
         })
         .on('click', '#songtable th', function() {
             var node = $(this);
@@ -82,4 +99,15 @@ define(['albums', 'libraryController', 'playlists', 'player', 'navigation', 'sea
         }
         
     }
+    ytplayer.addEventListener("onError", function(error) {
+        var youtubeerrors = {
+            100: s.videoRemoved[language],
+            2: s.videoIdInvalid[language],
+            101: s.videoNotEmbeddable[language]
+        }
+        notifications.show({
+            text: youtubeerrors[error.data] + s.kippingTrack[language]
+        })
+        libraryController.playNext()
+    })
 })

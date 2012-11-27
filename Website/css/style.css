@@ -943,6 +943,84 @@ thead tr [data-sort-key=album] {
 	width: 8px;
 	height:8px;
 }
+.notification {
+	position: fixed;
+	top: 4px;
+	z-index: 5;
+	width: 500px;
+	left: 50%;
+	margin-left: -250px;
+	text-align: center;
+	background: -webkit-linear-gradient(top, rgb(122, 122, 122), rgb(75, 75, 75));
+	padding: 10px;
+	border-bottom: 1px solid rgba(255,255,255,0.3);
+	box-shadow: 0 0 3px black;
+	color: white;
+	font-size: 0.75em;
+	-webkit-transition: 0.3s;
+}
+@-webkit-keyframes progressbar {
+	from {
+		background-position: -500px;
+	}
+	to {
+		background-position: 0px;
+	}
+}
+.notification-progress {
+	height: 4px;
+	width: 100%;
+	width: -webkit-calc(100% + 2px);
+	background: rgb(55,55,55);
+	top: 0;
+	margin-top: -4px;
+	position: absolute;
+	left: -1px;
+	-webkit-animation: progressbar 10s linear;
+	background: -webkit-linear-gradient(left, rgba(245,184,0,1) 100%, rgb(55,55,55) 0%), rgb(55,55,55);
+	background-repeat: no-repeat;
+}
+.notification.hidden {
+	margin-top: -50px;
+}
+.notificationclosebutton {
+	float: right;
+	position: absolute;
+	right: 0;
+	padding: 5px;
+	top: 0;
+	height: 100%;
+	padding-top: 9px;
+	padding-right: 10px;
+	padding-left: 10px;
+	cursor: pointer;
+}
+.notificationclosebutton:hover {
+	background: rgba(255,255,255,0.1);
+}
+.tooltip {
+	position: absolute;
+	padding: 5px;
+	background: rgb(40,40,40);
+	font-size: 0.7em;
+	margin-left: -5px;
+	margin-top: 8px;
+	z-index: 6;
+	text-align: center;
+	-webkit-filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));
+}
+.tooltip:before {
+	content: '';
+	width: 0px;
+	border-bottom: 4px solid rgb(40,40,40);
+	border-right: 5px solid transparent;
+	border-left: 5px solid transparent;
+	height: 2px;
+	position: absolute;
+	left: 50%;
+	margin-left: -5px;
+	top: -6px;
+}
 /* JQUERY UI */
 .ui-slider {
     position: relative;

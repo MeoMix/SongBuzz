@@ -1,4 +1,4 @@
-require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats', 'ytPlayerApiHelper'], function () {
+require(['jquery', 'helpers', 'strings', 'underscore', 'supportedFormats', 'ytPlayerApiHelper', 'notifications'], function () {
     'use strict';
     $(function () {
         //Loaclize it!

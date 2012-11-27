@@ -23,7 +23,7 @@
                 <div id="auto-title"></div>
                 <div class="autocompletespacer" data-lang-ig="artists">Artists</div>
                 <div id="auto-artists"></div>
-                <div class="autocompletespacer" data-lang-id="album">album</div>
+                <div class="autocompletespacer" data-lang-id="album">Album</div>
                 <div id="auto-albums"></div>
             </div>
             <h2 data-lang-id="library">Library</h2>

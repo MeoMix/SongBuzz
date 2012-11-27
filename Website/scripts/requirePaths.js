@@ -31,7 +31,8 @@ var require = {
     'navigation': '/Website/scripts/navigation',
     'search': '/Website/scripts/search',
     'artists': '/Website/scripts/artists',
-    'jquerySlider': '/Shared/js/thirdParty/jquerySlider'
+    'jquerySlider': '/Shared/js/thirdParty/jquerySlider',
+    'notifications': '/Website/scripts/notifications'
   },
   urlArgs: "bust=" + (new Date()).getTime()
 };

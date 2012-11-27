@@ -42,9 +42,10 @@ define(["libraryController", "audioScrobbler", "albums"], function(libraryContro
 						$.each(artist.similar.artist, function(key,simartist) {
 							$("<img>", {
 								src: simartist.image[1]['#text'],
-								"data-navigate": "Artist/" +simartist.name,
-								class: 'similarartist',
-								'data-artist': simartist.name
+								"data-navigate": "Artist/" + simartist.name,
+								class: "similarartist",
+								"data-tooltip": simartist.name,
+								"data-artist": simartist.name
 							}).appendTo(similarartistdiv)
 						})
 						similarartistdiv.appendTo(artistheader) 

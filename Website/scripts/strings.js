@@ -102,6 +102,22 @@ define(function() {
         similarartists: {
             en: "Similar artists",
             de: "Ähnliche Künstler"
+        },
+        videoRemoved: {
+            en: "The video was removed from YouTube.",
+            de: "Das Video wurde von YouTube entfernt."
+        },
+        videoIdInvalid: {
+            en: "YouTube video ID is invalid.",
+            de: "Die YouTube-ID is ungültig."
+        },
+        videoNotEmbeddable: {
+            en: "This video is not allowed to play on SongBuzz.",
+            de: "Das Video darf nicht auf SongBuzz wiedergegeben werden."
+        },
+        skippingTrack: {
+            en: " Skipping to the next track.",
+            de: " Titel wurde übersprungen."
         }
     };
 });
